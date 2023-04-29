@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Terminology Database</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="{{url_for('static', filename='index.js')}}"></script>
+  </head>
+  <body>
+    <h1>Terminology Database</h1>
+    <form id="search-form" method="post">
+      <label for="term">Search Term:</label>
+      <input type="text" id="term" name="term" required>
+      <label for="target-lang">Target Language:</label>
+      <select id="target-lang" name="target-lang">
+        <option value="fr-FR">French</option>
+        <option value="de-DE" disabled>German (coming soon)</option>
+        <option value="es-ES" disabled>Spanish (coming soon)</option>
+      </select>
+      <div class="result-filter">
+        <label for="result-count-excerpts">Results to show (Translations Excerpts):</label>
+        <select id="result-count-excerpts">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="999999">max.</option>
+        </select>
+        <br>
+        <label for="result-count-glossary">Results to show (Glossary):</label>
+        <select id="result-count-glossary">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="999999">max.</option>
+        </select>
+      </div>
+      <button id="search-btn" type="submit" onclick="search()">Search</button>
+    </form>    
+
+    <div id="results">
+      <h1 id="glossary_title">Glossary</h1>
+      <h3 id="glossary_nb"></h3>
+      <div id="glossary">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th>English</th>
+              <th>Translation</th>
+              <th>English Definition</th>
+            </tr>
+          </thead>
+          <tbody id="glossary_results"></tbody>
+        </table>
+      </div>
+      <h1 id="excerpts_title">Translations Excerpts</h1>
+      <h3 id="excerpts_nb"></h3>
+      <div id="excerpts">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th>English</th>
+              <th>Translation</th>
+              <th>String Category</th>
+              <th>Platform</th>
+              <th>Product</th>
+              <th>Version</th>
+            </tr>
+          </thead>
+          <tbody id="excerpts_results"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </body>
+</html>

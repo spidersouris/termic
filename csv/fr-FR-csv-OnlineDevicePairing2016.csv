@@ -1,0 +1,23 @@
+﻿PERMISSION NOTICE
+
+The Microsoft “Terms of Use” (available at the www.microsoft.com website) govern all glossary terms in this document (“Glossary Terms”).  The following supplemental terms and conditions also apply.  If there is any conflict between the Terms of Use and the following terms and conditions, the following terms and conditions will take
+Precedence over the Terms of Use.
+         
+1. No part of the Glossary Terms may be reproduced, adapted, distributed, or transmitted in any form or by any means, electronic, mechanical, or otherwise, including photocopying and entry into an information storage and/or retrieval system, for any purpose without the prior express consent of Microsoft Corporation. 
+
+2. You may use the Glossary Terms in the development of any application software and you may also use the Glossary Terms for personal or non-commercial purposes only without the prior written consent of Microsoft Corporation, and only if all copies contain this Permission Notice and the Microsoft copyright notice in the Terms of Use.         
+                                                                                                                                
+3. You are not permitted to make any modifications, deletions or additions to the Glossary Terms.
+ 
+4. Except as expressly set forth above, Microsoft’s publication of the Glossary Terms does not grant any rights to use, distribute, or implement any technology or intellectual property rights. All rights not expressly granted herein are expressly reserved by Microsoft.
+"Source Term",,"Translation",,"String Category",,"Platform",,"Product",,"Version"
+"This report shows client building and subnet pairs which experienced firewall issues while connecting to the server in last two months",,"Ce rapport affiche les paires de bâtiment et sous-réseau du client ayant rencontré des problèmes de pare-feu lors de la connexion au serveur au cours des deux derniers mois",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Filter: {DataFilterColumnName}",,"Filtre : {DataFilterColumnName}",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Microsoft Call Quality Dashboard",,"Tableau de bord de qualité des appels Microsoft",,"Text",,"All",,"Online Device Pairing 2016",,""
+"It looks like your Office 365 or Skype for Business tenant was recently created. Please check back in 24 hours to activate the Call Quality Dashboard.",,"Il semblerait que votre client Office 365 ou Skype Entreprise ait été créé récemment. Revenez dans 24 heures pour activer le tableau de bord de qualité des appels.",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Upload your information",,"Télécharger vos informations",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Second Subnet",,"Deuxième sous-réseau",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Server-Client AppSharing Streams Buildings and Subnets",,"Flux de partage d'application serveur-client - Bâtiments et sous-réseaux",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Server-Client Audio Streams Buildings and Subnets",,"Flux de données audio serveur-client - Bâtiments et sous-réseaux",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Server-Client VBSS Streams Buildings and Subnets",,"Flux VBSS serveur-client - Bâtiments et sous-réseaux",,"Text",,"All",,"Online Device Pairing 2016",,""
+"Server-Client Video Streams Building and Subnets",,"Flux de données vidéo serveur-client - Bâtiments et sous-réseaux",,"Text",,"All",,"Online Device Pairing 2016",,""
