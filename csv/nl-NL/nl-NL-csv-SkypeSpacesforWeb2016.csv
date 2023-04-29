@@ -1,0 +1,63 @@
+﻿PERMISSION NOTICE
+
+The Microsoft “Terms of Use” (available at the www.microsoft.com website) govern all glossary terms in this document (“Glossary Terms”).  The following supplemental terms and conditions also apply.  If there is any conflict between the Terms of Use and the following terms and conditions, the following terms and conditions will take
+Precedence over the Terms of Use.
+         
+1. No part of the Glossary Terms may be reproduced, adapted, distributed, or transmitted in any form or by any means, electronic, mechanical, or otherwise, including photocopying and entry into an information storage and/or retrieval system, for any purpose without the prior express consent of Microsoft Corporation. 
+
+2. You may use the Glossary Terms in the development of any application software and you may also use the Glossary Terms for personal or non-commercial purposes only without the prior written consent of Microsoft Corporation, and only if all copies contain this Permission Notice and the Microsoft copyright notice in the Terms of Use.         
+                                                                                                                                
+3. You are not permitted to make any modifications, deletions or additions to the Glossary Terms.
+ 
+4. Except as expressly set forth above, Microsoft’s publication of the Glossary Terms does not grant any rights to use, distribute, or implement any technology or intellectual property rights. All rights not expressly granted herein are expressly reserved by Microsoft.
+"Source Term",,"Translation",,"String Category",,"Platform",,"Product",,"Version"
+"Data from {0}",,"Gegevens uit {0}",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Delayed 15 minutes.",,"15 minuten vertraagd.",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"More details",,"Meer details",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"News",,"Nieuws",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"No results found.",,"Geen resultaten gevonden.",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"After hours",,"Buiten kantooruren",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Percentage change",,"Procentuele verandering",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Price change",,"Prijswijziging",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"When",,"Wanneer",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+""<a href=""https://go.microsoft.com/fwlink/?linkid=849660"">Image may be subject to copyright</a>"",,""<a href=""https://go.microsoft.com/fwlink/?linkid=849660"">Er geldt mogelijk copyright op de afbeelding</a>"",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Image",,"Afbeelding",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+""<a href=""{0}"">View original</a>"",,""<a href=""{0}"">Origineel weergeven</a>"",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Sorry, we couldn't find anything matching your search term.",,"Er zijn geen resultaten gevonden voor uw zoekterm.",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Information from {0}",,"Informatie van {0}",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Bing Maps",,"Bing Kaarten",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Confirm location",,"Locatie bevestigen",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Daily",,"Dagelijks",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"{0} to {1}",,"{0} tot {1}",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Directions",,"Routebeschrijving",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Hotel",,"Hotel",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Enter a search term (a business name, landmark, zip code, or city) to get more info",,"Voer een zoekterm in (bijv. bedrijfsnaam, oriëntatiepunt, postcode of plaats) om meer informatie op te halen",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Local business",,"Lokaal bedrijf",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Map of {0}",,"Kaart van {0}",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Open 24 hours",,"24 uur per dag open",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Open 24 hours a day",,"Dagelijks 24 uur geopend",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Permanently closed",,"Permanent gesloten",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Restaurant",,"Restaurant",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"({0} reviews)",,"({0} beoordelingen)",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"(1 review)",,"(1 beoordeling)",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"{0}–{1}",,"{0}–{1}",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Tourist attraction",,"Toeristische attractie",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Go to website",,"Naar de website",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"°C",,"°C",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"°F",,"°F",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Feels like",,"Voelt als",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"High / Low temperature",,"Hoge/lage temperatuur",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Humidity",,"Vochtigheid",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Sorry, we couldn't find a forecast for that location.",,"Kan geen weerbericht vinden voor die locatie.",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Chance of precipitation",,"Kans op neerslag",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Wind",,"Wind",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"LIVE",,"LIVE",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"views",,"weergaven",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"watching",,"volgen",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Places",,"Locaties",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Use this location",,"Deze locatie gebruiken",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"We need your location in order to provide accurate results. Use the location we've obtained automatically, or manually set it.",,"We hebben uw locatie nodig om nauwkeurige resultaten te kunnen bieden. Gebruik de locatie die we automatisch hebben bepaald of stel uw locatie handmatig in.",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+""Note: We store your location to improve queries, subject to our <a href=""https://go.microsoft.com/fwlink/?linkid=862522"" target=""_blank"">Privacy Policy</a> and <a href=""https://go.microsoft.com/fwlink/?linkid=862521"" target=""_blank"">Terms of Use</a>."",,""Opmerking: uw locatie wordt opgeslagen om query's te verbeteren, zoals bepaald in ons <a href=""https://go.microsoft.com/fwlink/?linkid=862522"" target=""_blank"">Privacybeleid</a> en onze <a href=""https://go.microsoft.com/fwlink/?linkid=862521"" target=""_blank"">Gebruiksvoorwaarden</a>."",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Location",,"Locatie",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Third party notices",,"Kennisgevingen van derden",,"Text",,"All",,"Skype Spaces for Web 2016",,""
+"Configure Places",,"Locaties configureren",,"Text",,"All",,"Skype Spaces for Web 2016",,""
