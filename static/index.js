@@ -1,46 +1,139 @@
 const urlParams = new URLSearchParams(window.location.search);
+var isLoading = false;
 
 $(function() {
   const q = urlParams.get("q");
+  const l = urlParams.get("l");
+
+  var target_lang = l || $("#target-lang").val();
+  var exact_match_gl = parseInt($("#exact-match-glossary").val());
+  var exact_match_exc = parseInt($("#exact-match-excerpts").val());
+
+  $("input[type='checkbox']").on("click", function() {
+    if ($(this).attr("id") == "exact-match-glossary") {
+      exact_match_gl = $(this).is(":checked") ? 1 : 0;
+    } else if ($(this).attr("id") == "exact-match-excerpts") {
+      exact_match_exc = $(this).is(":checked") ? 1 : 0;
+    }
+  });
+
+  $("#mark-results").on("click", function() {
+    mark();
+  });
+
+  function mark() {
+    if ($("#mark-results").is(":checked")) {
+      var keyword = $("#term").val();
+
+      $("td[data-attribute='source']").unmark({
+        done: function() {
+          $("td[data-attribute='source']").mark(keyword);
+        }
+      });
+    } else {
+      $("td[data-attribute='source']").unmark();
+    }
+  }
   
   if (q) {
-    // perform search using the value of the "q" parameter
     $("#term").val(q);
     var term = $("#term").val();
-    var target_lang = $("#target-lang").val();
-    request(term, target_lang)
+    request(term, target_lang, exact_match_gl, exact_match_exc)
   }
-});
 
-function search() {
+  if (l) {
+    $("#target-lang").val(l);
+  }
+  
   $("#search-form").submit(function(event) {
     event.preventDefault();
-    var term = $("#term").val();
-    var target_lang = $("#target-lang").val();
-    request(term, target_lang)
-  })
-};
-
-function request(term, target_lang) {
-  $.ajax({
-    url: "/",
-    type: "POST",
-    data: JSON.stringify({
-      term: term,
-      target_lang: target_lang
-    }),
-    contentType: "application/json;charset=UTF-8",
-    success: function(response) {
-      urlParams.set("q", term);
-      const newUrl = window.location.pathname + "?" + urlParams.toString();
-      window.history.pushState({ path: newUrl }, "", newUrl);
-      get_glossary(response, Object.values(response).slice(-1)[0].length, $("#result-count-glossary").val())
-      get_excerpts(response, Object.values(response)[0].length, $("#result-count-excerpts").val())
-      $("#results").css("display", "block");
-     },
-    error: function(errorThrown) {
-      alert("Error: " + errorThrown);
+    if (!isLoading) {
+      isLoading = true;
+      var term = $("#term").val();
+      var target_lang = $("#target-lang").val();
+      request(term, target_lang, exact_match_gl, exact_match_exc);
     }
+  });
+});
+
+function checkResultCount() {
+  return new Promise((resolve, reject) => {
+    if ($("#result-count-glossary").val() > 100 || $("#result-count-excerpts").val() > 100) {
+      $("#warning-banner").css("display", "flex");
+
+      $("#continue-btn").on("click", () => {
+        $("#warning-banner").css("display", "none");
+        resolve();
+      });
+
+      $("#cancel-btn").on("click", () => {
+        $("#warning-banner").css("display", "none");
+        reject();
+      });
+    } else {
+      resolve();
+    }
+  });
+}
+
+function checkResultLength(term) {
+  if ((term.length < 3) && ($("#result-count-glossary").val() > 100 || $("#result-count-excerpts").val() > 100)) {
+    $("#error-banner").css("display", "flex");
+    $("#error-banner .error-msg").html("Maximum results search is disabled for terms which length is inferior to 3.");
+  } else {
+    return true;
+  }
+}
+
+function request(term, target_lang, exact_match_gl, exact_match_exc) {
+  if (!checkResultLength(term)) {
+    return false;
+  }
+
+  checkResultCount().then(() => {
+    $("#search-btn").prop("disabled", true);
+    $("#warning-banner").hide();
+    $("#loader").css("display", "inline-block");
+    $.ajax({
+      headers: { 
+        "Accept": "application/json",
+        "Content-Type": "application/json" 
+      },
+      url: "/",
+      type: "POST",
+      dataType: "json",
+      data: JSON.stringify({
+        term: term,
+        target_lang: target_lang,
+        exact_match_gl: exact_match_gl,
+        exact_match_exc: exact_match_exc
+      }),
+      success: function(response) {
+        urlParams.set("q", term);
+        urlParams.set("l", target_lang);
+        const newUrl = window.location.pathname + "?" + urlParams.toString();
+        window.history.pushState({ path: newUrl }, "", newUrl);
+        get_glossary(response, Object.values(response).slice(-1)[0].length, $("#result-count-glossary").val())
+        get_excerpts(response, Object.values(response)[0].length, $("#result-count-excerpts").val())
+        $("#results").css("display", "block");
+        $("#error-banner").css("display", "none");
+        $("#loader").css("display", "none");
+        document.title += ` :: ${term}`
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        $("#error-banner").css("display", "flex");
+        $("#error-banner .error-msg").html(textStatus+": "+errorThrown);
+        $("#loader").css("display", "none");
+        // fix bug that prevents new search
+      },
+      complete: function() {
+        isLoading = false;
+        $("#search-btn").prop("disabled", false);
+        $("#mark-results-container").css("display", "block");
+      }
+    });
+  }).catch(() => {
+    location.reload(); // not the best way of handling this... but fixes the bug that prevents from doing a new search after clicking on "Cancel"
   });
 }
 
@@ -54,8 +147,8 @@ function get_glossary(response, length, nb) {
     for (var i = 0; i < nb; i++) {
       glossary_results += `
         <tr>
-          <td>${response.gl_source[i]}<br>(${response.gl_source_pos[i]})</td>
-          <td>${response.gl_translation[i]}<br>(${response.gl_target_pos[i]})</td>
+          <td data-attribute="source">${response.gl_source[i]}<br><i>(${response.gl_source_pos[i]})</i></td>
+          <td>${response.gl_translation[i]}<br><i>(${response.gl_target_pos[i]})</i></td>
           <td>${response.gl_source_def[i]}</td>
         </tr>
       `;
@@ -78,7 +171,7 @@ function get_excerpts(response, length, nb) {
     for (var i = 0; i < nb; i++) {
       excerpts_results += `
         <tr>
-          <td>${response.exc_source[i]}</td>
+          <td data-attribute="source">${response.exc_source[i]}</td>
           <td>${response.exc_translation[i]}</td>
           <td>${response.exc_cat[i]}</td>
           <td>${response.exc_platform[i]}</td>

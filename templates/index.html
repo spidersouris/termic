@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Terminology Database</title>
+    <title>termic</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32x32.png">
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" crossorigin="anonymous"></script>
     <script src="{{url_for('static', filename='index.js')}}"></script>
   </head>
   <body>
-    <h1>Terminology Database</h1>
+    <h1>
+      <img src="static/images/logo.png" width="100px" height="100px">
+      <span style="display: inline-block; vertical-align: middle;">termic</span>
+    </h1>
+
+    <div id="error-banner">
+      <span class="fa fa-exclamation-circle"></span>
+      <p>An error occurred. Please try again.<br>If the issue persists, please <a href="https://github.com/Spidersouris/termic/issues" target="_blank">open an issue on GitHub</a> and include the error message below:<br>
+      <b class="error-msg"></b>
+      </p>
+    </div>
+
     <form id="search-form" method="post">
       <label for="term">Search Term:</label>
       <input type="text" id="term" name="term" required>
@@ -24,19 +38,35 @@
           <option value="25">25</option>
           <option value="50">50</option>
           <option value="100">100</option>
-          <option value="999999">max.</option>
+          <option value="999999">max. (Use with caution!)</option>
         </select>
+        <input type="checkbox" id="exact-match-excerpts" name="exact-match-excerpts" value=0>
+        <label for="exact-match-excerpts">Exact match (Translations Excerpts)</label>
         <br>
         <label for="result-count-glossary">Results to show (Glossary):</label>
         <select id="result-count-glossary">
           <option value="25">25</option>
           <option value="50">50</option>
           <option value="100">100</option>
-          <option value="999999">max.</option>
+          <option value="999999">max. (Use with caution!)</option>
         </select>
+        <input type="checkbox" id="exact-match-glossary" name="exact-match-glossary" value=0>
+        <label for="exact-match-glossary">Exact match (Glossary)</label>
       </div>
-      <button id="search-btn" type="submit" onclick="search()">Search</button>
+      <div id="mark-results-container">
+        <input type="checkbox" id="mark-results" name="mark-results" value=0>
+        <label for="mark-results">Mark results</label>
+      </div>
+      <div id="warning-banner">
+        <span class="fa fa-exclamation-circle"></span>
+        <p>Warning: You selected the maximum number of results to be shown.<br>Showing all the results is a performance-sensitive operation that can generate much server load.<br>Additionally, depending on the number of results, your browser may crash. Are you sure you want to continue?</p>
+        <button id="continue-btn">Continue</button>
+        <button id="cancel-btn">Cancel</button>
+      </div>
+      <button id="search-btn" type="submit">Search</button>
     </form>    
+
+    <div id="loader"></div>
 
     <div id="results">
       <h1 id="glossary_title">Glossary</h1>
