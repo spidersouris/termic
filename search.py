@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify, render_template, abort
+from flask import Flask, request, jsonify, render_template
 import pandas as pd
+#import memory_profiler as mp
 
 app = Flask(__name__)
 
+#@mp.profile
 def load_dataframes(target_lang):
         df_gl = pd.read_feather(f"data/feather/glossary_{target_lang}.ft")
         df_exc = pd.read_feather(f"data/feather/merged_exc_{target_lang}.ft")
@@ -13,6 +15,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/", methods=["POST"])
+#@mp.profile
 def main():
     term = request.json["term"]
     target_lang = request.json["target_lang"]
@@ -20,25 +23,25 @@ def main():
     exact_match_exc = request.json["exact_match_exc"]
 
     try:
-        print(target_lang)
+        print(f"Query: {term}. Target lang: {target_lang}")
         df_gl, df_exc = load_dataframes(target_lang)
     except Exception as e:
         print(e)
         raise
 
     if exact_match_gl == 1:
-        print("Performing search in glossary… Exact match: true")
+        print(f"Searching for '{term}' in glossary… Exact match: true")
         results_gl = df_gl[df_gl["term_en-US"] == term]
     else:
-        print("Performing search in glossary… Exact match: false")
+        print(f"Searching for '{term}' in glossary… Exact match: false")
         results_gl = df_gl[df_gl["term_en-US"].str.contains(term, case=False, na=False)]
     
     if exact_match_exc == 1:
         results_exc = df_exc[df_exc["Source Term"] == term]
-        print("Performing search in translations excerpts… Exact match: true")
+        print(f"Searching for '{term}' in translations excerpts… Exact match: true")
     else:
         results_exc = df_exc[df_exc["Source Term"].str.contains(term, case=False, na=False)]
-        print("Performing search in translations excerpts… Exact match: false")
+        print(f"Searching for '{term}' in translations excerpts… Exact match: false")
 
     if len(results_gl) > 0:
         gl_source = results_gl["term_en-US"].tolist()

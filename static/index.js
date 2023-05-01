@@ -21,6 +21,10 @@ $(function() {
     mark();
   });
 
+  $("#close-error").on("click", function() {
+    $("#error-banner").css("display", "none");
+  });
+
   function mark() {
     if ($("#mark-results").is(":checked")) {
       var keyword = $("#term").val();
@@ -51,6 +55,8 @@ $(function() {
       isLoading = true;
       var term = $("#term").val();
       var target_lang = $("#target-lang").val();
+      $("#warning-banner").css("display", "none");
+      $("#error-banner").css("display", "none");
       request(term, target_lang, exact_match_gl, exact_match_exc);
     }
   });
@@ -58,7 +64,7 @@ $(function() {
 
 function checkResultCount() {
   return new Promise((resolve, reject) => {
-    if ($("#result-count-glossary").val() > 100 || $("#result-count-excerpts").val() > 100) {
+    if ($("#result-count-glossary").val() > 100 || $("#result-count-excerpts").val() > 100 && $("#term").val().length > 2) {
       $("#warning-banner").css("display", "flex");
 
       $("#continue-btn").on("click", () => {
@@ -80,6 +86,8 @@ function checkResultLength(term) {
   if ((term.length < 3) && ($("#result-count-glossary").val() > 100 || $("#result-count-excerpts").val() > 100)) {
     $("#error-banner").css("display", "flex");
     $("#error-banner .error-msg").html("Maximum results search is disabled for terms which length is inferior to 3.");
+    isLoading = false;
+    return false;
   } else {
     return true;
   }
@@ -92,7 +100,6 @@ function request(term, target_lang, exact_match_gl, exact_match_exc) {
 
   checkResultCount().then(() => {
     $("#search-btn").prop("disabled", true);
-    $("#warning-banner").hide();
     $("#loader").css("display", "inline-block");
     $.ajax({
       headers: { 
@@ -135,6 +142,8 @@ function request(term, target_lang, exact_match_gl, exact_match_exc) {
   }).catch(() => {
     location.reload(); // not the best way of handling this... but fixes the bug that prevents from doing a new search after clicking on "Cancel"
   });
+
+  return true;
 }
 
 function get_glossary(response, length, nb) {

@@ -10,67 +10,74 @@
     <script src="{{url_for('static', filename='index.js')}}"></script>
   </head>
   <body>
-    <h1>
-      <img src="static/images/logo.png" width="100px" height="100px">
-      <span style="display: inline-block; vertical-align: middle;">termic</span>
-    </h1>
 
     <div id="error-banner">
-      <span class="fa fa-exclamation-circle"></span>
+      <span id="close-error" class="fa fa-close"></span>
       <p>An error occurred. Please try again.<br>If the issue persists, please <a href="https://github.com/Spidersouris/termic/issues" target="_blank">open an issue on GitHub</a> and include the error message below:<br>
       <b class="error-msg"></b>
       </p>
     </div>
 
-    <form id="search-form" method="post">
-      <label for="term">Search Term:</label>
-      <input type="text" id="term" name="term" required>
-      <label for="target-lang">Target Language:</label>
-      <select id="target-lang" name="target-lang">
-        <option value="fr-FR">French</option>
-        <option value="nl-NL">Dutch</option>
-        <option value="de-DE" disabled>German (coming soon)</option>
-        <option value="es-ES" disabled>Spanish (coming soon)</option>
-      </select>
-      <div class="result-filter">
-        <label for="result-count-excerpts">Results to show (Translations Excerpts):</label>
-        <select id="result-count-excerpts">
-          <option value="25">25</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-          <option value="999999">max. (Use with caution!)</option>
+    <h1>
+      <img src="static/images/logo.png" width="100px" height="100px">
+      <span style="display: inline-block; vertical-align: middle;">termic</span>
+    </h1>
+
+    <div id="search-form-container">
+      <form id="search-form" method="post">
+        <div id="search-bar">
+          <label for="term">Search Term:</label>
+          <input type="text" id="term" name="term" required>
+        </div>
+        <label for="target-lang">Target Language:</label>
+        <select id="target-lang" name="target-lang">
+          <option value="fr-FR">French</option>
+          <option value="nl-NL">Dutch</option>
+          <option value="de-DE" disabled>German (coming soon)</option>
+          <option value="es-ES" disabled>Spanish (coming soon)</option>
         </select>
-        <input type="checkbox" id="exact-match-excerpts" name="exact-match-excerpts" value=0>
-        <label for="exact-match-excerpts">Exact match (Translations Excerpts)</label>
-        <br>
-        <label for="result-count-glossary">Results to show (Glossary):</label>
-        <select id="result-count-glossary">
-          <option value="25">25</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-          <option value="999999">max. (Use with caution!)</option>
-        </select>
-        <input type="checkbox" id="exact-match-glossary" name="exact-match-glossary" value=0>
-        <label for="exact-match-glossary">Exact match (Glossary)</label>
-      </div>
-      <div id="mark-results-container">
-        <input type="checkbox" id="mark-results" name="mark-results" value=0>
-        <label for="mark-results">Mark results</label>
-      </div>
-      <div id="warning-banner">
-        <span class="fa fa-exclamation-circle"></span>
-        <p>Warning: You selected the maximum number of results to be shown.<br>Showing all the results is a performance-sensitive operation that can generate much server load.<br>Additionally, depending on the number of results, your browser may crash. Are you sure you want to continue?</p>
-        <button id="continue-btn">Continue</button>
-        <button id="cancel-btn">Cancel</button>
-      </div>
-      <button id="search-btn" type="submit">Search</button>
-    </form>    
+        <div class="result-filter">
+          <div class="result-filter-excerpts">
+            <label for="result-count-excerpts">Results to show (Translations Excerpts):</label>
+            <select id="result-count-excerpts">
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="999999">max. (Use with caution!)</option>
+            </select>
+            <input type="checkbox" id="exact-match-excerpts" name="exact-match-excerpts" value=0>
+            <label for="exact-match-excerpts">Exact match</label>
+          </div>
+          <div class="result-filter-glossary">
+            <label for="result-count-glossary">Results to show (Glossary):</label>
+            <select id="result-count-glossary">
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="999999">max. (Use with caution!)</option>
+            </select>
+            <input type="checkbox" id="exact-match-glossary" name="exact-match-glossary" value=0>
+            <label for="exact-match-glossary">Exact match</label>
+          </div>
+        </div>
+        <div id="mark-results-container">
+          <input type="checkbox" id="mark-results" name="mark-results" value=0>
+          <label for="mark-results">Mark results</label>
+        </div>
+        <div id="warning-banner">
+          <span class="fa fa-exclamation-circle"></span>
+          <p>Warning: You selected the maximum number of results to be shown.<br>Showing all the results is a performance-sensitive operation that can generate much server load.<br>Additionally, depending on the number of results, your browser may crash. Are you sure you want to continue?</p>
+          <button id="continue-btn">Continue</button>
+          <button id="cancel-btn">Cancel</button>
+        </div>
+        <button id="search-btn" type="submit"><span id="fire">🔥</span> Search</button>
+      </form>
+    </div>
 
     <div id="loader"></div>
 
     <div id="results">
-      <h1 id="glossary_title">Glossary</h1>
-      <h3 id="glossary_nb"></h3>
+      <h2 id="glossary_title">Glossary <span id="glossary_nb"></span></h2>
       <div id="glossary">
         <table cellspacing="0" cellpadding="0">
           <thead>
@@ -83,8 +90,8 @@
           <tbody id="glossary_results"></tbody>
         </table>
       </div>
-      <h1 id="excerpts_title">Translations Excerpts</h1>
-      <h3 id="excerpts_nb"></h3>
+
+      <h2 id="excerpts_title">Translations Excerpts <span id="excerpts_nb"></span></h1>
       <div id="excerpts">
         <table cellspacing="0" cellpadding="0">
           <thead>
@@ -101,6 +108,8 @@
         </table>
       </div>
     </div>
+
+	<footer>Enzo Doyen © <script>document.write(new Date().getFullYear())</script>. Contribute on <a href="https://github.com/Spidersouris/termic" target="_blank">GitHub</a>!</footer>
 
   </body>
 </html>
