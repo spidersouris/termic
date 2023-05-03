@@ -65,6 +65,8 @@ def main():
     
     del [[df_gl, df_exc]]
     gc.collect()
+    df_gl = None
+    df_exc = None
     
     # JSON Response
     response = {"gl_source": gl_source, "gl_translation": gl_translation, "gl_source_pos": gl_source_pos, "gl_target_pos": gl_target_pos, "gl_source_def": gl_source_def,
