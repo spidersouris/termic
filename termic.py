@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
+import gc
 #import memory_profiler as mp
 
 app = Flask(__name__)
@@ -61,6 +62,9 @@ def main():
         exc_version = results_exc["Version"].fillna("unknown").tolist()
     else:
         exc_source, exc_translation, exc_cat, exc_platform, exc_product, exc_version = [''] * 6
+    
+    del [[df_gl, df_exc]]
+    gc.collect()
     
     # JSON Response
     response = {"gl_source": gl_source, "gl_translation": gl_translation, "gl_source_pos": gl_source_pos, "gl_target_pos": gl_target_pos, "gl_source_def": gl_source_def,
