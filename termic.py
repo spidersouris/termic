@@ -5,8 +5,11 @@ import gc
 
 app = Flask(__name__)
 
-df_gl = pd.read_feather(f"data/feather/glossary_fr-FR.ft")
-df_exc = pd.read_feather(f"data/feather/merged_exc_fr-FR.ft")
+#@mp.profile
+def load_dataframes(target_lang):
+        df_gl = pd.read_feather(f"data/feather/glossary_{target_lang}.ft")
+        df_exc = pd.read_feather(f"data/feather/merged_exc_{target_lang}.ft")
+        return df_gl, df_exc
 
 @app.route("/")
 def index():
@@ -19,6 +22,13 @@ def main():
     target_lang = request.json["target_lang"]
     exact_match_gl = request.json["exact_match_gl"]
     exact_match_exc = request.json["exact_match_exc"]
+
+    try:
+        print(f"Query: {term}. Target lang: {target_lang}")
+        df_gl, df_exc = load_dataframes(target_lang)
+    except Exception as e:
+        print(e)
+        raise
 
     if exact_match_gl == 1:
         print(f"Searching for '{term}' in glossary… Exact match: true")
