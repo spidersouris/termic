@@ -1,15 +1,18 @@
 from flask import Flask, request, jsonify, render_template
-import pandas as pd
-import gc
+import psycopg2
+from config import conn_string
 #import memory_profiler as mp
 
 app = Flask(__name__)
 
-#@mp.profile
-def load_dataframes(target_lang):
-        df_gl = pd.read_feather(f"data/feather/glossary_{target_lang}.ft")
-        df_exc = pd.read_feather(f"data/feather/merged_exc_{target_lang}.ft")
-        return df_gl, df_exc
+def db_connect():
+    try:
+        conn = psycopg2.connect(conn_string)
+        print("Connection with database established")
+        return conn
+    except Exception as e:
+        print(e)
+        raise
 
 @app.route("/")
 def index():
@@ -18,56 +21,60 @@ def index():
 @app.route("/", methods=["POST"])
 #@mp.profile
 def main():
+    conn = db_connect()
+    cur = conn.cursor()
+
     term = request.json["term"]
     target_lang = request.json["target_lang"]
     exact_match_gl = request.json["exact_match_gl"]
     exact_match_exc = request.json["exact_match_exc"]
 
-    try:
-        print(f"Query: {term}. Target lang: {target_lang}")
-        df_gl, df_exc = load_dataframes(target_lang)
-    except Exception as e:
-        print(e)
-        raise
+    print(f"Query: {term}. Target lang: {target_lang}")
 
     if exact_match_gl == 1:
         print(f"Searching for '{term}' in glossary… Exact match: true")
-        results_gl = df_gl[df_gl["term_en-US"] == term]
+        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary WHERE term_en_US ILIKE '{term}';")
     else:
         print(f"Searching for '{term}' in glossary… Exact match: false")
-        results_gl = df_gl[df_gl["term_en-US"].str.contains(term, case=False, na=False)]
-    
-    if exact_match_exc == 1:
-        results_exc = df_exc[df_exc["Source Term"] == term]
-        print(f"Searching for '{term}' in translations excerpts… Exact match: true")
-    else:
-        results_exc = df_exc[df_exc["Source Term"].str.contains(term, case=False, na=False)]
-        print(f"Searching for '{term}' in translations excerpts… Exact match: false")
+        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary WHERE term_en_US ILIKE '%{term}%';")
+
+    results_gl = cur.fetchall()
+
+    results_gl = list(zip(*results_gl))
 
     if len(results_gl) > 0:
-        gl_source = results_gl["term_en-US"].tolist()
-        gl_translation = results_gl["term_" + target_lang].tolist()
-        gl_source_pos = results_gl["pos_en-US"].str.split(n=1).str[1].str.lower().tolist()
-        gl_target_pos = results_gl["pos_" + target_lang].str.split(n=1).str[1].str.lower().tolist()
-        gl_source_def = [s[:1].lower() + s[1:] for s in results_gl["def_en-US"].str.split(n=1).str[1].tolist()]
+        gl_source = results_gl[0]
+        gl_translation = results_gl[1]
+        gl_source_pos = results_gl[2]
+        gl_target_pos = results_gl[3]
+        gl_source_def = results_gl[4]
     else:
         gl_source, gl_translation, gl_source_pos, gl_target_pos, gl_source_def = [''] * 5
 
+    if exact_match_exc == 1:
+        print(f"Searching for '{term}' in translations excerpts… Exact match: true")
+        cur.execute(f"SELECT source_term, translation, string_cat, platform, product, version FROM excerpts WHERE source_term ILIKE '{term}';")
+    else:
+        print(f"Searching for '{term}' in translations excerpts… Exact match: false")
+        cur.execute(f"SELECT source_term, translation, string_cat, platform, product, version FROM excerpts WHERE source_term ILIKE '%{term}%';")
+
+    results_exc = cur.fetchall()
+
+    results_exc = list(zip(*results_exc))
+
     if len(results_exc) > 0:
-        exc_source = results_exc["Source Term"].tolist()
-        exc_translation = results_exc["Translation"].tolist()
-        exc_cat = results_exc["String Category"].fillna("unknown").tolist()
-        exc_platform = results_exc["Platform"].fillna("unknown").tolist()
-        exc_product = results_exc["Product"].fillna("unknown").tolist()
-        exc_version = results_exc["Version"].fillna("unknown").tolist()
+        exc_source = results_exc[0]
+        exc_translation = results_exc[1]
+        exc_cat = results_exc[2]
+        exc_platform = results_exc[3]
+        exc_product = results_exc[4]
+        exc_version = results_exc[5]
     else:
         exc_source, exc_translation, exc_cat, exc_platform, exc_product, exc_version = [''] * 6
-    
-    del [[df_gl, df_exc]]
-    gc.collect()
-    df_gl = None
-    df_exc = None
-    
+
+    cur.close()
+    conn.close()
+
     # JSON Response
     response = {"gl_source": gl_source, "gl_translation": gl_translation, "gl_source_pos": gl_source_pos, "gl_target_pos": gl_target_pos, "gl_source_def": gl_source_def,
     "exc_source": exc_source, "exc_translation": exc_translation, "exc_cat": exc_cat, "exc_platform": exc_platform, "exc_product": exc_product, "exc_version": exc_version}
