@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify, render_template
 import psycopg2
-from config import conn_string
+import os
 #import memory_profiler as mp
 
 app = Flask(__name__)
 
 def db_connect():
     try:
-        conn = psycopg2.connect(conn_string)
+        conn = psycopg2.connect(os.environ["CONN_STRING"])
         print("Connection with database established")
         return conn
     except Exception as e:
