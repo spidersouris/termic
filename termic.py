@@ -33,10 +33,10 @@ def main():
 
     if exact_match_gl == 1:
         print(f"Searching for '{term}' in glossary… Exact match: true")
-        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang} WHERE term_en_US ILIKE '{term}';")
+        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang} WHERE term_en_US ILIKE %s;", (term,))
     else:
         print(f"Searching for '{term}' in glossary… Exact match: false")
-        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang} WHERE term_en_US ILIKE '%{term}%';")
+        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang} WHERE term_en_US ILIKE %s;", ('%' + term + '%',))
 
     results_gl = cur.fetchall()
 
@@ -53,10 +53,10 @@ def main():
 
     if exact_match_exc == 1:
         print(f"Searching for '{term}' in translations excerpts… Exact match: true")
-        cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE '{term}';")
+        cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE %s;", (term,))
     else:
         print(f"Searching for '{term}' in translations excerpts… Exact match: false")
-        cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE '%{term}%';")
+        cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE %s;", ('%' + term + '%',))
 
     results_exc = cur.fetchall()
 
