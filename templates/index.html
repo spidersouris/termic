@@ -8,20 +8,23 @@
     <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" crossorigin="anonymous"></script>
     <script src="{{url_for('static', filename='index.js')}}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
 
     <div id="error-banner">
-      <span id="close-error" class="fa fa-close"></span>
+      <i id="close-error" class="fa fa-close"></i>
       <p>An error occurred. Please try again.<br>If the issue persists, please <a href="https://github.com/Spidersouris/termic/issues" target="_blank">open an issue on GitHub</a> and include the error message below:<br>
       <b class="error-msg"></b>
       </p>
     </div>
 
-    <h1>
-      <img src="static/images/logo.png" width="100px" height="100px">
-      <span style="display: inline-block; vertical-align: middle;">termic</span>
-    </h1>
+    <header>
+      <h1>
+        <img src="static/images/logo.png" width="100px" height="100px">
+        <span style="display: inline-block; vertical-align: middle;">termic</span>
+      </h1>
+    </header>
 
     <div id="search-form-container">
       <form id="search-form" method="post">
@@ -29,40 +32,61 @@
           <label for="term">Search Term:</label>
           <input type="text" id="term" name="term" required>
         </div>
-        <label for="target-lang">Target Language:</label>
-        <select id="target-lang" name="target-lang">
-          <option value="fr_fr">French</option>
-          <option value="nl_nl" disabled>Dutch (disabled)</option>
-          <option value="de-DE" disabled>German (coming soon)</option>
-          <option value="es-ES" disabled>Spanish (coming soon)</option>
-        </select>
+
+      <div id="target-lang-container">
+          <label for="target-lang">Target Language:</label>
+          <select id="target-lang" name="target-lang">
+            <option value="cs_cz">Czech</option>
+            <option value="da_dk">Danish</option>
+            <option value="nl_nl">Dutch</option>
+            <option value="fr_fr">French</option>
+            <option value="de_de">German</option>
+            <option value="el_gr">Greek</option>
+            <option value="ro_ro">Romanian</option>
+            <option value="es_latam">Spanish (Latin America)</option>
+            <option value="es_es">Spanish (Spain)</option>
+            <option value="uk_ua">Ukrainian</option>
+            <option value="vi_vn">Vietnamese</option>
+          </select>
+        </div>
+
         <div class="result-filter">
-          <div class="result-filter-excerpts">
-            <label for="result-count-excerpts">Results to show (Translations Excerpts):</label>
-            <select id="result-count-excerpts">
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <!-- Disabled for production -->
-              <!-- <option value="999999">max. (Use with caution!)</option> -->
-            </select>
-            <input type="checkbox" id="exact-match-excerpts" name="exact-match-excerpts" value=0>
-            <label for="exact-match-excerpts">Exact match</label>
-          </div>
           <div class="result-filter-glossary">
-            <label for="result-count-glossary">Results to show (Glossary):</label>
-            <select id="result-count-glossary">
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <!-- Disabled for production -->
-              <!-- <option value="999999">max. (Use with caution!)</option> -->
-            </select>
-            <input type="checkbox" id="exact-match-glossary" name="exact-match-glossary" value=0>
-            <label for="exact-match-glossary">Exact match</label>
+            <h3>Glossary</h3>
+            <div class="result-count">
+              <label for="result-count-glossary">Results to show:</label>
+              <select id="result-count-glossary">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <!-- Disabled for production -->
+                <!-- <option value="999999">max. (Use with caution!)</option> -->
+              </select>
+            </div>
+            <div class="exact-match-container">
+              <input type="checkbox" id="exact-match-glossary" name="exact-match-glossary" checked value=1>
+              <label for="exact-match-glossary">Exact match</label>
+            </div>
+          </div>
+          <div class="result-filter-excerpts">
+            <h3>Excerpts</h3>
+            <div class="result-count">
+              <label for="result-count-excerpts">Results to show:</label>
+              <select id="result-count-excerpts">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <!-- Disabled for production -->
+                <!-- <option value="999999">max. (Use with caution!)</option> -->
+              </select>
+            </div>
+            <div class="exact-match-container">
+              <input type="checkbox" id="exact-match-excerpts" name="exact-match-excerpts" checked value=1>
+              <label for="exact-match-excerpts">Exact match</label>
+            </div>
           </div>
         </div>
-        <div id="mark-results-container">
+        <div class="mark-results-container">
           <input type="checkbox" id="mark-results" name="mark-results" value=0>
           <label for="mark-results">Mark results</label>
         </div>
@@ -72,46 +96,48 @@
           <button id="continue-btn">Continue</button>
           <button id="cancel-btn">Cancel</button>
         </div>
-        <button id="search-btn" type="submit"><span id="fire">🔥</span> Search</button>
+        
+        <button id="search-btn" type="submit"><i class="fa-solid fa-fire-flame-curved fa-xl" style="margin-right: 5px;"></i> Search</button>
+
       </form>
     </div>
 
-    <div id="loader"></div>
+      <div id="loader"></div>
 
-    <div id="results">
-      <h2 id="glossary_title">Glossary <span id="glossary_nb"></span></h2>
-      <div id="glossary">
-        <table cellspacing="0" cellpadding="0">
-          <thead>
-            <tr>
-              <th>English</th>
-              <th>Translation</th>
-              <th>English Definition</th>
-            </tr>
-          </thead>
-          <tbody id="glossary_results"></tbody>
-        </table>
-      </div>
+      <div id="results">
+        <h2 id="glossary_title">Glossary <span id="glossary_nb"></span></h2>
+        <div id="glossary">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+              <tr>
+                <th>English</th>
+                <th>Translation</th>
+                <th>English Definition</th>
+              </tr>
+            </thead>
+            <tbody id="glossary_results"></tbody>
+          </table>
+        </div>
 
-      <h2 id="excerpts_title">Translations Excerpts <span id="excerpts_nb"></span></h1>
-      <div id="excerpts">
-        <table cellspacing="0" cellpadding="0">
-          <thead>
-            <tr>
-              <th>English</th>
-              <th>Translation</th>
-              <th>String Category</th>
-              <th>Platform</th>
-              <th>Product</th>
-              <th>Version</th>
-            </tr>
-          </thead>
-          <tbody id="excerpts_results"></tbody>
-        </table>
+        <h2 id="excerpts_title">Translations Excerpts <span id="excerpts_nb"></span></h2>
+        <div id="excerpts">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+              <tr>
+                <th>English</th>
+                <th>Translation</th>
+                <th>String Category</th>
+                <th>Platform</th>
+                <th>Product</th>
+              </tr>
+            </thead>
+            <tbody id="excerpts_results"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-	<footer>Enzo Doyen © <script>document.write(new Date().getFullYear())</script>. Contribute on <a href="https://github.com/Spidersouris/termic" target="_blank">GitHub</a>!</footer>
+	<footer><p>Enzo Doyen © <script>document.write(new Date().getFullYear())</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a></p></footer>
 
   </body>
 </html>

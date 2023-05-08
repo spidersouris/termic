@@ -120,12 +120,13 @@ function request(term, target_lang, exact_match_gl, exact_match_exc) {
         urlParams.set("l", target_lang);
         const newUrl = window.location.pathname + "?" + urlParams.toString();
         window.history.pushState({ path: newUrl }, "", newUrl);
+        //console.log(Object.values(response))
         get_glossary(response, Object.values(response).slice(-1)[0].length, $("#result-count-glossary").val())
         get_excerpts(response, Object.values(response)[0].length, $("#result-count-excerpts").val())
         $("#results").css("display", "block");
         $("#error-banner").css("display", "none");
         $("#loader").css("display", "none");
-        document.title += ` :: ${term}`
+        document.title = `termic :: ${term} (${target_lang.slice(0,2)})`
       },
       error: function(jqXHR, textStatus, errorThrown) {
         $("#error-banner").css("display", "flex");
@@ -136,7 +137,6 @@ function request(term, target_lang, exact_match_gl, exact_match_exc) {
       complete: function() {
         isLoading = false;
         $("#search-btn").prop("disabled", false);
-        $("#mark-results-container").css("display", "block");
       }
     });
   }).catch(() => {
@@ -156,14 +156,15 @@ function get_glossary(response, length, nb) {
     for (var i = 0; i < nb; i++) {
       glossary_results += `
         <tr>
-          <td data-attribute="source">${response.gl_source[i]}<br><i>(${response.gl_source_pos[i]})</i></td>
-          <td>${response.gl_translation[i]}<br><i>(${response.gl_target_pos[i]})</i></td>
-          <td>${response.gl_source_def[i]}</td>
+          <td data-attribute="source">${response.gl_source[i]}<br><i>(${response.gl_source_pos[i].substring(response.gl_source_pos[i].indexOf(":") + 1).trim().toLowerCase()})</i></td>
+          <td>${response.gl_translation[i]}<br><i>(${response.gl_target_pos[i].substring(response.gl_target_pos[i].indexOf(":") + 1).trim().toLowerCase()})</i></td>
+          <td>${response.gl_source_def[i].substring(response.gl_source_def[i].indexOf(":") + 1).trim().toLowerCase()}</td>
         </tr>
       `;
   }
     $("#glossary_results").html(glossary_results);
     $("#glossary_nb").html(` (${nb} results)`);
+    $(".mark-results-container").css("display", "inline-block");
   } else {
     $("#glossary_results").html("<p>No results found in the glossary.</p>");
     $("#glossary_nb").html(` (0 results)`);
@@ -185,12 +186,12 @@ function get_excerpts(response, length, nb) {
           <td>${response.exc_cat[i]}</td>
           <td>${response.exc_platform[i]}</td>
           <td>${response.exc_product[i]}</td>
-          <td>${response.exc_version[i]}</td>
         </tr>
       `;
   }
     $("#excerpts_results").html(excerpts_results);
     $("#excerpts_nb").html(` (${nb} results)`);
+    $(".mark-results-container").css("display", "inline-block");
   } else {
     $("#excerpts_results").html("<p>No results found in the translations excerpts.</p>");
     $("#excerpts_nb").html(` (0 results)`);

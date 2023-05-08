@@ -33,10 +33,10 @@ def main():
 
     if exact_match_gl == 1:
         print(f"Searching for '{term}' in glossary… Exact match: true")
-        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary WHERE term_en_US ILIKE '{term}';")
+        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang} WHERE term_en_US ILIKE '{term}';")
     else:
         print(f"Searching for '{term}' in glossary… Exact match: false")
-        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary WHERE term_en_US ILIKE '%{term}%';")
+        cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang} WHERE term_en_US ILIKE '%{term}%';")
 
     results_gl = cur.fetchall()
 
@@ -53,10 +53,10 @@ def main():
 
     if exact_match_exc == 1:
         print(f"Searching for '{term}' in translations excerpts… Exact match: true")
-        cur.execute(f"SELECT source_term, translation, string_cat, platform, product, version FROM excerpts WHERE source_term ILIKE '{term}';")
+        cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE '{term}';")
     else:
         print(f"Searching for '{term}' in translations excerpts… Exact match: false")
-        cur.execute(f"SELECT source_term, translation, string_cat, platform, product, version FROM excerpts WHERE source_term ILIKE '%{term}%';")
+        cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE '%{term}%';")
 
     results_exc = cur.fetchall()
 
@@ -68,17 +68,16 @@ def main():
         exc_cat = results_exc[2]
         exc_platform = results_exc[3]
         exc_product = results_exc[4]
-        exc_version = results_exc[5]
     else:
-        exc_source, exc_translation, exc_cat, exc_platform, exc_product, exc_version = [''] * 6
+        exc_source, exc_translation, exc_cat, exc_platform, exc_product = [''] * 5
 
     cur.close()
     conn.close()
 
     # JSON Response
     response = {"gl_source": gl_source, "gl_translation": gl_translation, "gl_source_pos": gl_source_pos, "gl_target_pos": gl_target_pos, "gl_source_def": gl_source_def,
-    "exc_source": exc_source, "exc_translation": exc_translation, "exc_cat": exc_cat, "exc_platform": exc_platform, "exc_product": exc_product, "exc_version": exc_version}
+    "exc_source": exc_source, "exc_translation": exc_translation, "exc_cat": exc_cat, "exc_platform": exc_platform, "exc_product": exc_product}
     return jsonify(response)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, port=8800)
