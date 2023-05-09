@@ -1,4 +1,8 @@
-# termic
+<p align="center">
+  <img src="https://github.com/Spidersouris/termic/assets/7102007/5ad0be86-3316-42c0-a661-8c3723ea5648">
+</p>
+
+# termic: a replacement for Microsoft Terminology Search
 
 **A deployed version of termic is available on [https://termic.herokuapp.com/](https://termic.herokuapp.com/).**
 
