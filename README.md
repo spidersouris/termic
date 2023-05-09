@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/Spidersouris/termic/assets/7102007/5ad0be86-3316-42c0-a661-8c3723ea5648">
+  <img src="https://github.com/Spidersouris/termic/assets/7102007/9b186166-8fe2-475f-be4b-1bc718a56881">
 </p>
 
 # termic: a replacement for Microsoft Terminology Search
