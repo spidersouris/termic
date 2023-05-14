@@ -25,9 +25,9 @@ If you want to run termic locally with the data available on [the termic-data Gi
 
 You can change the connection string in [config/db_config.py](https://github.com/Spidersouris/termic/blob/main/config/db_config.py) to connect to your database.
 
-### Using local data
+### Using local data files
 
-Using local data with termic is far from being ideal. However, if it is your only option, here are a few tips:
+Using local data files with termic is far from being ideal. However, if it is your only option, here are a few tips:
 - You can use [pandas](https://pandas.pydata.org/) (or any other alternative Python data processing librairies) to process the .csv (translation memory) and .xlsx (glossary) files.
 - If you do use pandas, consider converting the .csv and .xlsx files to the [binary feather format](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_feather.html) to reduce disk usage and improve search time. To do so, you can use the [convert_to_feather.py script, that is available in the termic-data GitHub project](https://github.com/Spidersouris/termic-data/blob/main/scripts/convert_to_feather.py).
 - You can use [termic_pandas.py](https://gist.github.com/Spidersouris/e2509906b3a609f87947bc657bffabde) as a basis for your local deployment.
