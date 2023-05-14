@@ -15,7 +15,7 @@
     <div id="error-banner">
       <i id="close-error" class="fa fa-close"></i>
       <p>An error occurred. Please try again.<br>If the issue persists, please <a href="https://github.com/Spidersouris/termic/issues" target="_blank">open an issue on GitHub</a> and include the error message below:<br>
-      <b class="error-msg"></b>
+      <b id="error-msg"></b>
       </p>
     </div>
 
@@ -50,10 +50,10 @@
           </select>
         </div>
 
-        <div class="result-filter">
-          <div class="result-filter-glossary">
+        <div id="result-filter">
+          <div id="result-filter-glossary">
             <h3>Glossary</h3>
-            <div class="result-count">
+            <div id="result-count">
               <label for="result-count-glossary">Results to show:</label>
               <select id="result-count-glossary">
                 <option value="25">25</option>
@@ -63,16 +63,17 @@
                 <!-- <option value="999999">max. (Use with caution!)</option> -->
               </select>
             </div>
-            <div class="exact-match-container">
+            <div id="exact-match-container">
               <input type="checkbox" id="exact-match-glossary" name="exact-match-glossary" checked value=1>
               <label for="exact-match-glossary">Exact match</label>
             </div>
           </div>
-          <div class="result-filter-excerpts">
-            <h3>Translation Memory</h3>
-            <div class="result-count">
-              <label for="result-count-excerpts">Results to show:</label>
-              <select id="result-count-excerpts">
+          <div id="result-filter-tm">
+            <h3 class="full-text">Translation Memory</h3>
+            <h3 class="short-text">TM</h3>
+            <div id="result-count">
+              <label for="result-count-tm">Results to show:</label>
+              <select id="result-count-tm">
                 <option value="25">25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
@@ -80,13 +81,13 @@
                 <!-- <option value="999999">max. (Use with caution!)</option> -->
               </select>
             </div>
-            <div class="exact-match-container">
-              <input type="checkbox" id="exact-match-excerpts" name="exact-match-excerpts" checked value=1>
-              <label for="exact-match-excerpts">Exact match</label>
+            <div id="exact-match-container">
+              <input type="checkbox" id="exact-match-tm" name="exact-match-tm" checked value=1>
+              <label for="exact-match-tm">Exact match</label>
             </div>
           </div>
         </div>
-        <div class="mark-results-container">
+        <div id="mark-results-container">
           <input type="checkbox" id="mark-results" name="mark-results" value=0>
           <label for="mark-results">Mark results</label>
         </div>
@@ -120,8 +121,8 @@
           </table>
         </div>
 
-        <h2 id="excerpts-title">Translation Memory <span id="excerpts-nb"></span></h2>
-        <div id="excerpts">
+        <h2 id="tm-title">Translation Memory <span id="tm-nb"></span></h2>
+        <div id="tm">
           <table cellspacing="0" cellpadding="0">
             <thead>
               <tr>
@@ -132,7 +133,7 @@
                 <th>Product</th>
               </tr>
             </thead>
-            <tbody id="excerpts-results"></tbody>
+            <tbody id="tm-results"></tbody>
           </table>
         </div>
       </div>

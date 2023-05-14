@@ -7,9 +7,9 @@ $(function() {
 
   var targetLang = l || $("#target-lang").val();
   var exactMatchGl = parseInt($("#exact-match-glossary").val());
-  var exactMatchTm = parseInt($("#exact-match-excerpts").val());
+  var exactMatchTm = parseInt($("#exact-match-tm").val());
   var resultCountGl = parseInt($("#result-count-glossary").val());
-  var resultCountTm = parseInt($("#result-count-excerpts").val());
+  var resultCountTm = parseInt($("#result-count-tm").val());
 
   // Highlight results with mark.js
   function mark() {
@@ -31,7 +31,7 @@ $(function() {
   $("input[type='checkbox']").on("click", function() {
     if ($(this).attr("id") == "exact-match-glossary") {
       exactMatchGl = $(this).is(":checked") ? 1 : 0;
-    } else if ($(this).attr("id") == "exact-match-excerpts") {
+    } else if ($(this).attr("id") == "exact-match-tm") {
       exactMatchTm = $(this).is(":checked") ? 1 : 0;
     }
   });
@@ -40,8 +40,8 @@ $(function() {
   $("select").on("change", function() {
     if ($(this).attr("id") == "result-count-glossary") {
       resultCountGl = parseInt($("#result-count-glossary").val());
-    } else if ($(this).attr("id") == "result-count-excerpts") {
-      resultCountTm = parseInt($("#result-count-excerpts").val());
+    } else if ($(this).attr("id") == "result-count-tm") {
+      resultCountTm = parseInt($("#result-count-tm").val());
     }
   });
 
@@ -104,7 +104,7 @@ function checkResultCount(resultCountGl, resultCountTm) {
 function checkResultLength(term, resultCountGl, resultCountTm) {
   if ((term.length < 3) && (resultCountGl > 100 || resultCountTm > 100)) {
     $("#error-banner").css("display", "flex");
-    $("#error-banner .error-msg").html("Maximum results search is disabled for terms which length is inferior to 3.");
+    $("#error-banner #error-msg").html("Maximum results search is disabled for terms which length is inferior to 3.");
     isLoading = false;
     return false;
   } else {
@@ -159,7 +159,7 @@ function request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, e
     },
     error: function(jqXHR, textStatus, errorThrown) {
       $("#error-banner").css("display", "flex");
-      $("#error-banner .error-msg").html(textStatus+": "+errorThrown);
+      $("#error-banner #error-msg").html(textStatus+": "+errorThrown);
       $("#loader").css("display", "none");
     },
     complete: function() { // fix bug that prevents new search
@@ -207,11 +207,11 @@ function getExcerpts(response, length) {
         </tr>
       `;
   }
-    $("#excerpts-results").html(resultsTm);
-    $("#excerpts-nb").html(` (${length} results)`);
+    $("#tm-results").html(resultsTm);
+    $("#tm-nb").html(` (${length} results)`);
     $(".mark-results-container").css("display", "inline-block");
   } else {
-    $("#excerpts-results").html("<p>No results found in the translation memory.</p>");
-    $("#excerpts-nb").html(` (0 results)`);
+    $("#tm-results").html("<p>No results found in the translation memory.</p>");
+    $("#tm-nb").html(` (0 results)`);
   }
 };
