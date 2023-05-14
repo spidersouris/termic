@@ -4,7 +4,7 @@
 
 # termic: a replacement for Microsoft Terminology Search
 
-**A deployed and ready-to-use version of termic is available on [https://termic.herokuapp.com/](https://termic.herokuapp.com/).**
+**A deployed and ready-to-use version of termic is available on [https://termic.me](https://termic.me).**
 
 ## Data Collection
 
