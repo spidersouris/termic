@@ -8,7 +8,7 @@
 
 ## Data Collection
 
-The translaton memory was retrieved from [Visual Studio Dev Essentials](https://my.visualstudio.com/downloads?pid=6822) as .csv files. Those files were merged using a custom script, [merge_csv.py, that is available in the termic-data GitHub project](https://github.com/Spidersouris/termic-data/blob/main/scripts/merge_csv.py).
+The translation memory was retrieved from [Visual Studio Dev Essentials](https://my.visualstudio.com/downloads?pid=6822) as .csv files. Those files were merged using a custom script, [merge_csv.py, that is available in the termic-data GitHub project](https://github.com/Spidersouris/termic-data/blob/main/scripts/merge_csv.py).
 
 Glossaries were retrieved from [the Microsoft Terminology Collection](https://www.microsoft.com/en-us/language/Terminology). Those are .tbx files that were converted to .xlsx using [Xbench](https://www.xbench.net/).
 
