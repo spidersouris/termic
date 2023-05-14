@@ -22,7 +22,7 @@
     <header>
       <h1>
         <img src="static/images/logo.png" width="100px" height="100px">
-        <span style="display: inline-block; vertical-align: middle;">termic</span>
+        <span>termic</span>
       </h1>
     </header>
 
@@ -90,12 +90,13 @@
           <input type="checkbox" id="mark-results" name="mark-results" value=0>
           <label for="mark-results">Mark results</label>
         </div>
-        <div id="warning-banner">
+        <!-- Disabled for production -->
+        <!-- <div id="warning-banner">
           <span class="fa fa-exclamation-circle"></span>
           <p>Warning: You selected the maximum number of results to be shown.<br>Showing all the results is a performance-sensitive operation that can generate much server load.<br>Additionally, depending on the number of results, your browser may crash. Are you sure you want to continue?</p>
           <button id="continue-btn">Continue</button>
           <button id="cancel-btn">Cancel</button>
-        </div>
+        </div> -->
         
         <button id="search-btn" type="submit"><i class="fa-solid fa-fire-flame-curved fa-xl" style="margin-right: 5px;"></i> Search</button>
 
@@ -119,7 +120,7 @@
           </table>
         </div>
 
-        <h2 id="excerpts_title">Translations Excerpts <span id="excerpts_nb"></span></h2>
+        <h2 id="excerpts_title">Translation Excerpts <span id="excerpts_nb"></span></h2>
         <div id="excerpts">
           <table cellspacing="0" cellpadding="0">
             <thead>

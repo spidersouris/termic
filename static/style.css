@@ -48,6 +48,8 @@ h1 img {
 
 h1 span {
   margin: 0 auto;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 h2 {
@@ -339,10 +341,6 @@ label[for="exact-match-glossary"], label[for="exact-match-excerpts"] {
   z-index: 9999;
 }
 
-#close-error {
-  cursor: pointer;
-}
-
 #error-banner .fa {
   margin-right: 10px;
 }
@@ -360,6 +358,11 @@ label[for="exact-match-glossary"], label[for="exact-match-excerpts"] {
   color: white;
 }
 
+#close-error {
+  cursor: pointer;
+}
+
+/* Disabled for production
 #warning-banner {
   display: none;
   align-items: center;
@@ -387,6 +390,7 @@ label[for="exact-match-glossary"], label[for="exact-match-excerpts"] {
 .continue-btn, .cancel-btn {
   display: block;
 }
+*/
 
 /* ----------------- MEDIA QUERIES ----------------- */
 

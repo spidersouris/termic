@@ -8,12 +8,22 @@ $(function() {
   var target_lang = l || $("#target-lang").val();
   var exact_match_gl = parseInt($("#exact-match-glossary").val());
   var exact_match_exc = parseInt($("#exact-match-excerpts").val());
+  var result_count_gl = parseInt($("#result-count-glossary").val());
+  var result_count_exc = parseInt($("#result-count-excerpts").val());
 
   $("input[type='checkbox']").on("click", function() {
     if ($(this).attr("id") == "exact-match-glossary") {
       exact_match_gl = $(this).is(":checked") ? 1 : 0;
     } else if ($(this).attr("id") == "exact-match-excerpts") {
       exact_match_exc = $(this).is(":checked") ? 1 : 0;
+    }
+  });
+
+  $("select").on("change", function() {
+    if ($(this).attr("id") == "result-count-glossary") {
+      result_count_gl = parseInt($("#result-count-glossary").val());
+    } else if ($(this).attr("id") == "result-count-excerpts") {
+      result_count_exc = parseInt($("#result-count-excerpts").val());
     }
   });
 
@@ -42,7 +52,7 @@ $(function() {
   if (q) {
     $("#term").val(q);
     var term = $("#term").val();
-    request(term, target_lang, exact_match_gl, exact_match_exc)
+    request(term, target_lang, result_count_gl, result_count_exc, exact_match_gl, exact_match_exc)
   }
 
   if (l) {
@@ -57,14 +67,15 @@ $(function() {
       var target_lang = $("#target-lang").val();
       $("#warning-banner").css("display", "none");
       $("#error-banner").css("display", "none");
-      request(term, target_lang, exact_match_gl, exact_match_exc);
+      request(term, target_lang, result_count_gl, result_count_exc, exact_match_gl, exact_match_exc);
     }
   });
 });
 
-function checkResultCount() {
+/* Disabled for production
+function checkResultCount(result_count_gl, result_count_exc) {
   return new Promise((resolve, reject) => {
-    if ($("#result-count-glossary").val() > 100 || $("#result-count-excerpts").val() > 100 && $("#term").val().length > 2) {
+    if (result_count_gl > 100 || result_count_exc > 100 && $("#term").val().length > 2) {
       $("#warning-banner").css("display", "flex");
 
       $("#continue-btn").on("click", () => {
@@ -82,8 +93,8 @@ function checkResultCount() {
   });
 }
 
-function checkResultLength(term) {
-  if ((term.length < 3) && ($("#result-count-glossary").val() > 100 || $("#result-count-excerpts").val() > 100)) {
+function checkResultLength(term, result_count_gl, result_count_exc) {
+  if ((term.length < 3) && (result_count_gl > 100 || result_count_exc > 100)) {
     $("#error-banner").css("display", "flex");
     $("#error-banner .error-msg").html("Maximum results search is disabled for terms which length is inferior to 3.");
     isLoading = false;
@@ -92,59 +103,58 @@ function checkResultLength(term) {
     return true;
   }
 }
+*/
 
-function request(term, target_lang, exact_match_gl, exact_match_exc) {
-  if (!checkResultLength(term)) {
+function request(term, target_lang, result_count_gl, result_count_exc, exact_match_gl, exact_match_exc) {
+  /* Disabled for production
+  if (!checkResultLength(term, result_count_gl, result_count_exc)) {
     return false;
   }
+ 
+  checkResultCount(result_count_gl, result_count_exc).then(() => {*/
 
-  checkResultCount().then(() => {
-    $("#search-btn").prop("disabled", true);
-    $("#loader").css("display", "inline-block");
-    $.ajax({
-      headers: { 
-        "Accept": "application/json",
-        "Content-Type": "application/json" 
-      },
-      url: "/",
-      type: "POST",
-      dataType: "json",
-      data: JSON.stringify({
-        term: term,
-        target_lang: target_lang,
-        exact_match_gl: exact_match_gl,
-        exact_match_exc: exact_match_exc
-      }),
-      success: function(response) {
-        urlParams.set("q", term);
-        urlParams.set("l", target_lang);
-        const newUrl = window.location.pathname + "?" + urlParams.toString();
-        window.history.pushState({ path: newUrl }, "", newUrl);
-        //console.log(Object.values(response))
-        get_glossary(response, Object.values(response).slice(-1)[0].length, $("#result-count-glossary").val())
-        get_excerpts(response, Object.values(response)[0].length, $("#result-count-excerpts").val())
-        $("#results").css("display", "block");
-        $("#error-banner").css("display", "none");
-        $("#loader").css("display", "none");
-        document.title = `termic :: ${term} (${target_lang.slice(0,2)})`
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        $("#error-banner").css("display", "flex");
-        $("#error-banner .error-msg").html(textStatus+": "+errorThrown);
-        $("#loader").css("display", "none");
-        // fix bug that prevents new search
-      },
-      complete: function() {
-        isLoading = false;
-        $("#search-btn").prop("disabled", false);
-      }
-    });
-  }).catch(() => {
-    location.reload(); // not the best way of handling this... but fixes the bug that prevents from doing a new search after clicking on "Cancel"
+  $("#search-btn").prop("disabled", true);
+  $("#loader").css("display", "inline-block");
+  $.ajax({
+    headers: { 
+      "Accept": "application/json",
+      "Content-Type": "application/json" 
+    },
+    url: "/",
+    type: "POST",
+    dataType: "json",
+    data: JSON.stringify({
+      term: term,
+      target_lang: target_lang,
+      exact_match_gl: exact_match_gl,
+      exact_match_exc: exact_match_exc,
+      result_count_gl: result_count_gl,
+      result_count_exc: result_count_exc
+    }),
+    success: function(response) {
+      urlParams.set("q", term);
+      urlParams.set("l", target_lang);
+      const newUrl = window.location.pathname + "?" + urlParams.toString();
+      window.history.pushState({ path: newUrl }, "", newUrl);
+      //console.log(Object.values(response))
+      get_glossary(response, Object.values(response).slice(-1)[0].length, $("#result-count-glossary").val())
+      get_excerpts(response, Object.values(response)[0].length, $("#result-count-excerpts").val())
+      $("#results").css("display", "block");
+      $("#error-banner").css("display", "none");
+      $("#loader").css("display", "none");
+      document.title = `termic :: ${term} (${target_lang.slice(0,2)})`
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      $("#error-banner").css("display", "flex");
+      $("#error-banner .error-msg").html(textStatus+": "+errorThrown);
+      $("#loader").css("display", "none");
+    },
+    complete: function() { // fix bug that prevents new search
+      isLoading = false;
+      $("#search-btn").prop("disabled", false);
+    }
   });
-
-  return true;
-}
+};
 
 function get_glossary(response, length, nb) {
   if (length > 0) {
@@ -158,7 +168,7 @@ function get_glossary(response, length, nb) {
         <tr>
           <td data-attribute="source">${response.gl_source[i]}<br><i>(${response.gl_source_pos[i].substring(response.gl_source_pos[i].indexOf(":") + 1).trim().toLowerCase()})</i></td>
           <td>${response.gl_translation[i]}<br><i>(${response.gl_target_pos[i].substring(response.gl_target_pos[i].indexOf(":") + 1).trim().toLowerCase()})</i></td>
-          <td>${response.gl_source_def[i].substring(response.gl_source_def[i].indexOf(":") + 1).trim().toLowerCase()}</td>
+          <td>${response.gl_source_def[i].substring(response.gl_source_def[i].indexOf(":") + 1).trim()}</td>
         </tr>
       `;
   }
@@ -173,7 +183,7 @@ function get_glossary(response, length, nb) {
 
 function get_excerpts(response, length, nb) {
   if (length > 0) {
-    console.log("Found " + length + " translations excerpts")
+    console.log("Found " + length + " translation excerpts")
     var excerpts_results = "";
     if (nb > length) {
       nb = length;
@@ -193,7 +203,7 @@ function get_excerpts(response, length, nb) {
     $("#excerpts_nb").html(` (${nb} results)`);
     $(".mark-results-container").css("display", "inline-block");
   } else {
-    $("#excerpts_results").html("<p>No results found in the translations excerpts.</p>");
+    $("#excerpts_results").html("<p>No results found in the translation excerpts.</p>");
     $("#excerpts_nb").html(` (0 results)`);
   }
 };
