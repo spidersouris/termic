@@ -10,12 +10,15 @@
   --bg2: rgba(0, 0, 0, .5);
 }
 
-html, body {
+html {
   height: 100%;
 }
 
 body {
   background: var(--bg);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 html, body, div, h1, h2 {
@@ -79,6 +82,10 @@ select {
   width: 90%;
 }
 
+select:disabled {
+  opacity: 0.5;
+}
+
 input:focus, select:focus {
   outline: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
@@ -117,14 +124,13 @@ footer {
   height: 50px;
   width: 100%;
   position: relative;
+  margin-top: auto;
 }
 
 footer p {
   color: var(--text);
 	font-size: 16px;
 	text-align: center;
-  position: relative;
-  top: calc(50% - (16px / 2));
 }
 
 footer a {
@@ -147,11 +153,11 @@ th {
   position: sticky;
 }
 
-tr:hover, tr:nth-child(even):hover {
+tr:hover, tr:nth-child(odd):hover {
   background-color: var(--main4);
 }
 
-tr:nth-child(even) {
+tr:nth-child(odd) {
   background: rgba(0, 0, 0, .3);
 }
 
@@ -308,15 +314,13 @@ label[for="exact-match-glossary"], label[for="exact-match-excerpts"] {
 
 #loader {
   display: none;
-  margin-top: 20px;
+  margin: 20px auto;
   border: 10px solid #f3f3f3;
   border-top: 10px solid var(--main);
   border-radius: 50%;
-  width: 10vh;
-  height: 10vh;
+  width: 8vh;
+  height: 8vh;
   animation: spin 1.5s linear infinite;
-  margin: 0;
-  padding: 0;
 }
 
 @keyframes spin {

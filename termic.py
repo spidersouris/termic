@@ -14,6 +14,8 @@ def enforceHttps():
 
 def db_connect():
     try:
+        # Checking if environment variable exists
+        # else, using connection string in config/db_config.py
         if os.environ["TERMIC_CONN_STRING"]:
             conn = psycopg2.connect(os.environ["TERMIC_CONN_STRING"])
         else:
@@ -36,13 +38,13 @@ def main():
     term = request.json["term"] # Source term input in the search bar
     target_lang = request.json["target_lang"] # Target language
     result_count_gl = request.json["result_count_gl"] # Number of max. glossary results to retrieve
-    result_count_exc = request.json["result_count_exc"]
-    exact_match_gl = request.json["exact_match_gl"]
-    exact_match_exc = request.json["exact_match_exc"]
+    result_count_tm = request.json["result_count_tm"] # Number of max. TM results to retrieve
+    exact_match_gl = request.json["exact_match_gl"] # Exact match for glossary (0/1)
+    exact_match_tm = request.json["exact_match_tm"] # Exact match for TM (0/1)
 
     print(f"Query: {term}. Target lang: {target_lang}")
 
-    if result_count_gl <= 100 and result_count_exc <= 100:
+    if result_count_gl <= 100 and result_count_tm <= 100:
         if exact_match_gl == 1:
             print(f"Searching for '{term}' in glossary… Exact match: true")
             cur.execute(f"SELECT term_en_US, term_{target_lang}, pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang} WHERE term_en_US ILIKE %s LIMIT %s;", (term, result_count_gl))
@@ -63,32 +65,33 @@ def main():
         else:
             gl_source, gl_translation, gl_source_pos, gl_target_pos, gl_source_def = [''] * 5
 
-        if exact_match_exc == 1:
+        if exact_match_tm == 1:
             print(f"Searching for '{term}' in translation excerpts… Exact match: true")
-            cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE %s LIMIT %s;", (term, result_count_exc))
+            cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE %s LIMIT %s;", (term, result_count_tm))
         else:
             print(f"Searching for '{term}' in translations excerpts… Exact match: false")
-            cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE %s LIMIT %s;", ('%' + term + '%', result_count_exc))
+            cur.execute(f"SELECT source_term, translation, string_cat, platform, product FROM excerpts_{target_lang} WHERE source_term ILIKE %s LIMIT %s;", ('%' + term + '%', result_count_tm))
 
-        results_exc = cur.fetchall()
+        results_tm = cur.fetchall()
 
-        results_exc = list(zip(*results_exc))
+        results_tm = list(zip(*results_tm))
 
-        if len(results_exc) > 0:
-            exc_source = results_exc[0]
-            exc_translation = results_exc[1]
-            exc_cat = results_exc[2]
-            exc_platform = results_exc[3]
-            exc_product = results_exc[4]
+        if len(results_tm) > 0:
+            tm_source = results_tm[0]
+            tm_translation = results_tm[1]
+            tm_cat = results_tm[2]
+            tm_platform = results_tm[3]
+            tm_product = results_tm[4]
         else:
-            exc_source, exc_translation, exc_cat, exc_platform, exc_product = [''] * 5
+            tm_source, tm_translation, tm_cat, tm_platform, tm_product = [''] * 5
 
     cur.close()
     conn.close()
 
     # JSON Response
     response = {"gl_source": gl_source, "gl_translation": gl_translation, "gl_source_pos": gl_source_pos, "gl_target_pos": gl_target_pos, "gl_source_def": gl_source_def,
-    "exc_source": exc_source, "exc_translation": exc_translation, "exc_cat": exc_cat, "exc_platform": exc_platform, "exc_product": exc_product}
+    "tm_source": tm_source, "tm_translation": tm_translation, "tm_cat": tm_cat, "tm_platform": tm_platform, "tm_product": tm_product
+    }
     return jsonify(response)
 
 if __name__ == "__main__":
