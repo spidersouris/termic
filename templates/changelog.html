@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>termic :: changelog</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+
+    <header>
+    <a href="/" style="text-decoration: none">
+      <h1>
+        <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
+        <span>termic</span>
+      </h1>
+    </a>
+    </header>
+
+    <h2 id="changelog-title">Changelog</h2>
+
+    <div class="changelog-container">
+        <h3 id="v1.1.0" class="current">Version 1.1.0</h3>
+        <span class="date">(May 17th, 2023)</span>
+        <div class="changelog-content">
+            <ul>
+                <li><b class="major">Copy</b> — Added the ability to copy result rows</li>
+                <ul>
+                    <li>On non-touchscreen devices, a convenient copy button is now available at the end of each row.</li>
+                    <li>On touch-enabled mobile devices, simply double-click on a row to copy its content. A helpful tip is displayed on touch-enabled mobile devices to guide users.</li>
+                </ul>
+                <li><b class="major">New languages</b> — Added the following languages:</li>
+                <ul>
+                    <li>Bulgarian</li>
+                    <li>Chinese (Simplified)</li>
+                    <li>Chinese (Traditional)</li>
+                    <li>Hungarian</li>
+                    <li>Italian</li>
+                    <li>Polish</li>
+                    <li>Russian</li>
+                    <li>Swedish</li>
+                    <li>Turkish</li>
+                </ul>
+                <li>Added exact match for glossary/TM as URL parameters</li>
+                <li>Renamed the "Spanish (LATAM)" language dropdown option to "Spanish (Mexico)"<br><i>(This change was made to avoid any ambiguity as Microsoft-provided UI strings and glossary are mainly using that variety of Spanish. Thanks to <a href="https://www.linkedin.com/in/claudiopribeiro" target="_blank" class="normal-link">Cláudio Ribeiro</a> for the feedback.)</i></li>
+                <li>Fixed the "Mark results" search option not appearing</p>
+            </ul>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="changelog-container">
+        <h3 id="v1.0.0">Version 1.0.0</h3>
+        <span class="date">(May 14th, 2023)</span>
+        <div class="changelog-content">
+            <ul>
+                <li>Initial production version.</li>
+            </ul>
+        </div>
+    </div>
+
+	<footer><p>Enzo Doyen © <script>document.write(new Date().getFullYear())</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.1.0</a></p></footer>
+
+  </body>
+</html>

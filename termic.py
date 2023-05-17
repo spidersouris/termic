@@ -30,6 +30,10 @@ def db_connect():
 def index():
     return render_template("index.html")
 
+@app.route("/changelog/")
+def changelog():
+    return render_template("changelog.html")
+
 @app.route("/", methods=["POST"])
 def main():
     conn = db_connect()

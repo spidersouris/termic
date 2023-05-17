@@ -4,10 +4,12 @@ var isLoading = false;
 $(function() {
   const q = urlParams.get("q"); // Query (search term)
   const l = urlParams.get("l"); // Target language
+  const em_gl = urlParams.get("em_gl");
+  const em_tm = urlParams.get("em_tm");
 
   var targetLang = l || $("#target-lang").val();
-  var exactMatchGl = parseInt($("#exact-match-glossary").val());
-  var exactMatchTm = parseInt($("#exact-match-tm").val());
+  var exactMatchGl = em_gl || parseInt($("#exact-match-glossary").val());
+  var exactMatchTm = em_tm || parseInt($("#exact-match-tm").val());
   var resultCountGl = parseInt($("#result-count-glossary").val());
   var resultCountTm = parseInt($("#result-count-tm").val());
 
@@ -53,7 +55,7 @@ $(function() {
     $("#error-banner").css("display", "none");
   });
   // --- End of ON Event Listeners ---
-  
+
   if (q) {
     // Update term input box with the value of the q parameter and launch serch
     $("#term").val(q);
@@ -64,6 +66,19 @@ $(function() {
   if (l) {
     // Update target language dropdown with the value of the l parameter
     $("#target-lang").val(l);
+  }
+
+  // Update exact match checkboxes
+  if (em_tm == 0) {
+    $("#exact-match-tm").prop("checked", false);
+  } else {
+    $("#exact-match-tm").prop("checked", true);
+  }
+
+  if (em_gl == 0) {
+    $("#exact-match-glossary").prop("checked", false);
+  } else {
+    $("#exact-match-glossary").prop("checked", true);
   }
   
   // Handling classic search. Doing it otherwise causes a 415 error which I cannot for the life of me fix
@@ -144,6 +159,8 @@ function request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, e
       // Update URL
       urlParams.set("q", term);
       urlParams.set("l", targetLang);
+      urlParams.set("em_gl", exactMatchGl);
+      urlParams.set("em_tm", exactMatchTm);
       const newUrl = window.location.pathname + "?" + urlParams.toString();
       window.history.pushState({ path: newUrl }, "", newUrl);
 
@@ -166,6 +183,7 @@ function request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, e
       isLoading = false;
       $("#target-lang").prop("disabled", false);
       $("#search-btn").prop("disabled", false);
+      return isTouchDevice() ? activateCopyWithTap() : activateCopyWithBtn();
     }
   });
 };
@@ -177,15 +195,29 @@ function getGlossary(response, length) {
     for (var i = 0; i < length; i++) {
       resultsGl += `
         <tr>
-          <td data-attribute="source">${response.gl_source[i]}<br><i>(${response.gl_source_pos[i].substring(response.gl_source_pos[i].indexOf(":") + 1).trim().toLowerCase()})</i></td>
-          <td>${response.gl_translation[i]}<br><i>(${response.gl_target_pos[i].substring(response.gl_target_pos[i].indexOf(":") + 1).trim().toLowerCase()})</i></td>
-          <td>${response.gl_source_def[i].substring(response.gl_source_def[i].indexOf(":") + 1).trim()}</td>
+          <td data-attribute="source">${response.gl_source[i]}<br>
+            <i>(${response.gl_source_pos[i]
+                .substring(response.gl_source_pos[i].indexOf(":") + 1)
+                .trim().toLowerCase()})</i>
+          </td>
+
+          <td>${response.gl_translation[i]}<br>
+            <i>(${response.gl_target_pos[i]
+                .substring(response.gl_target_pos[i].indexOf(":") + 1)
+                .trim().toLowerCase()})</i>
+          </td>
+
+          <td>${response.gl_source_def[i]
+              .substring(response.gl_source_def[i].indexOf(":") + 1).trim()}
+          </td>
+
+          <td><i class="fa-solid fa-copy"></i></td>
         </tr>
       `;
   }
     $("#glossary-results").html(resultsGl);
     $("#glossary-nb").html(` (${length} results)`);
-    $(".mark-results-container").css("display", "inline-block");
+    $("#mark-results-container").css("display", "inline-block");
   } else {
     $("#glossary-results").html("<p>No results found in the glossary.</p>");
     $("#glossary-nb").html(` (0 results)`);
@@ -204,6 +236,7 @@ function getExcerpts(response, length) {
           <td>${response.tm_cat[i]}</td>
           <td>${response.tm_platform[i]}</td>
           <td>${response.tm_product[i]}</td>
+          <td><i class="fa-solid fa-copy"></i></td>
         </tr>
       `;
   }
@@ -215,3 +248,78 @@ function getExcerpts(response, length) {
     $("#tm-nb").html(` (0 results)`);
   }
 };
+
+function getRowContent(row) {
+  const cells = Array.from(row.cells);
+  const rowContent = cells.map(cell => cell.textContent.trim())
+                         .join(" | ")
+                         .replace(/\s*\n\s*/g, " ")
+                         .slice(0, -3)
+  return rowContent;
+}
+
+function activateCopyWithBtn() { 
+  Array.from(document.getElementsByClassName("fa-copy")).forEach(copyButton => {
+    copyButton.addEventListener("click", () => {
+      const rowContent = getRowContent(copyButton.closest("tr"));
+      copyToClipboard(rowContent);
+      $(copyButton).addClass("copied");
+      setTimeout(() => {
+        $(copyButton).removeClass("copied");
+      }, 2000);
+    });
+  });
+}
+
+function activateCopyWithTap() { 
+  let lastTap = 0;
+  $(".fa-copy").css("display", "none");
+  $("#tip-tap").css("display", "block");
+  Array.from(document.querySelectorAll("tbody")).forEach(tbody => {
+    tbody.addEventListener("touchstart", function(e) {
+      e.preventDefault();
+      let time = new Date().getTime();
+      const tapInterval = 500; // in ms
+      if (time - lastTap < tapInterval) {
+        const rowContent = getRowContent(e.target.closest("tr"));
+        showToast("<p>Row copied</p>");
+        copyToClipboard(rowContent);
+      }
+      lastTap = time;
+    });
+  });
+}
+
+function copyToClipboard(text) {
+  if (!navigator.clipboard) { // handle deprecated execCommand()
+    execCommand("copy", false, text)
+    .then(() => console.log("Row content copied to clipboard"))
+    .catch(error => console.error("Failed to copy row content: ", error)); 
+  } else {
+    navigator.clipboard.writeText(text)
+    .then(() => console.log("Row content copied to clipboard"))
+    .catch(error => console.error("Failed to copy row content: ", error));
+  }
+}
+
+function showToast(text) {
+  let toastTimeout = 0;
+  $("#toast").html(text);
+  $("#toast-container").css("display", "block");
+  $("#toast-container").animate({ opacity: 1 }, 500); 
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    $("#toast-container").animate({ opacity: 0 }, 500, () => {
+      $("#toast-container").css("display", "none");
+    });
+  }, 2000);
+}
+
+// https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
+function isTouchDevice() {
+  return ((("ontouchstart" in window) ||
+    // temp fix for https://stackoverflow.com/questions/69125308/navigator-maxtouchpoints-256-on-desktop
+    (navigator.maxTouchPoints > 0) && (navigator.maxTouchPoints != 256) ||
+    // if the screen is >480, there's enough space for the copy button; no need to activate touch mode
+    (navigator.msMaxTouchPoints > 0)) && window.screen.width <= 480);
+}

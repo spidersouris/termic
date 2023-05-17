@@ -28,9 +28,16 @@ html, body, div, h1, h2 {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-  text-align: center;
 	font-family: Arial;
   color: var(--text);
+}
+
+hr {
+  width: 100%;
+  color: var(--main);
+  opacity: 0.3;
+  box-sizing: border-box; /*Prevents overflowing*/
+  margin: 1em 0 1em 0;
 }
 
 h1 {
@@ -61,11 +68,21 @@ h2 {
   margin: 6vh 0 4vh 0;
   padding: 7px;
   background: var(--bg2);
+  text-align: center;
 }
 
 h2 span {
   font-size: 20px;
   color: #ccc;
+}
+
+ul {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+li {
+  margin-top: 0.5em;
 }
 
 input, select {
@@ -171,8 +188,67 @@ a:hover {
   color: var(--main2);
 }
 
+.normal-link {
+  font-weight: normal;
+  color: var(--text);
+}
+
 .short-text {
   display: none;
+}
+
+#toast-container {
+  display: none;
+  z-index: 999;
+  position: fixed;
+  bottom: 0px;
+  left: calc(50% - 40px);
+  max-width: 300px;
+}
+
+#toast {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 10px 15px; 
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  0% { 
+    transform: translateY(100px);
+  }
+  100% { 
+    transform: translateY(0);
+  } 
+}
+
+@keyframes fadeOut {
+  0% { 
+    opacity: 1;
+  }
+  100% { 
+    opacity: 0; 
+  } 
+}
+
+#tip-tap {
+  display: none;
+  border-radius: 3px;
+  margin-top: 1em;
+  font-size: 1.2em;
+  padding: 7px;
+  background: rgba(155, 106, 57, 0.7);
+  bottom: 0;
+}
+
+.info {
+  display: none;
+}
+
+.fa-info-circle:hover ~ .info {
+  display: block;
 }
 
 /* ----------------- SEARCH FORM AND SEARCH OPTIONS ----------------- */
@@ -182,6 +258,7 @@ a:hover {
   justify-content: center;
   z-index: 1;
   position: relative;
+  text-align: center;
 }
 
 #search-form {
@@ -333,6 +410,17 @@ label[for="exact-match-glossary"], label[for="exact-match-tm"] {
   100% { transform: rotate(360deg); }
 }
 
+.fa-copy {
+  cursor: pointer;
+  float: right;
+  font-size: 20px;
+  margin-right: 20px;
+}
+
+.copied {
+  color: var(--main);
+}
+
 /* ----------------- ERROR/WARNING MESSAGES ----------------- */
 
 #error-banner {
@@ -401,9 +489,47 @@ label[for="exact-match-glossary"], label[for="exact-match-tm"] {
 }
 */
 
+/* ----------------- CHANGELOG ----------------- */
+
+#changelog-title {
+  margin-top: 0.5em;
+}
+
+.changelog-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.current {
+  color: var(--main);
+}
+
+.date {
+  color: #a4a4a4;
+  position: relative;
+  top: -10px;
+}
+
+b.major {
+  color: var(--main);
+  margin-bottom: 1em;
+}
+
+b.major:before {
+  content: "🔥 ";
+}
+
 /* ----------------- MEDIA QUERIES ----------------- */
 
 @media (max-width: 768px) {
+
+  #tm, #glossary {
+  width: 100%;
+}
+
   #result-filter > div {
     margin-bottom: 20px;
     width: 50%;
@@ -418,9 +544,14 @@ label[for="exact-match-glossary"], label[for="exact-match-tm"] {
     left: 0;
     top: 0;
   }
+
+  h2 {
+    margin: 0.3em 0 0.3em 0;
+  }
+
 }
 
-@media (max-width: 500px) {
+@media (max-width: 480px) {
 
   #result-filter > div {
     flex-direction: column;

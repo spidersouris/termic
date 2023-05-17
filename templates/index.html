@@ -36,15 +36,24 @@
       <div id="target-lang-container">
           <label for="target-lang">Target Language:</label>
           <select id="target-lang" name="target-lang">
+            <option value="bg_bg">Bulgarian</option>
+            <option value="zh_cn">Chinese (Simplified)</option>
+            <option value="zh_tw">Chinese (Traditional)</option>
             <option value="cs_cz">Czech</option>
             <option value="da_dk">Danish</option>
             <option value="nl_nl">Dutch</option>
             <option value="fr_fr">French</option>
             <option value="de_de">German</option>
             <option value="el_gr">Greek</option>
+            <option value="hu_hu">Hungarian</option>
+            <option value="it_it">Italian</option>
+            <option value="pl_pl">Polish</option>
             <option value="ro_ro">Romanian</option>
-            <option value="es_latam">Spanish (Latin America)</option>
+            <option value="ru_ru">Russian</option>
+            <option value="es_mx">Spanish (México)</option>
             <option value="es_es">Spanish (Spain)</option>
+            <option value="sv_se">Swedish</option>
+            <option value="tr_tr">Turkish</option>
             <option value="uk_ua">Ukrainian</option>
             <option value="vi_vn">Vietnamese</option>
           </select>
@@ -106,6 +115,8 @@
 
       <div id="loader"></div>
 
+      <span id="tip-tap"><b>Tip</b>: double tap on a row to copy</span>
+
       <div id="results">
         <h2 id="glossary-title">Glossary <span id="glossary-nb"></span></h2>
         <div id="glossary">
@@ -115,6 +126,7 @@
                 <th>English</th>
                 <th>Translation</th>
                 <th>English Definition</th>
+                <th></th> <!-- Empty row for copy button -->
               </tr>
             </thead>
             <tbody id="glossary-results"></tbody>
@@ -131,6 +143,7 @@
                 <th>String Category</th>
                 <th>Platform</th>
                 <th>Product</th>
+                <th></th> <!-- Empty row for copy button -->
               </tr>
             </thead>
             <tbody id="tm-results"></tbody>
@@ -138,7 +151,11 @@
         </div>
       </div>
 
-	<footer><p>Enzo Doyen © <script>document.write(new Date().getFullYear())</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a></p></footer>
+      <div id="toast-container">
+        <div id="toast"></div>
+      </div>
+
+	<footer><p>Enzo Doyen © <script>document.write(new Date().getFullYear())</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.1.0</a></p></footer>
 
   </body>
 </html>
