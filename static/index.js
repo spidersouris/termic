@@ -4,8 +4,8 @@ var isLoading = false;
 $(function() {
   const q = urlParams.get("q"); // Query (search term)
   const l = urlParams.get("l"); // Target language
-  const em_gl = urlParams.get("em_gl");
-  const em_tm = urlParams.get("em_tm");
+  const em_gl = urlParams.get("em_gl"); // Exact match for glossary
+  const em_tm = urlParams.get("em_tm"); // Exact match for TM
 
   var targetLang = l || $("#target-lang").val();
   var exactMatchGl = em_gl || parseInt($("#exact-match-glossary").val());
@@ -82,8 +82,8 @@ $(function() {
   }
   
   // Handling classic search. Doing it otherwise causes a 415 error which I cannot for the life of me fix
-  $("#search-form").submit(function(event) {
-    event.preventDefault();
+  $("#search-form").submit(function(e) {
+    e.preventDefault();
     if (!isLoading) {
       isLoading = true;
       var term = $("#term").val();

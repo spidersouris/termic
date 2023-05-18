@@ -215,24 +215,6 @@ a:hover {
   opacity: 1;
 }
 
-@keyframes slideIn {
-  0% { 
-    transform: translateY(100px);
-  }
-  100% { 
-    transform: translateY(0);
-  } 
-}
-
-@keyframes fadeOut {
-  0% { 
-    opacity: 1;
-  }
-  100% { 
-    opacity: 0; 
-  } 
-}
-
 #tip-tap {
   display: none;
   border-radius: 3px;
@@ -241,14 +223,6 @@ a:hover {
   padding: 7px;
   background: rgba(155, 106, 57, 0.7);
   bottom: 0;
-}
-
-.info {
-  display: none;
-}
-
-.fa-info-circle:hover ~ .info {
-  display: block;
 }
 
 /* ----------------- SEARCH FORM AND SEARCH OPTIONS ----------------- */
