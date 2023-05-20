@@ -8,9 +8,11 @@
     <meta name="keywords" content="termic, microsoft, terminology, terminology base, translation, localization">
     <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32x32.png">
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link type="text/css" href="{{ url_for('static', filename='dropdown.css') }}" rel="stylesheet" />
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{url_for('static', filename='index.js')}}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
@@ -33,12 +35,12 @@
     <div id="search-form-container">
       <form id="search-form" method="post">
         <div id="search-bar">
-          <label for="term">Search Term:</label>
+          <label for="term">Search Term</label>
           <input type="text" id="term" name="term" required>
         </div>
 
       <div id="target-lang-container">
-          <label for="target-lang">Target Language:</label>
+          <label for="target-lang">Target Language</label>
           <select id="target-lang" name="target-lang">
             <option value="bg_bg">Bulgarian</option>
             <option value="zh_cn">Chinese (Simplified)</option>
@@ -46,15 +48,18 @@
             <option value="cs_cz">Czech</option>
             <option value="da_dk">Danish</option>
             <option value="nl_nl">Dutch</option>
-            <option value="fr_fr">French</option>
+            <option value="fr_ca">French (Canada)</option>
+            <option value="fr_fr">French (France)</option>
             <option value="de_de">German</option>
             <option value="el_gr">Greek</option>
             <option value="hu_hu">Hungarian</option>
             <option value="it_it">Italian</option>
             <option value="pl_pl">Polish</option>
+            <option value="pt_br">Portuguese (Brazil)</option>
+            <option value="pt_pt">Portuguese (Portugal)</option>
             <option value="ro_ro">Romanian</option>
             <option value="ru_ru">Russian</option>
-            <option value="es_mx">Spanish (México)</option>
+            <option value="es_mx">Spanish (Mexico)</option>
             <option value="es_es">Spanish (Spain)</option>
             <option value="sv_se">Swedish</option>
             <option value="tr_tr">Turkish</option>
@@ -64,7 +69,10 @@
         </div>
 
         <div id="result-filter">
+
           <div id="result-filter-glossary">
+            <input type="checkbox" id="toggle-glossary" class="toggle" data-target="#result-filter-glossary" checked/>
+            <label for="toggle-glossary">Toggle</label>
             <h3>Glossary</h3>
             <div id="result-count">
               <label for="result-count-glossary">Results to show:</label>
@@ -76,12 +84,11 @@
                 <!-- <option value="999999">max. (Use with caution!)</option> -->
               </select>
             </div>
-            <div id="exact-match-container">
-              <input type="checkbox" id="exact-match-glossary" name="exact-match-glossary" checked value=1>
-              <label for="exact-match-glossary">Exact match</label>
-            </div>
           </div>
+          
           <div id="result-filter-tm">
+            <input type="checkbox" id="toggle-tm" class="toggle" data-target="#result-filter-tm" checked/>
+            <label for="toggle-tm">Toggle</label>
             <h3 class="full-text">Translation Memory</h3>
             <h3 class="short-text">TM</h3>
             <div id="result-count">
@@ -94,16 +101,34 @@
                 <!-- <option value="999999">max. (Use with caution!)</option> -->
               </select>
             </div>
-            <div id="exact-match-container">
-              <input type="checkbox" id="exact-match-tm" name="exact-match-tm" checked value=1>
-              <label for="exact-match-tm">Exact match</label>
-            </div>
           </div>
+
+
+          <div id="search-options-container">
+            <h4 id="search-options-title">Search Options</h4>
+            <button type="button" class="search-option" name="search-option" value="exact_match" title="Exact match" data-active="active">
+              <img src="{{url_for('static', filename='images/svgs/exact_match.svg')}}" height="45" width="45" alt="Exact Match Search Button">
+            </button>
+            <button type="button" class="search-option" name="search-option" value="unexact_match" title="Broad match">
+              <img src="{{url_for('static', filename='images/svgs/unexact_match.svg')}}" height="45" width="45" alt="Broad Match Search Button">
+            </button>
+            <button type="button" class="search-option" name="search-option" value="regex" title="RegExp">
+              <img src="{{url_for('static', filename='images/svgs/regex.svg')}}" height="45" width="45" alt="RegExp Search Button">
+            </button>
+          </div>
+
+          <div id="search-filters-container">
+            <h4 id="search-filters-title">Results Filters</h4>
+            <button type="button" id="highlight" class="search-filter" value="highlight" title="Highlight Results" data-active="inactive">
+              <img src="{{url_for('static', filename='images/svgs/highlight.svg')}}" height="40" width="40" alt="Highlight Results Button">
+            </button>
+          </div>
+          
+          <button id="search-btn" type="submit"><i class="fa-solid fa-fire-flame-curved fa-xl" style="margin-right: 5px;"></i> Search</button>
+
         </div>
-        <div id="mark-results-container">
-          <input type="checkbox" id="mark-results" name="mark-results" value=0>
-          <label for="mark-results">Mark results</label>
-        </div>
+      </div>
+
         <!-- Disabled for production -->
         <!-- <div id="warning-banner">
           <span class="fa fa-exclamation-circle"></span>
@@ -111,8 +136,6 @@
           <button id="continue-btn">Continue</button>
           <button id="cancel-btn">Cancel</button>
         </div> -->
-        
-        <button id="search-btn" type="submit"><i class="fa-solid fa-fire-flame-curved fa-xl" style="margin-right: 5px;"></i> Search</button>
 
       </form>
     </div>
@@ -122,36 +145,40 @@
       <span id="tip-tap"><b>Tip</b>: double tap on a row to copy</span>
 
       <div id="results">
-        <h2 id="glossary-title">Glossary <span id="glossary-nb"></span></h2>
-        <div id="glossary">
-          <table cellspacing="0" cellpadding="0">
-            <thead>
-              <tr>
-                <th>English</th>
-                <th>Translation</th>
-                <th>English Definition</th>
-                <th></th> <!-- Empty row for copy button -->
-              </tr>
-            </thead>
-            <tbody id="glossary-results"></tbody>
-          </table>
+        <div id="glossary-results">
+          <h2 id="glossary-title">Glossary <span id="glossary-nb"></span></h2>
+          <div id="glossary">
+            <table cellspacing="0" cellpadding="0">
+              <thead>
+                <tr>
+                  <th>English</th>
+                  <th>Translation</th>
+                  <th>English Definition</th>
+                  <th></th> <!-- Empty row for copy button -->
+                </tr>
+              </thead>
+              <tbody id="glossary-results-table"></tbody>
+            </table>
+          </div>
         </div>
-
-        <h2 id="tm-title">Translation Memory <span id="tm-nb"></span></h2>
-        <div id="tm">
-          <table cellspacing="0" cellpadding="0">
-            <thead>
-              <tr>
-                <th>English</th>
-                <th>Translation</th>
-                <th>String Category</th>
-                <th>Platform</th>
-                <th>Product</th>
-                <th></th> <!-- Empty row for copy button -->
-              </tr>
-            </thead>
-            <tbody id="tm-results"></tbody>
-          </table>
+        
+        <div id="tm-results">
+          <h2 id="tm-title">Translation Memory <span id="tm-nb"></span></h2>
+          <div id="tm">
+            <table cellspacing="0" cellpadding="0">
+              <thead>
+                <tr>
+                  <th>English</th>
+                  <th>Translation</th>
+                  <th>String Category</th>
+                  <th>Platform</th>
+                  <th>Product</th>
+                  <th></th> <!-- Empty row for copy button -->
+                </tr>
+              </thead>
+              <tbody id="tm-results-table"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -159,7 +186,7 @@
         <div id="toast"></div>
       </div>
 
-	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.1.0</a></p></footer>
+	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.2.0</a></p></footer>
 
   </body>
 </html>

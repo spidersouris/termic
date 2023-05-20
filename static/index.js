@@ -1,22 +1,31 @@
 const urlParams = new URLSearchParams(window.location.search);
+const searchOptions = document.getElementsByClassName("search-option");
 var isLoading = false;
 
 $(function() {
   const q = urlParams.get("q"); // Query (search term)
   const l = urlParams.get("l"); // Target language
-  const em_gl = urlParams.get("em_gl"); // Exact match for glossary
-  const em_tm = urlParams.get("em_tm"); // Exact match for TM
+  const o = urlParams.get("o"); // Search option
 
   var targetLang = l || $("#target-lang").val();
-  var exactMatchGl = em_gl || parseInt($("#exact-match-glossary").val());
-  var exactMatchTm = em_tm || parseInt($("#exact-match-tm").val());
+  var searchOption = o || "exact_match" // default value
   var resultCountGl = parseInt($("#result-count-glossary").val());
   var resultCountTm = parseInt($("#result-count-tm").val());
 
+  // Do not use select2 dropdown on mobile devices
+  if (!isTouchDevice()) {
+    $("#target-lang").select2();
+  }
+
+  $(document).on("select2:open", () => {
+    document.querySelector(".select2-search__field").focus();
+  });
+
   // Highlight results with mark.js
-  function mark() {
-    if ($("#mark-results").is(":checked")) {
-      var keyword = $("#term").val();
+  function mark(e) {
+    if (e.dataset.active == "inactive") {
+      e.dataset.active = "active";
+      let keyword = $("#term").val();
 
       $("td[data-attribute='source']").unmark({
         done: function() {
@@ -25,20 +34,43 @@ $(function() {
       });
     } else {
       $("td[data-attribute='source']").unmark();
+      e.dataset.active = "inactive";
     }
   }
 
   // --- Beginning of Event Listeners ---
-  // Checkbox handling
-  $("input[type='checkbox']").on("click", function() {
-    if ($(this).attr("id") == "exact-match-glossary") {
-      exactMatchGl = $(this).is(":checked") ? 1 : 0;
-    } else if ($(this).attr("id") == "exact-match-tm") {
-      exactMatchTm = $(this).is(":checked") ? 1 : 0;
+  $(".toggle").on("click", function() {
+    // Get the name of the associated dropdown to toggle (glossary or TM)
+    let resultCountDropdown = "#result-count-" + this.id.split("-")[1]
+
+    if (this.checked) {
+      $($(this).data("target")).css("opacity", "1");
+      $(resultCountDropdown).prop("disabled", false);
+    } else {
+      $($(this).data("target")).css("opacity", "0.5"); 
+      $(resultCountDropdown).prop("disabled", true);
     }
+
+    if (!$("#toggle-glossary").is(":checked") && !$("#toggle-tm").is(":checked")) {
+      $("#search-btn").prop("disabled", true);
+    } else {
+      $("#search-btn").prop("disabled", false);
+    }
+
   });
 
-  // Select handling
+  // Search option handling
+  Array.from(searchOptions).forEach(option => {
+    $(option).on("click", function() {
+      Array.from(searchOptions).forEach(option => {
+          option.dataset.active = "inactive"
+      })
+      this.dataset.active = this.dataset.active == "inactive" ? "active" : "inactive"
+      searchOption = this.value
+    })
+  })
+
+  // Result count select handling
   $("select").on("change", function() {
     if ($(this).attr("id") == "result-count-glossary") {
       resultCountGl = parseInt($("#result-count-glossary").val());
@@ -47,8 +79,8 @@ $(function() {
     }
   });
 
-  $("#mark-results").on("click", function() {
-    mark();
+  $("#highlight").on("click", function() {
+    mark(this);
   });
 
   $("#close-error").on("click", function() {
@@ -60,29 +92,17 @@ $(function() {
     // Update term input box with the value of the q parameter and launch serch
     $("#term").val(q);
     var term = $("#term").val();
-    request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, exactMatchTm)
+    request(term, targetLang, resultCountGl, resultCountTm, searchOption)
   }
 
   if (l) {
     // Update target language dropdown with the value of the l parameter
     $("#target-lang").val(l);
   }
-
-  // Update exact match checkboxes
-  if (em_tm == 0) {
-    $("#exact-match-tm").prop("checked", false);
-  } else {
-    $("#exact-match-tm").prop("checked", true);
-  }
-
-  if (em_gl == 0) {
-    $("#exact-match-glossary").prop("checked", false);
-  } else {
-    $("#exact-match-glossary").prop("checked", true);
-  }
   
   // Handling classic search. Doing it otherwise causes a 415 error which I cannot for the life of me fix
-  $("#search-form").submit(function(e) {
+  // todo: fix this. 
+  $("#search-form").on("submit", function(e) {
     e.preventDefault();
     if (!isLoading) {
       isLoading = true;
@@ -90,7 +110,7 @@ $(function() {
       var targetLang = $("#target-lang").val();
       $("#warning-banner").css("display", "none");
       $("#error-banner").css("display", "none");
-      request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, exactMatchTm);
+      request(term, targetLang, resultCountGl, resultCountTm, searchOption)
     }
   });
 });
@@ -128,7 +148,7 @@ function checkResultLength(term, resultCountGl, resultCountTm) {
 }
 */
 
-function request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, exactMatchTm) {
+function request(term, targetLang, resultCountGl, resultCountTm, searchOption) {
   /* Disabled for production
   if (!checkResultLength(term, resultCountGl, resultCountTm)) {
     return false;
@@ -150,24 +170,37 @@ function request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, e
     data: JSON.stringify({
       term: term,
       target_lang: targetLang,
-      exact_match_gl: exactMatchGl,
-      exact_match_tm: exactMatchTm,
       result_count_gl: resultCountGl,
-      result_count_tm: resultCountTm
+      result_count_tm: resultCountTm,
+      search_option: searchOption
     }),
     success: function(response) {
+      let length_glossary = Object.values(response)[0].length
+      // select last array for length of TM results
+      let length_tm = Object.values(response).slice(-1)[0].length
+      
       // Update URL
-      urlParams.set("q", term);
-      urlParams.set("l", targetLang);
-      urlParams.set("em_gl", exactMatchGl);
-      urlParams.set("em_tm", exactMatchTm);
-      const newUrl = window.location.pathname + "?" + urlParams.toString();
+      let params = {q: term, l: targetLang, o: searchOption}; 
+      let newParams = new URLSearchParams(params);
+      const newUrl = window.location.pathname + "?" + newParams.toString();
       window.history.pushState({ path: newUrl }, "", newUrl);
 
       // Get results
-      console.log(Object.values(response))
-      getGlossary(response, Object.values(response)[0].length)
-      getExcerpts(response, Object.values(response).slice(-1)[0].length) // select last array for length
+      //console.log(Object.values(response))
+
+      switch (true) {
+        case $("#toggle-glossary").is(":checked") && !$("#toggle-tm").is(":checked"):
+          $("#tm-results").css("display", "none");
+          getGlossary(response, length_glossary)
+          break;
+        case !$("#toggle-glossary").is(":checked") && $("#toggle-tm").is(":checked"):
+          $("#glossary-results").css("display", "none");
+          getExcerpts(response, length_tm)
+          break;
+        default:
+          getGlossary(response, length_glossary)
+          getExcerpts(response, length_tm)
+      }
 
       $("#results").css("display", "block");
       $("#error-banner").css("display", "none");
@@ -189,10 +222,11 @@ function request(term, targetLang, resultCountGl, resultCountTm, exactMatchGl, e
 };
 
 function getGlossary(response, length) {
+  $("#glossary-results").css("display", "block");
   if (length > 0) {
     console.log("Found " + length + " glossary entries")
-    var resultsGl = "";
-    for (var i = 0; i < length; i++) {
+    let resultsGl = "";
+    for (let i = 0; i < length; i++) {
       resultsGl += `
         <tr>
           <td data-attribute="source">${response.gl_source[i]}<br>
@@ -215,20 +249,21 @@ function getGlossary(response, length) {
         </tr>
       `;
   }
-    $("#glossary-results").html(resultsGl);
+    $("#glossary-results-table").html(resultsGl);
     $("#glossary-nb").html(` (${length} results)`);
-    $("#mark-results-container").css("display", "inline-block");
+    $("#search-filters-container").css("display", "flex");
   } else {
-    $("#glossary-results").html("<p>No results found in the glossary.</p>");
+    $("#glossary-results-table").html("<p>No results found in the glossary.</p>");
     $("#glossary-nb").html(` (0 results)`);
   }
 };
 
 function getExcerpts(response, length) {
+  $("#tm-results").css("display", "block");
   if (length > 0) {
     console.log("Found " + length + " entries in the TM")
-    var resultsTm = "";
-    for (var i = 0; i < length; i++) {
+    let resultsTm = "";
+    for (let i = 0; i < length; i++) {
       resultsTm += `
         <tr>
           <td data-attribute="source">${response.tm_source[i]}</td>
@@ -240,11 +275,11 @@ function getExcerpts(response, length) {
         </tr>
       `;
   }
-    $("#tm-results").html(resultsTm);
+    $("#tm-results-table").html(resultsTm);
     $("#tm-nb").html(` (${length} results)`);
-    $(".mark-results-container").css("display", "inline-block");
+    $("#search-filters-container").css("display", "flex");
   } else {
-    $("#tm-results").html("<p>No results found in the translation memory.</p>");
+    $("#tm-results-table").html("<p>No results found in the translation memory.</p>");
     $("#tm-nb").html(` (0 results)`);
   }
 };
@@ -260,7 +295,7 @@ function getRowContent(row) {
 
 function activateCopyWithBtn() { 
   Array.from(document.getElementsByClassName("fa-copy")).forEach(copyButton => {
-    copyButton.addEventListener("click", () => {
+    $(copyButton).on("click", function() {
       const rowContent = getRowContent(copyButton.closest("tr"));
       copyToClipboard(rowContent);
       $(copyButton).addClass("copied");
@@ -276,7 +311,7 @@ function activateCopyWithTap() {
   $(".fa-copy").css("display", "none");
   $("#tip-tap").css("display", "block");
   Array.from(document.querySelectorAll("tbody")).forEach(tbody => {
-    tbody.addEventListener("touchstart", function(e) {
+    $(tbody).on("touchstart", function() {
       e.preventDefault();
       let time = new Date().getTime();
       const tapInterval = 500; // in ms

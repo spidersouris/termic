@@ -25,16 +25,57 @@
     <h2 id="changelog-title">Changelog</h2>
 
     <div class="changelog-container">
-        <h3 id="v1.1.0" class="current">Version 1.1.0</h3>
+        <h3 id="v1.2.0" class="current">Version 1.2.0</h3>
+        <span class="date">(May 20th, 2023)</span>
+        <div class="changelog-content">
+          <ul>
+              <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">Toggles</b>
+              <ul>
+                <li>Added toggles for glossary/TM search, enabling to search exclusively within the glossary or the translation memory.</li>
+              </ul>
+              <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">Target Language Search</b>
+              <ul>
+                  <li>The "Target Language" dropdown now features a search system to help you find your favorite language.</li>
+                  <li>This feature was only deployed to non-mobile devices, as mobile devices' default dropdown selectors are already convenient enough, and using the search system on mobile would prove cumbersome.</li>
+              </ul>
+              <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">RegExp Search Option</b>
+              <ul>
+                  <li>You can now search using <a href="https://xkcd.com/208/" target="_blank" class="normal-link">regular expressions</a>.</li>
+              </ul>
+              <span class="languages">NEW LANGUAGES</span>Added the following languages:
+              <ul>
+                  <li>French (Canada)</li>
+                  <li>Portuguese (Brazil)</li>
+                  <li>Portuguese (Portugal)</li>
+              </ul>
+              <li>Simplified the display of search options</li>
+              <ul>
+                <li>The old, ugly "Exact match" checkbox has been replaced with three search options above the "Search" button (Exact match, Broad match, RegExp).<br>For convenience, these options are common to both the glossary and the TM.</li>
+              </ul>
+              <li>Added a "Search Filters" section</li>
+              <ul>
+                <li>This section appears after searching and features the "Highlight Results" option.</li>
+              </ul>
+              <li>Backend improvements</li>
+              <li>Fixed "%" and "_" being considered wildcard characters</li>
+          </ul>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="changelog-container">
+        <h3 id="v1.1.0">Version 1.1.0</h3>
         <span class="date">(May 17th, 2023)</span>
         <div class="changelog-content">
             <ul>
-                <li><b class="major">Copy</b> — Added the ability to copy result rows</li>
+                <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">Copy</b>
                 <ul>
+                    <li>Added the ability to copy result rows.</li>
                     <li>On non-touchscreen devices, a convenient copy button is now available at the end of each row.</li>
                     <li>On touch-enabled mobile devices, simply double-tap on a row to copy its content. A helpful tip is displayed on touch-enabled mobile devices to guide users.</li>
                 </ul>
-                <li><b class="major">New languages</b> — Added the following languages:</li>
+                <span class="languages">NEW LANGUAGES</span>Added the following languages:
                 <ul>
                     <li>Bulgarian</li>
                     <li>Chinese (Simplified)</li>
@@ -53,19 +94,7 @@
         </div>
     </div>
 
-    <hr>
-
-    <div class="changelog-container">
-        <h3 id="v1.0.0">Version 1.0.0</h3>
-        <span class="date">(May 14th, 2023)</span>
-        <div class="changelog-content">
-            <ul>
-                <li>Initial production version.</li>
-            </ul>
-        </div>
-    </div>
-
-	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.1.0</a></p></footer>
+	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.2.0</a></p></footer>
 
   </body>
 </html>
