@@ -1,9 +1,9 @@
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify, render_template, redirect, send_from_directory
 from config.db_config import conn_string
 import psycopg2
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 @app.before_request
 def enforceHttps():
@@ -63,8 +63,13 @@ def index():
 def changelog():
     return render_template("changelog.html")
 
+# https://stackoverflow.com/questions/4239825/static-files-in-flask-robot-txt-sitemap-xml-mod-wsgi
+@app.route("/robots.txt")
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
+
 @app.errorhandler(404)
-def page_not_found():
+def page_not_found(e):
     return render_template("404.html"), 404
 
 @app.route("/", methods=["POST"])
@@ -76,7 +81,7 @@ def main():
     target_lang = request.json["target_lang"] # Target language
     result_count_gl = request.json["result_count_gl"] # Number of max. glossary results to retrieve
     result_count_tm = request.json["result_count_tm"] # Number of max. TM results to retrieve
-    search_option = request.json["search_option"] # Search option (exact match, unexact match, regex)h
+    search_option = request.json["search_option"] # Search option (exact match, unexact match, regex)
 
     print(f"""
     Query: {term}
