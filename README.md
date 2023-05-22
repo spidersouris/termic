@@ -12,6 +12,12 @@ The translation memory was retrieved from [Visual Studio Dev Essentials](https:/
 
 Glossaries were retrieved from [the Microsoft Terminology Collection](https://www.microsoft.com/en-us/language/Terminology). Those are .tbx files that were converted to .xlsx using [Xbench](https://www.xbench.net/).
 
+## Requirements
+
+- Python (>=3.10)
+- Flask (>=2.3.1)
+- psycopg2 (>=2.9.6)
+
 ## Usage
 
 1) `git clone https://github.com/spidersouris/termic.git`
