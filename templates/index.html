@@ -26,10 +26,12 @@
     </div>
 
     <header>
-      <h1>
-        <img src="static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
-        <span>termic</span>
-      </h1>
+        <h1>
+          <a href="/" id="header-link">
+            <img src="static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
+            <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
+          </a>
+        </h1>
     </header>
 
     <div id="search-form-container">
@@ -42,18 +44,23 @@
       <div id="target-lang-container">
           <label for="target-lang">Target Language</label>
           <select id="target-lang" name="target-lang">
+            <option value="ar_sa">Arabic</option>
+            <option value="be_by">Belarusian</option>
             <option value="bg_bg">Bulgarian</option>
             <option value="zh_cn">Chinese (Simplified)</option>
             <option value="zh_tw">Chinese (Traditional)</option>
             <option value="cs_cz">Czech</option>
             <option value="da_dk">Danish</option>
             <option value="nl_nl">Dutch</option>
+            <option value="fi_fi">Finnish</option>
             <option value="fr_ca">French (Canada)</option>
             <option value="fr_fr">French (France)</option>
             <option value="de_de">German</option>
             <option value="el_gr">Greek</option>
             <option value="hu_hu">Hungarian</option>
             <option value="it_it">Italian</option>
+            <option value="ja_jp">Japanese</option>
+            <option value="ko_kr">Korean</option>
             <option value="pl_pl">Polish</option>
             <option value="pt_br">Portuguese (Brazil)</option>
             <option value="pt_pt">Portuguese (Portugal)</option>
@@ -62,6 +69,7 @@
             <option value="es_mx">Spanish (Mexico)</option>
             <option value="es_es">Spanish (Spain)</option>
             <option value="sv_se">Swedish</option>
+            <option value="th_th">Thai</option>
             <option value="tr_tr">Turkish</option>
             <option value="uk_ua">Ukrainian</option>
             <option value="vi_vn">Vietnamese</option>
@@ -80,8 +88,6 @@
                 <option value="25">25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
-                <!-- Disabled for production -->
-                <!-- <option value="999999">max. (Use with caution!)</option> -->
               </select>
             </div>
           </div>
@@ -97,8 +103,6 @@
                 <option value="25">25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
-                <!-- Disabled for production -->
-                <!-- <option value="999999">max. (Use with caution!)</option> -->
               </select>
             </div>
           </div>
@@ -106,36 +110,40 @@
 
           <div id="search-options-container">
             <h4 id="search-options-title">Search Options</h4>
-            <button type="button" class="search-option" name="search-option" value="exact_match" title="Exact match" data-active="active">
-              <img src="{{url_for('static', filename='images/svgs/exact_match.svg')}}" height="45" width="45" alt="Exact Match Search Button">
-            </button>
-            <button type="button" class="search-option" name="search-option" value="unexact_match" title="Broad match">
-              <img src="{{url_for('static', filename='images/svgs/unexact_match.svg')}}" height="45" width="45" alt="Broad Match Search Button">
-            </button>
-            <button type="button" class="search-option" name="search-option" value="regex" title="RegExp">
-              <img src="{{url_for('static', filename='images/svgs/regex.svg')}}" height="45" width="45" alt="RegExp Search Button">
-            </button>
-          </div>
+            <div id="search-buttons-container">
+              <div class="search-buttons">
+                <p class="search-options-subtitle">Match Type</p>
+                <button type="button" class="search-option" name="search-option" value="exact_match" title="Exact Match" data-active="active">
+                  <img src="{{url_for('static', filename='images/svgs/exact-match.svg')}}" height="45" width="45" alt="Exact Match Search Button">
+                </button>
+                <button type="button" class="search-option" name="search-option" value="unexact_match" title="Broad Match">
+                  <img src="{{url_for('static', filename='images/svgs/unexact-match.svg')}}" height="45" width="45" alt="Broad Match Search Button">
+                </button>
+                <button type="button" class="search-option" name="search-option" value="regex" title="RegExp">
+                  <img src="{{url_for('static', filename='images/svgs/regex.svg')}}" height="45" width="45" alt="RegExp Search Button">
+                </button>
+              </div>
 
-          <div id="search-filters-container">
-            <h4 id="search-filters-title">Results Filters</h4>
-            <button type="button" id="highlight" class="search-filter" value="highlight" title="Highlight Results" data-active="inactive">
-              <img src="{{url_for('static', filename='images/svgs/highlight.svg')}}" height="40" width="40" alt="Highlight Results Button">
-            </button>
+              <div class="search-buttons">
+                <p class="search-options-subtitle">Additional Match Options</p>
+                <button type="button" class="additional-match-option" value="case_sensitivity" title="Case Sensitivity" data-active="inactive">
+                  <img src="{{url_for('static', filename='images/svgs/case-sensitivity-bold.svg')}}" height="45" width="45" alt="RegExp Search Button">
+                </button>
+              </div>
+
+              <div class="search-buttons">
+                <p class="search-options-subtitle">Filter Results</p>
+                <button type="button" id="highlight-btn" class="search-filter" value="highlight" title="Highlight Results" data-active="inactive" disabled>
+                  <img src="{{url_for('static', filename='images/svgs/highlight.svg')}}" height="40" width="40" alt="Highlight Results Button">
+                </button>
+              </div>
+            </div>
           </div>
           
           <button id="search-btn" type="submit"><i class="fa-solid fa-fire-flame-curved fa-xl" style="margin-right: 5px;"></i> Search</button>
 
         </div>
       </div>
-
-        <!-- Disabled for production -->
-        <!-- <div id="warning-banner">
-          <span class="fa fa-exclamation-circle"></span>
-          <p>Warning: You selected the maximum number of results to be shown.<br>Showing all the results is a performance-sensitive operation that can generate much server load.<br>Additionally, depending on the number of results, your browser may crash. Are you sure you want to continue?</p>
-          <button id="continue-btn">Continue</button>
-          <button id="cancel-btn">Cancel</button>
-        </div> -->
 
       </form>
     </div>
@@ -151,9 +159,9 @@
             <table cellspacing="0" cellpadding="0">
               <thead>
                 <tr>
-                  <th>English</th>
-                  <th>Translation</th>
-                  <th>English Definition</th>
+                  <th>English <i class="fa-solid fa-caret-down caret-force-visible"></i><i class="fa-solid fa-caret-up"></i></th>
+                  <th>Translation <i class="fa-solid fa-caret-down"></i><i class="fa-solid fa-caret-up"></i></th>
+                  <th>English Definition <i class="fa-solid fa-caret-down"></i><i class="fa-solid fa-caret-up"></i></th>
                   <th></th> <!-- Empty row for copy button -->
                 </tr>
               </thead>
@@ -168,11 +176,11 @@
             <table cellspacing="0" cellpadding="0">
               <thead>
                 <tr>
-                  <th>English</th>
-                  <th>Translation</th>
-                  <th>String Category</th>
-                  <th>Platform</th>
-                  <th>Product</th>
+                  <th>English <i class="fa-solid fa-caret-down caret-force-visible"></i><i class="fa-solid fa-caret-up"></i></th>
+                  <th>Translation <i class="fa-solid fa-caret-down"></i><i class="fa-solid fa-caret-up"></i></th>
+                  <th>String Category <i class="fa-solid fa-caret-down"></i><i class="fa-solid fa-caret-up"></i></th>
+                  <th>Platform <i class="fa-solid fa-caret-down"></i><i class="fa-solid fa-caret-up"></i></th>
+                  <th>Product <i class="fa-solid fa-caret-down"></i><i class="fa-solid fa-caret-up"></i></th>
                   <th></th> <!-- Empty row for copy button -->
                 </tr>
               </thead>
@@ -186,7 +194,7 @@
         <div id="toast"></div>
       </div>
 
-	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.2.0</a></p></footer>
+	<footer><p><a href="https://edoyen.com/" target="_blank" class="edoyen-link">Enzo Doyen</a> © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.3.0</a></p></footer>
 
   </body>
 </html>

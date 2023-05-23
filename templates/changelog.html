@@ -14,35 +14,80 @@
   <body>
 
     <header>
-    <a href="/" style="text-decoration: none">
-      <h1>
-        <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
-        <span>termic</span>
-      </h1>
-    </a>
+        <h1>
+          <a href="/" id="header-link">
+            <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
+            <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
+          </a>
+        </h1>
     </header>
 
-    <h2 id="changelog-title">Changelog</h2>
+    <h2 id="changelog-title"><img class="clock" src="{{url_for('static', filename='images/svgs/clock.svg')}}" height="60" width="60" alt="RegExp Search Button">Changelog</h2>
+
+    <div id="contact">
+      <p>Is there something you'd like to see added to termic?<br>Please let me know!<br><br>
+        Send feedback to <b class="important">termic [at] edoyen [dot] com</b> or <a href="mailto:termic@edoyen.com?subject=Termic%20Feedback"><button class="contact">click here (mailto)</button></a>
+      </p>
+    </div>
+
+    <hr>
 
     <div class="changelog-container">
-        <h3 id="v1.2.0" class="current">Version 1.2.0</h3>
+      <div class="changelog-version">
+        <h3 id="v1.3.0" class="important">Version 1.3.0</h3>
+        <span class="date">(May 23th, 2023)</span>
+        <div class="changelog-content">
+          <ul>
+              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Column Sorting</b>
+              <ul>
+                <li>Columns can now be sorted ascendingly or descendingly by clicking on their heading.</li>
+                <li>Supports alphanumeric and numeric sorting.</li>
+              </ul>
+              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Case Sensitivity Search Option</b>
+              <ul>
+                  <li>Case sensitivity can now be taken into account when searching.</li>
+                  <li><i>Note: this option is disabled with the RegExp match type.</i></li>
+              </ul>
+              <span class="languages">New languages</span>Added the following languages:
+              <ul>
+                  <li>Arabic</li>
+                  <li>Belarusian</li>
+                  <li>Finnish</li>
+                  <li>Japanese</li>
+                  <li>Korean</li>
+                  <li>Thai</li>
+              </ul>
+              <li>Improvements to the search UI</li>
+              <ul>
+                <li>Increased compactness.</li>
+                <li>Enhanced the "Search Options" section.</li>
+              </ul>
+              <li>More backend improvements</li>
+          </ul>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="changelog-version">
+        <h3 id="v1.2.0">Version 1.2.0</h3>
         <span class="date">(May 20th, 2023)</span>
         <div class="changelog-content">
           <ul>
-              <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">Toggles</b>
+              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Toggles</b>
               <ul>
                 <li>Added toggles for glossary/TM search, enabling to search exclusively within the glossary or the translation memory.</li>
               </ul>
-              <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">Target Language Search</b>
+              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Target Language Search</b>
               <ul>
                   <li>The "Target Language" dropdown now features a search system to help you find your favorite language.</li>
                   <li>This feature was only deployed to non-mobile devices, as mobile devices' default dropdown selectors are already convenient enough, and using the search system on mobile would prove cumbersome.</li>
               </ul>
-              <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">RegExp Search Option</b>
+              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">RegExp Search Option</b>
               <ul>
                   <li>You can now search using <a href="https://xkcd.com/208/" target="_blank" class="normal-link">regular expressions</a>.</li>
               </ul>
-              <span class="languages">NEW LANGUAGES</span>Added the following languages:
+              <span class="languages">New languages</span>Added the following languages:
               <ul>
                   <li>French (Canada)</li>
                   <li>Portuguese (Brazil)</li>
@@ -64,18 +109,18 @@
 
     <hr>
 
-    <div class="changelog-container">
+    <div class="changelog-version">
         <h3 id="v1.1.0">Version 1.1.0</h3>
         <span class="date">(May 17th, 2023)</span>
         <div class="changelog-content">
             <ul>
-                <span class="feature">NEW FEATURE</span><span class="fire"></span><b class="new-title">Copy</b>
+                <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Copy</b>
                 <ul>
                     <li>Added the ability to copy result rows.</li>
                     <li>On non-touchscreen devices, a convenient copy button is now available at the end of each row.</li>
                     <li>On touch-enabled mobile devices, simply double-tap on a row to copy its content. A helpful tip is displayed on touch-enabled mobile devices to guide users.</li>
                 </ul>
-                <span class="languages">NEW LANGUAGES</span>Added the following languages:
+                <span class="languages">New languages</span>Added the following languages:
                 <ul>
                     <li>Bulgarian</li>
                     <li>Chinese (Simplified)</li>
@@ -93,8 +138,9 @@
             </ul>
         </div>
     </div>
+    </div>
 
-	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.2.0</a></p></footer>
+	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.3.0</a></p></footer>
 
   </body>
 </html>
