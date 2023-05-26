@@ -9,7 +9,7 @@ $(function() {
   const cs = urlParams.get("cs"); // Case sensitive?
 
   var targetLang = l || $("#target-lang").val();
-  var searchOption = o || "exact_match" // default value
+  var searchOption = o || "exact_match"; // default value
   var resultCountGl = parseInt($("#result-count-glossary").val());
   var resultCountTm = parseInt($("#result-count-tm").val());
   var caseSensitive = cs || 0; // default value
@@ -53,12 +53,12 @@ $(function() {
   Array.from(searchOptions).forEach(option => {
     $(option).on("click", function() {
       Array.from(searchOptions).forEach(option => {
-          option.dataset.active = "inactive"
-      })
-      this.dataset.active = this.dataset.active == "inactive" ? "active" : "inactive"
-      searchOption = this.value
-    })
-  })
+          option.dataset.active = "inactive";
+      });
+      this.dataset.active = this.dataset.active == "inactive" ? "active" : "inactive";
+      searchOption = this.value;
+    });
+  });
 
   // Result count select handling
   $("select").on("change", function() {
@@ -106,7 +106,7 @@ $(function() {
       showError("Please select at least one search mode.");
     } else {
       request(term, targetLang, resultCountGl, resultCountTm,
-              searchOption, caseSensitive, modes)
+              searchOption, caseSensitive, modes);
     }
   }
 
@@ -125,7 +125,7 @@ $(function() {
     // Update case sensitivity button to active
     $(`button[value='case_sensitivity']`).attr("data-active", "active");
   }
-  
+
   $("#search-form").on("submit", function(e) {
     e.preventDefault();
     if (!modes || modes.length <= 0) {
@@ -137,21 +137,31 @@ $(function() {
       var targetLang = $("#target-lang").val();
       $("#warning-banner").css("display", "none");
       $("#error-banner").css("display", "none");
-      request(term, targetLang, resultCountGl, resultCountTm, 
-              searchOption, caseSensitive, modes)
+      request(term, targetLang, resultCountGl, resultCountTm,
+              searchOption, caseSensitive, modes);
     }
   }});
 });
 
-function request(term, targetLang, resultCountGl=0, resultCountTm=0,
+/**
+ * Request search results from the server
+ * @param {string} term - Term to search for
+ * @param {string} targetLang - Target language
+ * @param {number} resultCountGl - Number of glossary results to return
+ * @param {number} resultCountTm - Number of TM results to return
+ * @param {string} searchOption - Search option (exact_match, unexact_match, regex)
+ * @param {number} caseSensitive - Case sensitivity (0 or 1)
+ * @param {Array} modes - Array of modes to search (glossary, tm)
+ */
+function request(term, targetLang, resultCountGl, resultCountTm,
                 searchOption, caseSensitive, modes) {
   $("#target-lang").prop("disabled", true);
   $("#search-btn").prop("disabled", true);
   $("#loader").css("display", "flex");
   $.ajax({
-    headers: { 
+    headers: {
       "Accept": "application/json",
-      "Content-Type": "application/json" 
+      "Content-Type": "application/json"
     },
     url: "/",
     type: "POST",
@@ -166,12 +176,12 @@ function request(term, targetLang, resultCountGl=0, resultCountTm=0,
       modes: modes
     }),
     success: function(response) {
-      let length_glossary = Object.values(response)[0].length
+      let length_glossary = Object.values(response)[0].length;
       // select last array for length of TM results
-      let length_tm = Object.values(response).slice(-1)[0].length
-      
+      let length_tm = Object.values(response).slice(-1)[0].length;
+
       // Update URL
-      let params = {q: term, l: targetLang, o: searchOption, cs:caseSensitive}; 
+      let params = {q: term, l: targetLang, o: searchOption, cs:caseSensitive};
       let newParams = new URLSearchParams(params);
       const newUrl = window.location.pathname + "?" + newParams.toString();
       window.history.pushState({ path: newUrl }, "", newUrl);
@@ -182,21 +192,22 @@ function request(term, targetLang, resultCountGl=0, resultCountTm=0,
       switch (true) {
         case $("#toggle-glossary").is(":checked") && !$("#toggle-tm").is(":checked"):
           $("#tm-results").css("display", "none");
-          getGlossary(response, length_glossary)
+          getGlossary(response, length_glossary);
           break;
         case !$("#toggle-glossary").is(":checked") && $("#toggle-tm").is(":checked"):
           $("#glossary-results").css("display", "none");
-          getExcerpts(response, length_tm)
+          getExcerpts(response, length_tm);
           break;
         default:
-          getGlossary(response, length_glossary)
-          getExcerpts(response, length_tm)
+          getGlossary(response, length_glossary);
+          getExcerpts(response, length_tm);
       }
 
       $("#results").css("display", "block");
       $("#error-banner").css("display", "none");
       $("#loader").css("display", "none");
-      document.title = `termic :: ${term} (${$("#target-lang option:selected").text()})`
+      document.title =
+      `termic :: ${term} (${$("#target-lang option:selected").text()})`;
     },
     error: function(jqXHR, textStatus, errorThrown) {
       $("#error-banner").css("display", "flex");
@@ -212,12 +223,17 @@ function request(term, targetLang, resultCountGl=0, resultCountTm=0,
       return isTouchDevice() ? activateCopyWithTap() : activateCopyWithBtn();
     }
   });
-};
+}
 
+/**
+ * Get TM results and display them
+ * @param {Response} response - Response from server
+ * @param {number} length - Number of glossary results
+ */
 function getGlossary(response, length) {
   $("#glossary-results").css("display", "block");
   if (length > 0) {
-    console.log("Found " + length + " glossary entries")
+    //console.log("Found " + length + " glossary entries");
     let resultsGl = "";
     for (let i = 0; i < length; i++) {
       resultsGl += `
@@ -249,12 +265,17 @@ function getGlossary(response, length) {
     $("#glossary-results-table").html("<p>No results found in the glossary.</p>");
     $("#glossary-nb").html(` (0 results)`);
   }
-};
+}
 
+/**
+ * Get TM results and display them
+ * @param {Response} response - Response from server
+ * @param {number} length - Number of TM results
+ */
 function getExcerpts(response, length) {
   $("#tm-results").css("display", "block");
   if (length > 0) {
-    console.log("Found " + length + " TM entries")
+    //console.log("Found " + length + " TM entries");
     let resultsTm = "";
     for (let i = 0; i < length; i++) {
       resultsTm += `
@@ -275,9 +296,12 @@ function getExcerpts(response, length) {
     $("#tm-results-table").html("<p>No results found in the translation memory.</p>");
     $("#tm-nb").html(` (0 results)`);
   }
-};
+}
 
-// Highlight results with mark.js
+/**
+ * Highlight results with mark.js
+ * @param {HTMLButtonElement} e - Highlight button
+ */
 function highlightResults(e) {
   if (e.dataset.active == "inactive") {
     e.dataset.active = "active";
@@ -294,16 +318,25 @@ function highlightResults(e) {
   }
 }
 
+/**
+ * Get row content
+ * @param {HTMLTableCellElement} row - Row to get content from
+ * @returns {string} - Row content
+ */
 function getRowContent(row) {
   const cells = Array.from(row.cells);
   const rowContent = cells.map(cell => cell.textContent.trim())
                          .join(" | ")
                          .replace(/\s*\n\s*/g, " ")
-                         .slice(0, -3)
+                         .slice(0, -3);
   return rowContent;
 }
 
-function activateCopyWithBtn() { 
+/**
+ * Activate copy fezture with button on non-touch devices
+ * and devices which width > 480
+ */
+function activateCopyWithBtn() {
   Array.from(document.getElementsByClassName("fa-copy")).forEach(copyButton => {
     $(copyButton).on("click", function() {
       const rowContent = getRowContent(copyButton.closest("tr"));
@@ -316,7 +349,11 @@ function activateCopyWithBtn() {
   });
 }
 
-function activateCopyWithTap() { 
+/**
+ * Activate copy feature with double tap on touch devices
+ * and devices which width <= 480
+ */
+function activateCopyWithTap() {
   let lastTap = 0;
   $(".fa-copy").css("display", "none");
   $("#tip-tap").css("display", "block");
@@ -335,6 +372,10 @@ function activateCopyWithTap() {
   });
 }
 
+/**
+ * Copy row content to clipboard
+ * @param {string} text - Row content to copy
+ */
 function copyToClipboard(text) {
   if (!navigator.clipboard) { // handle deprecated execCommand()
     execCommand("copy", false, text)
@@ -347,6 +388,10 @@ function copyToClipboard(text) {
   }
 }
 
+/**
+ * Show toast to mobile users
+ * @param {string} text - Text to display in toast
+ */
 function showToast(text) {
   let toastTimeout = 0;
   $("#toast").html(text);
@@ -360,7 +405,10 @@ function showToast(text) {
   }, 2000);
 }
 
-// Modified from https://stackoverflow.com/questions/3160277/jquery-table-sort
+/**
+ * Activate sort rows feature
+ * Modified from https://stackoverflow.com/questions/3160277/jquery-table-sort
+ */
 function activateSortRows() {
     $("th").click(function() {
       var table = $(this).parents("table").eq(0);
@@ -372,32 +420,47 @@ function activateSortRows() {
       Array.from(ths).forEach(th => {
         $(th).find(".fa-caret-down").removeClass("caret-force-visible");
         $(th).find(".fa-caret-up").removeClass("caret-force-visible");
-      })
+      });
 
       if (!this.asc) {
-        rows = rows.reverse()
+        rows = rows.reverse();
         $(this).find(".fa-caret-down").addClass("caret-force-visible");
       } else {
         $(this).find(".fa-caret-up").addClass("caret-force-visible");
       }
       for (var i = 0; i < rows.length; i++) {
-        {table.append(rows[i])};
-  }})
+        {table.append(rows[i])}
+  }});
 
+  /**
+   * Compare rows
+   * @param {number} index - Index of the column to sort by
+   * @returns {function} - Comparator function to sort rows by index column
+   */
   function comparer(index) {
     return function(a, b) {
         var valA = getCellValue(a, index);
         var valB = getCellValue(b, index);
         return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB);
-    }
+    };
   }
 
+  /**
+   * Get cell value
+   * @param {HTMLTableCellElement} row - Row to get value from
+   * @param {number} index - Index of the column to get value from
+   * @returns {string}
+   */
   function getCellValue(row, index) {
     return $(row).children("td").eq(index).text();
   }
 }
 
-// https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
+/**
+ * Check if device is touch-enabled
+ * https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
+ * @returns {boolean} - true if the device is touch, false otherwise
+ */
 function isTouchDevice() {
   return ((("ontouchstart" in window) ||
     // temp fix for https://stackoverflow.com/questions/69125308/navigator-maxtouchpoints-256-on-desktop
@@ -406,6 +469,10 @@ function isTouchDevice() {
     (navigator.msMaxTouchPoints > 0)) && window.screen.width <= 480);
 }
 
+/**
+ * Show error banner with text
+ * @param {string} text - Text to display in error banner
+ */
 function showError(text) {
   $("#error-banner").css("display", "flex");
   $("#error-banner #error-msg").html(text);

@@ -1,17 +1,24 @@
-from flask import Flask, request, jsonify, render_template, redirect, send_from_directory
-from config.db_config import conn_string
-import psycopg2
 import os
+from flask import Flask, request, jsonify, render_template, redirect, send_from_directory
+import psycopg2
+from config.db_config import conn_string
 
 app = Flask(__name__, static_folder="static")
 
 @app.before_request
 def enforce_https():
-  if request.headers.get("X-Forwarded-Proto") == "http":
-    url = request.url.replace("http://", "https://", 1)
-    return redirect(url, 301)
+    """
+    Redirect to HTTPS if the request is made over HTTP.
+    https://stackoverflow.com/questions/32237379/python-flask-redirect-to-https-from-http
+    """
+    if request.headers.get("X-Forwarded-Proto") == "http":
+        url = request.url.replace("http://", "https://", 1)
+        return redirect(url, 301)
 
 def db_connect():
+    """
+    Connect to the database with the provied connection string.
+    """
     try:
         # Checking if environment variable exists
         # else, using connection string in config/db_config.py
@@ -26,6 +33,9 @@ def db_connect():
         raise
 
 def define_condition(search_option: str, case_sensitive: int) -> str:
+    """
+    Define the condition to use in the SQL query.
+    """
     match search_option:
         case "unexact_match":
             # Simply escaping % with %% doesn't work,
@@ -37,14 +47,17 @@ def define_condition(search_option: str, case_sensitive: int) -> str:
             condition = "~* %s"
         case _:
             raise ValueError("Invalid result_filter value")
-        
+
     if case_sensitive == 0 and search_option != "regex":
         condition = "I" + condition
-    
+
     return condition
 
 def build_sql_queries(modes: list, target_lang: str,
                     condition: str, result_count: list[int]) -> dict:
+    """
+    Build the SQL query to execute for each mode.
+    """
     sql_queries = {}
     if "glossary" in modes:
         sql_queries["glossary_query"] = f"""SELECT term_en_US, term_{target_lang},
@@ -56,10 +69,13 @@ def build_sql_queries(modes: list, target_lang: str,
         WHERE source_term {condition} LIMIT {result_count["result_count_tm"]};"""
     else:
         raise ValueError("Invalid mode value")
-    
+
     return sql_queries
 
 def search(cur, term: str, queries: dict):
+    """
+    Search the term in the database.
+    """
     if queries.get("glossary_query"):
         print(f"Searching '{term}' in glossary…")
         # %s in sql_query gets replaced with the term
@@ -73,11 +89,14 @@ def search(cur, term: str, queries: dict):
         cur.execute(queries["tm_query"], (term,))
         results_tm = cur.fetchall()
         results_tm = list(zip(*results_tm))
-        
+
     return process_results(results_tm, results_gl)
 
 def process_results(results_tm: list[tuple],
                     results_gl: list[tuple]):
+    """
+    Process the results and return a JSON response.
+    """
     if len(results_gl) > 0:
         gl_source = results_gl[0]
         gl_translation = results_gl[1]
@@ -109,20 +128,32 @@ def process_results(results_tm: list[tuple],
 
 @app.route("/")
 def index():
+    """
+    Render the index page.
+    """
     return render_template("index.html")
 
 @app.route("/changelog/")
 def changelog():
+    """
+    Render the changelog page.
+    """
     return render_template("changelog.html")
 
-# https://stackoverflow.com/questions/4239825/static-files-in-flask-robot-txt-sitemap-xml-mod-wsgi
 @app.route("/robots.txt")
 @app.route("/sitemap.xml")
 def static_from_root():
+    """
+    Serve static files from root.
+    https://stackoverflow.com/questions/4239825/static-files-in-flask-robot-txt-sitemap-xml-mod-wsgi
+    """
     return send_from_directory(app.static_folder, request.path[1:])
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """
+    Render the 404 page.
+    """
     return render_template("404.html"), 404
 
 @app.route("/", methods=["POST", "GET"])
