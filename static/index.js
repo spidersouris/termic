@@ -162,6 +162,7 @@ function request(term, targetLang, resultCountGl, resultCountTm,
                 searchOption, caseSensitive, modes) {
   $("#target-lang").prop("disabled", true);
   $("#search-btn").prop("disabled", true);
+  $("#no-results").css("display", "none");
   $("#loader").css("display", "flex");
   $.ajax({
     headers: {
