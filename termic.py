@@ -59,6 +59,7 @@ def build_sql_queries(modes: list, target_lang: str,
     Build the SQL query to execute for each mode.
     """
     sql_queries = {}
+    print(modes)
     if "glossary" in modes:
         sql_queries["glossary_query"] = f"""SELECT term_en_US, term_{target_lang},
         pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang}
@@ -67,7 +68,7 @@ def build_sql_queries(modes: list, target_lang: str,
         sql_queries["tm_query"] = f"""SELECT source_term, translation,
         string_cat, platform, product FROM excerpts_{target_lang}
         WHERE source_term {condition} LIMIT {result_count["result_count_tm"]};"""
-    else:
+    if any(mode not in ["glossary", "tm"] for mode in modes):
         raise ValueError("Invalid mode value")
 
     return sql_queries
@@ -82,6 +83,8 @@ def search(cur, term: str, queries: dict):
         cur.execute(queries["glossary_query"], (term,))
         results_gl = cur.fetchall()
         results_gl = list(zip(*results_gl))
+    else:
+        results_gl = []
 
     if queries.get("tm_query"):
         print(f"Searching '{term}' in TM…")
@@ -89,6 +92,8 @@ def search(cur, term: str, queries: dict):
         cur.execute(queries["tm_query"], (term,))
         results_tm = cur.fetchall()
         results_tm = list(zip(*results_tm))
+    else:
+        results_tm = []
 
     return process_results(results_tm, results_gl)
 

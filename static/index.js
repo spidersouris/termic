@@ -1,6 +1,8 @@
 const urlParams = new URLSearchParams(window.location.search);
 const searchOptions = document.getElementsByClassName("search-option");
 var isLoading = false;
+var lengthGlossary = 0
+var lengthTm = 0
 
 $(function() {
   const q = urlParams.get("q"); // Query (search term)
@@ -14,6 +16,9 @@ $(function() {
   var resultCountTm = parseInt($("#result-count-tm").val());
   var caseSensitive = cs || 0; // default value
   var modes = ["glossary", "tm"]; // default values
+
+  // Focus search input on page load
+  $("#term").focus();
 
   // Do not use select2 dropdown on mobile devices
   if (!isTouchDevice()) {
@@ -176,9 +181,9 @@ function request(term, targetLang, resultCountGl, resultCountTm,
       modes: modes
     }),
     success: function(response) {
-      let length_glossary = Object.values(response)[0].length;
+      lengthGlossary = Object.values(response)[0].length;
       // select last array for length of TM results
-      let length_tm = Object.values(response).slice(-1)[0].length;
+      lengthTm = Object.values(response).slice(-1)[0].length;
 
       // Update URL
       let params = {q: term, l: targetLang, o: searchOption, cs:caseSensitive};
@@ -187,20 +192,20 @@ function request(term, targetLang, resultCountGl, resultCountTm,
       window.history.pushState({ path: newUrl }, "", newUrl);
 
       // Get results
-      //console.log(Object.values(response))
+      console.log(Object.values(response))
 
       switch (true) {
         case $("#toggle-glossary").is(":checked") && !$("#toggle-tm").is(":checked"):
           $("#tm-results").css("display", "none");
-          getGlossary(response, length_glossary);
+          getGlossary(response, lengthGlossary);
           break;
         case !$("#toggle-glossary").is(":checked") && $("#toggle-tm").is(":checked"):
           $("#glossary-results").css("display", "none");
-          getExcerpts(response, length_tm);
+          getExcerpts(response, lengthTm);
           break;
         default:
-          getGlossary(response, length_glossary);
-          getExcerpts(response, length_tm);
+          getGlossary(response, lengthGlossary);
+          getExcerpts(response, lengthTm);
       }
 
       $("#results").css("display", "block");
@@ -219,8 +224,14 @@ function request(term, targetLang, resultCountGl, resultCountTm,
       $("#target-lang").prop("disabled", false);
       $("#search-btn").prop("disabled", false);
       $("#highlight-btn").prop("disabled", false);
-      activateSortRows();
-      return isTouchDevice() ? activateCopyWithTap() : activateCopyWithBtn();
+      if ((lengthGlossary > 0) || (lengthTm > 0)) {
+        activateSortRows();
+        return isTouchDevice() ? activateCopyWithTap() : activateCopyWithBtn();
+      } else {
+        $("#no-results").css("display", "flex");
+        $("#glossary-results").css("display", "none");
+        $("#tm-results").css("display", "none");
+      }
     }
   });
 }
@@ -231,9 +242,9 @@ function request(term, targetLang, resultCountGl, resultCountTm,
  * @param {number} length - Number of glossary results
  */
 function getGlossary(response, length) {
-  $("#glossary-results").css("display", "block");
   if (length > 0) {
     //console.log("Found " + length + " glossary entries");
+    $("#glossary-results").css("display", "block");
     let resultsGl = "";
     for (let i = 0; i < length; i++) {
       resultsGl += `
@@ -273,9 +284,9 @@ function getGlossary(response, length) {
  * @param {number} length - Number of TM results
  */
 function getExcerpts(response, length) {
-  $("#tm-results").css("display", "block");
   if (length > 0) {
     //console.log("Found " + length + " TM entries");
+    $("#tm-results").css("display", "block");
     let resultsTm = "";
     for (let i = 0; i < length; i++) {
       resultsTm += `
