@@ -1,9 +1,13 @@
 import os
 from flask import Flask, request, jsonify, render_template, redirect, send_from_directory
+from flask_mail import Mail, Message
 import psycopg2
 from config.db_config import conn_string
+from config.mail_config import Config
 
 app = Flask(__name__, static_folder="static")
+app.config.from_object(Config)
+mail = Mail(app)
 
 @app.before_request
 def enforce_https():
@@ -53,21 +57,55 @@ def define_condition(search_option: str, case_sensitive: int) -> str:
 
     return condition
 
-def build_sql_queries(modes: list, target_lang: str,
+def build_sql_queries(modes: list, source_lang: str, target_lang: str,
                     condition: str, result_count: list[int]) -> dict:
     """
     Build the SQL query to execute for each mode.
     """
     sql_queries = {}
-    print(modes)
+    # We consider en_us to be the "default" and filter language
+    # because this is the language from which glossary/TM terms are translated.
     if "glossary" in modes:
-        sql_queries["glossary_query"] = f"""SELECT term_en_US, term_{target_lang},
-        pos_en_US, pos_{target_lang}, def_en_US FROM glossary_{target_lang}
-        WHERE term_en_US {condition} LIMIT {result_count["result_count_gl"]};"""
+        if source_lang == "en_us":
+            sql_queries["glossary_query"] = f"""SELECT term_en_us, term_{target_lang},
+            pos_en_us, pos_{target_lang}, def_en_us FROM glossary_{target_lang}
+            WHERE term_en_us {condition} LIMIT {result_count["result_count_gl"]};"""
+        elif target_lang == "en_us":
+            sql_queries["glossary_query"] = f"""SELECT term_{source_lang}, term_en_us,
+            pos_{source_lang}, pos_en_us, def_en_us FROM glossary_{source_lang}
+            WHERE term_{source_lang} {condition} LIMIT {result_count["result_count_gl"]};"""
+        else:
+            # Join glossary tables based on the English term.
+            # Joining by ID is not possible because the number of terms
+            # in each glossary table is different.
+            sql_queries["glossary_query"] = f"""SELECT term_{source_lang},
+            term_{target_lang}, glossary_{target_lang}.pos_en_US, pos_{target_lang},
+            glossary_{target_lang}.def_en_US FROM glossary_{target_lang}
+            JOIN glossary_{source_lang}
+            ON glossary_{target_lang}.term_en_us = glossary_{source_lang}.term_en_us
+            WHERE term_{source_lang} {condition} LIMIT {result_count["result_count_gl"]};"""
     if "tm" in modes:
-        sql_queries["tm_query"] = f"""SELECT source_term, translation,
-        string_cat, platform, product FROM excerpts_{target_lang}
-        WHERE source_term {condition} LIMIT {result_count["result_count_tm"]};"""
+        if source_lang == "en_us":
+            sql_queries["tm_query"] = f"""SELECT source_term, translation,
+            string_cat, platform, product FROM excerpts_{target_lang}
+            WHERE source_term {condition} LIMIT {result_count["result_count_tm"]};"""
+        elif target_lang == "en_us":
+            # Select translation first so it appears in the "Source" column
+            sql_queries["tm_query"] = f"""SELECT translation, source_term,
+            string_cat, platform, product FROM excerpts_{source_lang}
+            WHERE translation {condition} LIMIT {result_count["result_count_tm"]};"""
+        else:
+            # Join TM tables based on the English ("source") term.
+            # Joining by ID is not possible because the number of terms
+            # in each TM table is different.
+            sql_queries["tm_query"] = f"""SELECT excerpts_{source_lang}.translation,
+            excerpts_{target_lang}.translation, excerpts_{source_lang}.string_cat,
+            excerpts_{source_lang}.platform, excerpts_{source_lang}.product
+            FROM excerpts_{target_lang}
+            JOIN excerpts_{source_lang}
+            ON excerpts_{target_lang}.source_term = excerpts_{source_lang}.source_term
+            WHERE excerpts_{source_lang}.translation {condition}
+            LIMIT {result_count["result_count_tm"]};"""
     if any(mode not in ["glossary", "tm"] for mode in modes):
         raise ValueError("Invalid mode value")
 
@@ -145,6 +183,34 @@ def changelog():
     """
     return render_template("changelog.html")
 
+@app.route("/about/")
+def about():
+    """
+    Render the about page.
+    """
+    return render_template("about.html")
+
+@app.route("/about/", methods=["POST", "GET"])
+def send_message():
+    """
+    Send a message from the contact form.
+    """
+    if request.method == "POST":
+        name = request.json["name"]
+        email = request.json["email"]
+        message = request.json["message"]
+
+        # Send email
+        msg = Message("Message sent from termic contact form",
+                      sender="termic@edoyen.com", recipients=["termic@edoyen.com"])
+        msg.body = f"Name: {name}\nEmail: {email}\n\n{message}"
+        mail.send(msg)
+
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False)
+
+
 @app.route("/robots.txt")
 @app.route("/sitemap.xml")
 def static_from_root():
@@ -167,25 +233,29 @@ def main():
     cur = conn.cursor()
 
     term = request.json["term"] # str: source term input in the search bar
+    source_lang = request.json["source_lang"] # str: source language
     target_lang = request.json["target_lang"] # str: target language
     # dict[str, int]: number of results to return for each mode
-    result_count = {"result_count_gl": request.json["result_count_gl"],
-                    "result_count_tm": request.json["result_count_tm"]}
+    result_count = {"result_count_gl": int(request.json["result_count_gl"]),
+                    "result_count_tm": int(request.json["result_count_tm"])}
     search_option = request.json["search_option"] # str: search option (exact match, unexact match, regex)
-    case_sensitive = request.json["case_sensitive"]
+    case_sensitive = int(request.json["case_sensitive"]) # int: case sensitivity
     modes = request.json["modes"] # list[str]: modes to search in (glossary, TM, both)
 
     print(f"""
     Query: {term}
+    Source lang: {source_lang}
     Target lang: {target_lang}
+    Result count: {result_count}
     Search option: {search_option}
+    Case sensitivity: {case_sensitive}
     Modes: {modes}\n""")
 
     if result_count["result_count_gl"] <= 100 and result_count["result_count_tm"] <= 100:
         # Escape wildcard characters
         term = term.replace("%", "\%").replace("_", "\_")
 
-        sql_queries = build_sql_queries(modes, target_lang,
+        sql_queries = build_sql_queries(modes, source_lang, target_lang,
         define_condition(search_option, case_sensitive), result_count)
 
         response = search(cur, term, sql_queries)

@@ -6,7 +6,6 @@
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: border-color 0.2s ease-in-out;
-  width: 71% !important;
   margin: 0 auto;
   margin-top: 0.5em;
 }

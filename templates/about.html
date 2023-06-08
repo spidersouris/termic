@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>termic :: about</title>
+    <meta name="description" content="A replacement for Microsoft Terminology Search">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="keywords" content="termic, microsoft, terminology, terminology base, translation, localization">
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='about.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+
+    <div id="hamburger-container">
+      <div id="hamburger" class="inactive">
+        <a href="/changelog">Changelog</a>
+        <img id="vertical-line" src="{{url_for('static', filename='images/svgs/vertical-line.svg')}}" height="20" width="20" alt="Right Arrow">
+        <a href="/about">About</a>
+      </div>
+      <i id="hamburger-btn" class="fa fa-bars"></i>
+    </div>
+
+    <header>
+        <h1>
+          <a href="/" id="header-link">
+            <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
+            <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
+          </a>
+        </h1>
+        <div id="links">
+          <ul>
+            <li><a href="/changelog"><img class="clock" src="../static/images/svgs/clock.svg" alt="Changelog Icon" width="40" height="40"><br>Changelog</a></li>
+            <li><a href="/"><i class="fa-solid fa-circle-info"></i><br>About</a></li>
+          </ul>
+        </div>
+    </header>
+
+    <h2 id="about-title"><i class="fa-solid fa-circle-info"></i> About termic</h2>
+
+    <div id="about-content">
+        <p id="about-subtitle"><b>termic</b> is a robust, full-feature replacement for Microsoft Terminology Search, created after Microsoft's announcement to shut down the Microsoft Language Portal on June 30th, 2023.<br><br>With <b>termic</b>, we aim at letting translators and localization specialists from all around the world continue to search this data by offering them an even better search experience.</p>
+        <div id="core-features">
+            <div class="core-features-text">
+                <h3>An improved search experience</h3>
+                <p>termic's search UI has been designed to provide a convenient and simple search experience. Selecting a source and target language is as easy as pie thanks to the <b>dropdown-integrated search bar</b>, and a click is all you need to enable or disable the glossary and TM search modes.</p>
+            </div>
+            <div class="core-features-text">
+                <h3>Filter as you like</h3>
+                <p>The large range of search options offered by termic enables you to find exactly what you're looking for. <b>Limit</b> the number of results to be returned, broaden or narrow you search using <b>match types</b>, and even search using <b>regular expressions</b>.</p>
+            </div>
+            <div class="core-features-text">
+                <h3>New data to search from</h3>
+                <p>termic lets you search exclusive data from Microsoft that was not made available on the Microsoft Language Portal. We extracted and added <b>10,000+</b> strings from Visual Studio Code to termic for <b>14</b> languages (140,000+ strings total), and we plan to update them regularly. More exclusive data sources will be made available in the future.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 id="faq-title">FAQ</h2>
+
+    <div id="faq-content">
+        <h3>Why do I sometimes find fewer results for my language compared to the Microsoft Language Portal?</h3>
+        <p>termic primarily relies on Microsoft-provided files for the translation memory. Unfortunately, these files only contain a part of Microsoft's translation memory and do not include strings from products such as Windows 10/11 or Visual Studio. In addition, these files were last updated in September 2020, and Microsoft has not provided any newer version as yet.<br><br>In order to compensate for the missing data, we're actively working on expanding the database with more strings that Microsoft had not originally included on the Microsoft Language Portal. As of now, we've extracted and added 10,000+ strings from Visual Studio Code for 14 languages. We not only plan to update them regularly to have the latest original strings and translations available, but we also aim at adding more exclusive data sources.<br><br>When it comes to glossaries, though, you should find all the entries previously available on the Microsoft Language Portal for your language. If that is not the case, please report it using the <a href="#contact-form" class="normal-link">contact form</a> below.</p>
+        <h3>Can you add language X?</h3>
+        <p>We're actively working on adding all the languages available on the Microsoft Language Portal. However, if you'd like a specific language to be added in priority, please <a href="#contact-form" class="normal-link">contact us</a> and we'll try to add it as part of termic's next update.</p>
+        <h3>How was data collected?</h3>
+        <p>For more information about data collection, please take a look at the <a href="https://github.com/Spidersouris/termic/blob/main/README.md" href="_blank" class="normal-link">README.md file in termic's GitHub repository</a>.<br><br>Currently, the <a href="https://github.com/Spidersouris/termic-data" target="_blank" class="normal-link">termic-data GitHub repository</a> is not updated as it exceeds GitHub's repository size limit. Stay tuned for information on where to download the updated data.</p>
+        <h3>Can I create my own version of termic with my own data?</h3>
+        <p>Sure! Since termic is entirely open source, you can deploy your own instance of termic using your own database or files.<br>Take a look at the <a href="https://github.com/Spidersouris/termic" target="_blank" class="normal-link">termic GitHub repository</a> for more information.</p>
+        <h3>Can I contribute to termic or help with the development?</h3>
+        <p>We'd be glad to have you contribute to the future of termic. If you're interested, first please take a look at the <a href="https://github.com/Spidersouris/termic" target="_blank" class="normal-link">termic GitHub repository</a> to get a grasp of how things work under the hood. From then, you can fork the project and open a PR to suggest your improvements.</p>
+        <h3>How can I support termic?</h3>
+        <p>First, thank you so much for considering supporting termic. termic is a solo project that was originally created to help a few fellow translators, and seeing other people use it is heartwarming!<br><br>The simplest way of supporting termic is by talking about it around you.<br><br>If you'd like to go one step further, you can also buy me a coffee (figuratively) using the button below. Donations will solely be used to cover the costs of running the server and the production database, as well as the domain name (around €20 total each month). Any donations are highly appreciated and your name will be featured on the website as a thank you.</p>
+        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="edoyen" data-color="rgba(232, 83, 68, 0.8)" data-emoji="🧡" data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="rgba(255, 255, 255, 0.9)" data-coffee-color="#FFDD00" ></script>
+        <h3>How to report a bug, suggest a feature or send general feedback?</h3>
+        <p>Please use the <a href="#contact-form" class="normal-link">contact form</a> below or <a href="https://github.com/Spidersouris/termic/issues" target="_blank" class="normal-link">open an issue on GitHub</a>.<br>The second option is preferred because it makes tracking easier. In addition, your feedback will be public and everyone will be able to discuss it.</p>
+    </div>
+
+    <h2 id="contact-title">Contact</h2>
+
+    <div id="error-banner">
+        <p id="error-msg"></p>
+    </div>
+
+    <div id="info-banner">
+        <p id="info-msg"></p>
+    </div>
+
+    <div id="contact-form">
+        <label>Name<b style="color:#ED212C; font-size: 1.3em;">*</b></label><br>
+        <input type="text" id="name" placeholder="Name"><br><br>
+        <label>Email<b style="color:#ED212C; font-size: 1.3em;">*</b></label><br>
+        <input type="email" id="email" placeholder="Email"><br><br>
+        <label>Message<b style="color:#ED212C; font-size: 1.3em;">*</b></label><br>
+        <textarea name="message" id="message" placeholder="Message"></textarea><br>
+        <button id="send-btn">Send</button>
+    </div>
+
+    <div id="loader"></div>
+
+	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.4.0</a></p></footer>
+
+  </body>
+</html>

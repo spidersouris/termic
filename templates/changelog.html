@@ -8,25 +8,42 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
 
-    <header>
-        <h1>
-          <a href="/" id="header-link">
-            <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
-            <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
-          </a>
-        </h1>
-    </header>
+    <div id="hamburger-container">
+      <div id="hamburger" class="inactive">
+        <a href="/changelog">Changelog</a>
+        <img id="vertical-line" src="{{url_for('static', filename='images/svgs/vertical-line.svg')}}" height="20" width="20" alt="Right Arrow">
+        <a href="/about">About</a>
+      </div>
+      <i id="hamburger-btn" class="fa fa-bars"></i>
+    </div>
 
-    <h2 id="changelog-title"><img class="clock" src="{{url_for('static', filename='images/svgs/clock.svg')}}" height="60" width="60" alt="RegExp Search Button">Changelog</h2>
+    <header>
+      <h1>
+        <a href="/" id="header-link">
+          <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
+          <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
+        </a>
+      </h1>
+      <div id="links">
+        <ul>
+          <li><a href="/changelog"><img class="clock" src="../static/images/svgs/clock.svg" alt="Changelog Icon" width="40" height="40"><br>Changelog</a></li>
+          <li><a href="/about"><i class="fa-solid fa-circle-info"></i><br>About</a></li>
+        </ul>
+      </div>
+  </header>
+
+    <h2 id="changelog-title"><img class="clock" src="{{url_for('static', filename='images/svgs/clock.svg')}}" height="60" width="60" alt="Changelog Icon">Changelog</h2>
 
     <div id="contact">
-      <p>Is there something you'd like to see added to termic?<br>Please let me know!<br><br>
-        Send feedback to <b class="important">termic [at] edoyen [dot] com</b> or <a href="mailto:termic@edoyen.com?subject=Termic%20Feedback"><button class="contact">click here (mailto)</button></a>
+      <p>Is there something you'd like to see added to termic?<br>Please let us know!<br><br>
+        <a href="../about#contact-form"><button class="contact">Send Feedback</button></a>
       </p>
     </div>
 
@@ -34,7 +51,57 @@
 
     <div class="changelog-container">
       <div class="changelog-version">
-        <h3 id="v1.3.1" class="important">Version 1.3.1</h3>
+        <h3 id="v1.4.0" class="important">Version 1.4.0</h3>
+        <span class="date">(May 8th, 2023)</span>
+        <div class="changelog-content">
+          <ul>
+              <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Source Language Dropdown</b>
+              <ul>
+                <li>You can now specify another source language than English.</li>
+              </ul>
+              <span class="changelog-label data">New data</span><b class="data-title">Visual Studio Code Strings</b>
+              <ul>
+                <li>Strings from <a href="https://code.visualstudio.com/" target="_blank" class="normal-link">Visual Studio Code</a> were added to the database.</li>
+                <li>Supports searching to and from the following languages: Czech, English, French, German, Italian, Japanese, Korean, Polish, Portuguese (Brazil), Russian, Simplified Chinese, Spanish (Spain), Traditional Chinese, and Turkish.</li>
+                <li>These strings (unavailable on the Microsoft Language Portal) were extracted from the <a href="https://github.com/microsoft/vscode" target="_blank" class="normal-link">Visual Studio Code GitHub repository</a> (for English) and the <a href="https://github.com/microsoft/vscode-loc" target="_blank" class="normal-link">Visual Studio Code Language Packs GitHub repository</a> (for other languages).</li>
+                <ul>
+                  <li>The Python script used for extraction will be made available publicly as part of termic's next major update.</li>
+                  <ul>
+                    <li>We're also working on finding another solution for hosting data used by termic so that you can use it for your own purposes. Currently, only a part of the data is available in the <a href="https://github.com/spidersouris/termic-data" target="_blank" class="normal-link">termic-data GitHub repository</a>, as the repository exceeds GitHub's repository size limit. More information will be given as part of termic's next major update.</li>
+                  </ul>
+                </ul>
+                <li>We aim at updating translations as well as adding the latest strings as they come on an ongoing basis (ideally at least once a month).</li>
+              </ul>
+              <span class="changelog-label languages">New languages</span>Added the following languages:<br><p>(Our plans are still to add most of the languages supported by Microsoft Terminology Search before the service shuts down on June 30th. We're actively working on streamlining the process so that it gets easier adding new batches of languages.)</p>
+              <ul>
+                <li>Croatian</li>
+                <li>Hebrew</li>
+                <li>Lithuanian</li>
+                <li>Norwegian (Bokmål)</li>
+                <li>Norwegian (Nynorsk)</li>
+                <li>Slovak</li>
+              </ul>
+              <li>Added an <a href="/about" target="_blank" class="normal-link">About</a> page, which includes a FAQ section as well as a contact form</li>
+              <li>Updated the header to include both the "About" and "Changelog" pages</li>
+              <li>Added a banner for showcasing new major updates</li>
+              <li>Added local storage for source language, target language, glossary result count, and TM result count</li>
+              <ul>
+                <li>That means that when you come back to termic, the information you used last time will be pre-selected.</li>
+              </ul>
+              <li>Broad match is now the default match type value</li>
+              <li>Selected source and target languages are now shown below the "Source" and "Translation" headers in the search results table</li>
+              <li>Search UI changes to accomodate for the new source language dropdown</li>
+              <li>Fixed target language dropdown label not updating according to the "l" URL parameter value</li>
+              <li>Fixed case sensitivity constantly applying</li>
+              <li>Fixed mode section appearing even though there were no results being returned</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="changelog-version">
+        <h3 id="v1.3.1">Version 1.3.1</h3>
         <span class="date">(May 31st, 2023)</span>
         <div class="changelog-content">
           <ul>
@@ -45,22 +112,24 @@
         </div>
       </div>
 
+      <hr>
+
       <div class="changelog-version">
         <h3 id="v1.3.0">Version 1.3.0</h3>
         <span class="date">(May 23th, 2023)</span>
         <div class="changelog-content">
           <ul>
-              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Column Sorting</b>
+              <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Column Sorting</b>
               <ul>
                 <li>Columns can now be sorted ascendingly or descendingly by clicking on their heading.</li>
                 <li>Supports alphanumeric and numeric sorting.</li>
               </ul>
-              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Case Sensitivity Search Option</b>
+              <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Case Sensitivity Search Option</b>
               <ul>
                   <li>Case sensitivity can now be taken into account when searching.</li>
                   <li><i>Note: this option is disabled with the RegExp match type.</i></li>
               </ul>
-              <span class="languages">New languages</span>Added the following languages:
+              <span class="changelog-label languages">New languages</span>Added the following languages:
               <ul>
                   <li>Arabic</li>
                   <li>Belarusian</li>
@@ -86,20 +155,20 @@
         <span class="date">(May 20th, 2023)</span>
         <div class="changelog-content">
           <ul>
-              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Toggles</b>
+              <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Toggles</b>
               <ul>
                 <li>Added toggles for glossary/TM search, enabling to search exclusively within the glossary or the translation memory.</li>
               </ul>
-              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Target Language Search</b>
+              <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Target Language Search</b>
               <ul>
                   <li>The "Target Language" dropdown now features a search system to help you find your favorite language.</li>
                   <li>This feature was only deployed to non-mobile devices, as mobile devices' default dropdown selectors are already convenient enough, and using the search system on mobile would prove cumbersome.</li>
               </ul>
-              <span class="feature">New feature</span><span class="fire"></span><b class="new-title">RegExp Search Option</b>
+              <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">RegExp Search Option</b>
               <ul>
                   <li>You can now search using <a href="https://xkcd.com/208/" target="_blank" class="normal-link">regular expressions</a>.</li>
               </ul>
-              <span class="languages">New languages</span>Added the following languages:
+              <span class="changelog-label languages">New languages</span>Added the following languages:
               <ul>
                   <li>French (Canada)</li>
                   <li>Portuguese (Brazil)</li>
@@ -126,13 +195,13 @@
         <span class="date">(May 17th, 2023)</span>
         <div class="changelog-content">
             <ul>
-                <span class="feature">New feature</span><span class="fire"></span><b class="new-title">Copy</b>
+                <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Copy</b>
                 <ul>
                     <li>Added the ability to copy result rows.</li>
                     <li>On non-touchscreen devices, a convenient copy button is now available at the end of each row.</li>
                     <li>On touch-enabled mobile devices, simply double-tap on a row to copy its content. A helpful tip is displayed on touch-enabled mobile devices to guide users.</li>
                 </ul>
-                <span class="languages">New languages</span>Added the following languages:
+                <span class="changelog-label languages">New languages</span>Added the following languages:
                 <ul>
                     <li>Bulgarian</li>
                     <li>Chinese (Simplified)</li>
@@ -152,7 +221,7 @@
     </div>
     </div>
 
-	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.3.1</a></p></footer>
+	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.4.0</a></p></footer>
 
   </body>
 </html>

@@ -1,19 +1,27 @@
+// termicDeployedVersion should only be changed on major releases.
+// We don't want to annoy users with the info banner on every minor release!
+const termicDeployedVersion = 1.4;
 const urlParams = new URLSearchParams(window.location.search);
 const searchOptions = document.getElementsByClassName("search-option");
+var termicStoredVersion = localStorage.getItem("termicStoredVersion");
 var isLoading = false;
 var lengthGlossary = 0
 var lengthTm = 0
 
 $(function() {
   const q = urlParams.get("q"); // Query (search term)
-  const l = urlParams.get("l"); // Target language
+  const sl = urlParams.get("sl"); // Source language
+  const tl = urlParams.get("tl"); // Target language
   const o = urlParams.get("o"); // Search option
+  const rc_gl = urlParams.get("rc_gl"); // Glossary result count
+  const rc_tm = urlParams.get("rc_tm"); // TM result count
   const cs = urlParams.get("cs"); // Case sensitive?
 
-  var targetLang = l || $("#target-lang").val();
-  var searchOption = o || "exact_match"; // default value
-  var resultCountGl = parseInt($("#result-count-glossary").val());
-  var resultCountTm = parseInt($("#result-count-tm").val());
+  var sourceLang = sl || $("#source-lang").val();
+  var targetLang = tl || $("#target-lang").val();
+  var searchOption = o || "unexact_match"; // default value
+  var resultCountGl = rc_gl || parseInt($("#result-count-glossary").val());
+  var resultCountTm = rc_tm || parseInt($("#result-count-tm").val());
   var caseSensitive = cs || 0; // default value
   var modes = ["glossary", "tm"]; // default values
 
@@ -22,10 +30,42 @@ $(function() {
 
   // Do not use select2 dropdown on mobile devices
   if (!isTouchDevice()) {
-    $("#target-lang").select2();
+    $("#source-lang, #target-lang").select2();
   }
 
+  // --- Begining of Local Storage ---
+
+  // Show update banner if termic version is different from stored version
+  if (termicStoredVersion != termicDeployedVersion) {
+    $("#info-banner").css("display", "flex");
+  }
+
+  if ((localStorage.getItem("source-lang")) && (!sl)) {
+    $("#source-lang").val(localStorage.getItem("source-lang")).trigger("change.select2");
+  }
+
+  if ((localStorage.getItem("target-lang")) && (!tl)) {
+    $("#target-lang").val(localStorage.getItem("target-lang")).trigger("change.select2");
+  }
+
+  if ((localStorage.getItem("result-count-glossary")) && (!rc_gl)) {
+    $("#result-count-glossary").val(localStorage.getItem("result-count-glossary")).trigger("change.select2");
+  }
+
+  if ((localStorage.getItem("result-count-tm")) && (!rc_tm)) {
+    $("#result-count-tm").val(localStorage.getItem("result-count-tm")).trigger("change.select2");
+  }
+  // --- End of Local Storage ---
+
   // --- Beginning of Event Listeners ---
+  $("#hamburger-btn").on("click", function() {
+    if ($("#hamburger").hasClass("inactive")) {
+      $("#hamburger").addClass("active").removeClass("inactive");
+    } else {
+      $("#hamburger").addClass("inactive").removeClass("active");
+    }
+  });
+
   $(document).on("select2:open", () => {
     document.querySelector(".select2-search__field").focus();
   });
@@ -41,7 +81,7 @@ $(function() {
       $(resultCountDropdown).prop("disabled", false);
       if (modes.indexOf(mode) === -1) modes.push(mode);
     } else {
-      $($(this).data("target")).css("opacity", "0.5"); 
+      $($(this).data("target")).css("opacity", "0.5");
       $(resultCountDropdown).prop("disabled", true);
       modes.splice(modes.indexOf(mode), 1);
     }
@@ -82,6 +122,11 @@ $(function() {
     $("#error-banner").css("display", "none");
   });
 
+  $("#close-info, #changelog-link").on("click", function() {
+    localStorage.setItem("termicStoredVersion", termicDeployedVersion);
+    $("#info-banner").css("display", "none");
+  });
+
   $(".additional-match-option").on("click", function() {
     if ((this.dataset.active == "inactive") && (this.value == "case_sensitivity")) {
       this.dataset.active = "active";
@@ -104,45 +149,72 @@ $(function() {
   // --- End of Event Listeners ---
 
   if (q) {
-    // Update term input box with the value of the q parameter and launch serch
+    // Update term input box with the value of the q parameter and launch search
     $("#term").val(q);
     var term = $("#term").val();
     if (!modes || modes.length <= 0) {
-      showError("Please select at least one search mode.");
-    } else {
-      request(term, targetLang, resultCountGl, resultCountTm,
+      showBanner("error", "Please select at least one search mode.");
+    } else if (sourceLang == undefined || targetLang == undefined) {
+      showBanner("error", "Please select a source and target language.");
+    } else if (sourceLang == targetLang) {
+      showBanner("error", "Source and target languages cannot be identical.");
+    }
+    else {
+      console.log(caseSensitive)
+      request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
               searchOption, caseSensitive, modes);
     }
   }
 
-  if (l) {
-    // Update target language dropdown with the value of the l parameter
-    $("#target-lang").val(l);
+  if (sl) {
+    // Update target language dropdown with the value of the sl parameter
+    $("#source-lang").val(sl).trigger("change.select2");
   }
 
-  if ((o) && (o != "exact_match")) {
+  if (tl) {
+    // Update target language dropdown with the value of the tl parameter
+    $("#target-lang").val(tl).trigger("change.select2");
+  }
+
+  if (rc_gl) {
+    // Update glossary result count dropdown with the value of the rc_gl parameter
+    $("#result-count-glossary").val(rc_gl).trigger("change.select2");
+  }
+
+  if (rc_tm) {
+    // Update TM result count dropdown with the value of the rc_tm parameter
+    $("#result-count-tm").val(rc_tm).trigger("change.select2");
+  }
+
+  if ((o) && (o != "unexact_match")) {
     // Update buttons to active
-    $(`button[value='exact_match']`).attr("data-active", "inactive");
+    $("button[value='unexact_match']").attr("data-active", "inactive");
     $(`button[value='${o}']`).attr("data-active", "active");
   }
 
   if (cs == 1) {
     // Update case sensitivity button to active
-    $(`button[value='case_sensitivity']`).attr("data-active", "active");
+    $("button[value='case_sensitivity']").attr("data-active", "active");
   }
 
   $("#search-form").on("submit", function(e) {
     e.preventDefault();
+    var term = $("#term").val();
+    var sourceLang = $("#source-lang").val();
+    var targetLang = $("#target-lang").val();
     if (!modes || modes.length <= 0) {
-      showError("Please select at least one search mode.");
-    } else {
+      showBanner("error", "Please select at least one search mode.");
+    } else if (sourceLang == undefined || targetLang == undefined) {
+      showBanner("error", "Please select a source and target language.");
+    } else if (sourceLang == targetLang) {
+      showBanner("error", "Source and target languages cannot be identical.");
+    }
+    else {
     if (!isLoading) {
       isLoading = true;
-      var term = $("#term").val();
-      var targetLang = $("#target-lang").val();
       $("#warning-banner").css("display", "none");
       $("#error-banner").css("display", "none");
-      request(term, targetLang, resultCountGl, resultCountTm,
+      request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
               searchOption, caseSensitive, modes);
     }
   }});
@@ -151,6 +223,7 @@ $(function() {
 /**
  * Request search results from the server
  * @param {string} term - Term to search for
+ * @param {string} sourceLang - Source language
  * @param {string} targetLang - Target language
  * @param {number} resultCountGl - Number of glossary results to return
  * @param {number} resultCountTm - Number of TM results to return
@@ -158,7 +231,7 @@ $(function() {
  * @param {number} caseSensitive - Case sensitivity (0 or 1)
  * @param {Array} modes - Array of modes to search (glossary, tm)
  */
-function request(term, targetLang, resultCountGl, resultCountTm,
+function request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
                 searchOption, caseSensitive, modes) {
   $("#target-lang").prop("disabled", true);
   $("#search-btn").prop("disabled", true);
@@ -174,6 +247,7 @@ function request(term, targetLang, resultCountGl, resultCountTm,
     dataType: "json",
     data: JSON.stringify({
       term: term,
+      source_lang: sourceLang,
       target_lang: targetLang,
       result_count_gl: resultCountGl,
       result_count_tm: resultCountTm,
@@ -187,7 +261,8 @@ function request(term, targetLang, resultCountGl, resultCountTm,
       lengthTm = Object.values(response).slice(-1)[0].length;
 
       // Update URL
-      let params = {q: term, l: targetLang, o: searchOption, cs:caseSensitive};
+      let params = {q: term, sl: sourceLang, tl: targetLang, o: searchOption,
+                    rc_gl: resultCountGl, rc_tm: resultCountTm, cs: caseSensitive};
       let newParams = new URLSearchParams(params);
       const newUrl = window.location.pathname + "?" + newParams.toString();
       window.history.pushState({ path: newUrl }, "", newUrl);
@@ -209,11 +284,25 @@ function request(term, targetLang, resultCountGl, resultCountTm,
           getExcerpts(response, lengthTm);
       }
 
+      let sourceLangText = $("#source-lang option:selected").text()
+      let targetLangText = $("#target-lang option:selected").text()
+
+      // Update table headers with source and target languages
+      $(".source-lang-label").html("[" + sourceLangText + "]");
+      $(".target-lang-label").html("[" + targetLangText + "]");
+
       $("#results").css("display", "block");
       $("#error-banner").css("display", "none");
       $("#loader").css("display", "none");
+
       document.title =
-      `termic :: ${term} (${$("#target-lang option:selected").text()})`;
+      `termic :: ${term} (${sourceLangText} → ${targetLangText})`;
+
+      // Local storage set
+      localStorage.setItem("source-lang", sourceLang);
+      localStorage.setItem("target-lang", targetLang);
+      localStorage.setItem("result-count-glossary", resultCountGl);
+      localStorage.setItem("result-count-tm", resultCountTm);
     },
     error: function(jqXHR, textStatus, errorThrown) {
       $("#error-banner").css("display", "flex");
@@ -225,10 +314,10 @@ function request(term, targetLang, resultCountGl, resultCountTm,
       $("#target-lang").prop("disabled", false);
       $("#search-btn").prop("disabled", false);
       $("#highlight-btn").prop("disabled", false);
-      if ((lengthGlossary > 0) || (lengthTm > 0)) {
+      if (lengthGlossary > 0 || lengthTm > 0) {
         activateSortRows();
         return isTouchDevice() ? activateCopyWithTap() : activateCopyWithBtn();
-      } else {
+      } else if (lengthGlossary == 0 && lengthTm == 0) {
         $("#no-results").css("display", "flex");
         $("#glossary-results").css("display", "none");
         $("#tm-results").css("display", "none");
@@ -238,7 +327,7 @@ function request(term, targetLang, resultCountGl, resultCountTm,
 }
 
 /**
- * Get TM results and display them
+ * Get glossary results and display them
  * @param {Response} response - Response from server
  * @param {number} length - Number of glossary results
  */
@@ -392,7 +481,7 @@ function copyToClipboard(text) {
   if (!navigator.clipboard) { // handle deprecated execCommand()
     execCommand("copy", false, text)
     .then(() => console.log("Row content copied to clipboard"))
-    .catch(error => console.error("Failed to copy row content: ", error)); 
+    .catch(error => console.error("Failed to copy row content: ", error));
   } else {
     navigator.clipboard.writeText(text)
     .then(() => console.log("Row content copied to clipboard"))
@@ -408,7 +497,7 @@ function showToast(text) {
   let toastTimeout = 0;
   $("#toast").html(text);
   $("#toast-container").css("display", "block");
-  $("#toast-container").animate({ opacity: 1 }, 500); 
+  $("#toast-container").animate({ opacity: 1 }, 500);
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
     $("#toast-container").animate({ opacity: 0 }, 500, () => {
@@ -482,10 +571,19 @@ function isTouchDevice() {
 }
 
 /**
- * Show error banner with text
+ * Show banner with text
+ * @param {string} type - Type of banner to show (error, info)
  * @param {string} text - Text to display in error banner
  */
-function showError(text) {
-  $("#error-banner").css("display", "flex");
-  $("#error-banner #error-msg").html(text);
+function showBanner(type, text) {
+  $(`#${type}-banner`).css("display", "flex");
+  $(`#${type}-banner #${type}-msg`).html(text);
+}
+
+/**
+ * Hide banner
+ * @param {string} type - Type of banner to hide (error, info)
+ */
+function hideBanner(type) {
+  $(`#${type}-banner`).css("display", "none");
 }

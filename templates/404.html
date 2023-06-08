@@ -6,9 +6,21 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
   </head>
   <body>
+
+    <div id="hamburger-container">
+      <div id="hamburger" class="inactive">
+        <a href="/changelog">Changelog</a>
+        <img id="vertical-line" src="{{url_for('static', filename='images/svgs/vertical-line.svg')}}" height="20" width="20" alt="Right Arrow">
+        <a href="/about">About</a>
+      </div>
+      <i id="hamburger-btn" class="fa fa-bars"></i>
+    </div>
 
     <header>
       <h1>
@@ -17,13 +29,19 @@
           <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
         </a>
       </h1>
+      <div id="links">
+        <ul>
+          <li><a href="/changelog"><img class="clock" src="../static/images/svgs/clock.svg" alt="Changelog Icon" width="40" height="40"><br>Changelog</a></li>
+          <li><a href="/about"><i class="fa-solid fa-circle-info"></i><br>About</a></li>
+        </ul>
+      </div>
     </header>
 
     <h2>Page not found</h2>
 
     <a href="/" class="home-btn"><button>Go back</button></a>
 
-	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.3.1</a></p></footer>
+	<footer><p>Enzo Doyen © 2023.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v1.4.0</a></p></footer>
 
   </body>
 </html>
