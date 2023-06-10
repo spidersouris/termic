@@ -201,7 +201,7 @@ def send_message():
         message = request.json["message"]
 
         # Send email
-        msg = Message("Message sent from termic contact form",
+        msg = Message(f"Termic Contact Form: Message from {name}",
                       sender="termic@edoyen.com", recipients=["termic@edoyen.com"])
         msg.body = f"Name: {name}\nEmail: {email}\n\n{message}"
         mail.send(msg)

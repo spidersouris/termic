@@ -1,6 +1,8 @@
 // termicDeployedVersion should only be changed on major releases.
 // We don't want to annoy users with the info banner on every minor release!
 const termicDeployedVersion = 1.4;
+const currentYearFooter = new Date().getFullYear();
+const currentVersionFooter = "v1.4.1";
 const urlParams = new URLSearchParams(window.location.search);
 const searchOptions = document.getElementsByClassName("search-option");
 var termicStoredVersion = localStorage.getItem("termicStoredVersion");
@@ -363,8 +365,7 @@ function getGlossary(response, length) {
     $("#glossary-nb").html(` (${length} results)`);
     $("#search-filters-container").css("display", "flex");
   } else {
-    $("#glossary-results-table").html("<p>No results found in the glossary.</p>");
-    $("#glossary-nb").html(` (0 results)`);
+    $("#glossary-results").css("display", "none");
   }
 }
 
@@ -394,8 +395,7 @@ function getExcerpts(response, length) {
     $("#tm-nb").html(` (${length} results)`);
     $("#search-filters-container").css("display", "flex");
   } else {
-    $("#tm-results-table").html("<p>No results found in the translation memory.</p>");
-    $("#tm-nb").html(` (0 results)`);
+    $("#tm-results").css("display", "none");
   }
 }
 
