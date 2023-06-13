@@ -5,6 +5,7 @@ const currentYearFooter = new Date().getFullYear();
 const currentVersionFooter = "v1.4.1";
 const urlParams = new URLSearchParams(window.location.search);
 const searchOptions = document.getElementsByClassName("search-option");
+var hasSeenAnnouncement = localStorage.getItem("hasSeenAnnouncement") || false;
 var termicStoredVersion = localStorage.getItem("termicStoredVersion");
 var isLoading = false;
 var lengthGlossary = 0
@@ -38,7 +39,11 @@ $(function() {
   // --- Begining of Local Storage ---
 
   // Show update banner if termic version is different from stored version
-  if (termicStoredVersion != termicDeployedVersion) {
+  // if (termicStoredVersion != termicDeployedVersion) {
+  //   $("#info-banner").css("display", "flex");
+  // }
+
+  if (hasSeenAnnouncement == false) {
     $("#info-banner").css("display", "flex");
   }
 
@@ -125,7 +130,8 @@ $(function() {
   });
 
   $("#close-info, #changelog-link").on("click", function() {
-    localStorage.setItem("termicStoredVersion", termicDeployedVersion);
+    //localStorage.setItem("termicStoredVersion", termicDeployedVersion);
+    localStorage.setItem("hasSeenAnnouncement", true);
     $("#info-banner").css("display", "none");
   });
 
