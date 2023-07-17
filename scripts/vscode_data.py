@@ -10,7 +10,6 @@ Options:
 -a, --append            Append to existing csv file
 -p, --path              Relative path to VSCode repository. Default: data/src/vs
 -t, --time             Time between GitHub download requests to avoid rate limiting. Default: 1 second
--nd, --no-duplicates     Remove duplicate strings from csv file
 -cm, --check-missing     Check for missing tokens in csv file
 -d, --debug             Show debug messages in terminal
 
@@ -35,7 +34,6 @@ from argparse import ArgumentParser
 
 import requests
 import pandas as pd
-from more_itertools import unique_everseen
 
 #!DATA LAST RETRIEVED: 2023-06-05
 
@@ -47,6 +45,7 @@ CEND = "\33[0m"
 
 # yes this is ugly! blame Microsoft
 ENGLISH_TOKENS_PATTERN = (
+r'(?P<regex0>localize\s*\(\s*(?:"|\')(.*?)(?:"|\')\s*,\s*(?:(["\']))(.*?)(?:\3))|'
 r'(?P<regex1>localize\s*\(\s*(?:"|\')(.*?)(?:"|\')\s*,\s*(?:"|\')(.*?)(?:"|\'))|'
 r'(?P<regex2>localize\s*\((?:{ .*, key: )(?:"|\')(.*)(?:"|\') }, (?:"|\')(.*)(?:"|\'))|'
 r'(?P<regex3>localize\s*\((?:{ key: (?:"|\')(.*?)(?:"|\'), .*, (?:"|\')(.*)(?:"|\')))|'
@@ -55,6 +54,8 @@ r'(?P<regex5>localize\s*\(\n\t*{ key: (?:"|\')(.*?)(?:"|\'), .*\n\t*(?:"|\')(.*)
 r'(?P<regex6>localize\({ key: (?:"|\')(.*?)(?:"|\'), .*\t(?:"|\')(.*)(?:"|\'), \w+)|'
 r'(?P<regex7>localize\({ key: (?:"|\')(.*)(?:"|\'), comment: .*\n\s*(?:"|\')(.*?)(?:"|\'))'
 )
+
+#! Test patterns: https://regex101.com/r/OpTn3m/2
 
 # Key: language code, BCP 47 format
 # Value: language code as found in vscode-loc repo (https://github.com/microsoft/vscode-loc)
@@ -71,7 +72,6 @@ def parse_args():
     parser.add_argument("-a", "--append", action="store_true", help="Append to existing csv file")
     parser.add_argument("-t", "--time", type=int, default=1,
     help="Time between GitHub download requests to avoid rate limiting. Default: 1 second")
-    parser.add_argument("-nd", "--no-duplicates", action="store_true", help="Remove duplicate strings from csv file")
     parser.add_argument("-cm", "--check-missing", action="store_true", help="Check for missing tokens in csv file")
     parser.add_argument("-d", "--debug", action="store_true", help="Show debug messages in terminal")
     return parser.parse_args()
@@ -99,7 +99,7 @@ def main():
 
     if args.append and not os.path.exists(f"exc/merged_exc_{LANG}.csv"):
         raise Exception(f"--append was requested but \
-        exc/merged_exc_{LANG}.csv was not found!\nRun merge_csv.py first.")
+exc/merged_exc_{LANG}.csv was not found!\nRun merge_csv.py first.")
 
     if len(os.listdir(f"{VSCODE_REPO_LOCATION}")) == 0:
         raise Exception(f"""{VSCODE_REPO_LOCATION} is empty!
@@ -139,14 +139,10 @@ def main():
         print("Appending to existing csv file…")
         td.append_translations_to_exc()
 
-    if args.no_duplicates:
-        print("Removing duplicates…")
-        td.remove_duplicates()
-
     if args.check_missing:
         options = {"y": True, "n": False}
         write_option = input("Missing strings check requested… \
-            \nWrite missing tokens to file? (y/n): ").lower()
+\nWrite missing tokens to file? (y/n): ").lower()
         if write_option not in options:
             raise Exception(f"Invalid input: expected one of {options.keys()}")
         else:
@@ -165,10 +161,6 @@ class EnglishData:
     def search_english_strings(self):
         for root, dirs, files in os.walk(f"{VSCODE_REPO_LOCATION}"):
             ts_files = [file for file in files if file.endswith(".ts")]
-            if len(ts_files) == 0:
-                raise Exception(f"No .ts files found in {root}.\n \
-                    Make sure that you have downloaded the entire VSCode repo \
-                    and that the correct VSCode repo location is set.")
             for ts_file in ts_files:
                 with open(os.path.join(root, ts_file)) as f:
                     logging.debug(f"Reading file: {os.path.join(root, ts_file)} \
@@ -176,12 +168,22 @@ class EnglishData:
                     code = f.read()
                     for match in re.finditer(ENGLISH_TOKENS_PATTERN, code):
                         groups = list(filter(lambda x: x is not None, match.groups()))
+                        print(groups)
 
-                        token = groups[1].strip() # skip named capturing group
-                        english_string = groups[2].strip()
-                        logging.debug(f"Match with {CVIOLET}{match.lastgroup}{CEND} \
-                            \nFound token: {CRED}{token}{CEND} \
-                            with string: {CRED}{english_string}{CEND}")
+                        # skip named capturing group
+                        token = groups[1].strip()
+
+                        # skip quote in index 2 (regex0)
+                        # todo: I really need to find a better way of doing this
+                        # todo: This is so /r/programminghorror
+                        if match.lastgroup == "regex0":
+                            english_string = groups[3].strip()
+                        else:
+                            english_string = groups[2].strip()
+
+                        logging.debug(f"Match with {CVIOLET}{match.lastgroup}{CEND} — \
+Found token: {CRED}{token}{CEND} \
+with string: {CRED}{english_string}{CEND}")
                         self.data[token] = english_string
 
         self.process_extensions_english_json()
@@ -195,7 +197,7 @@ class EnglishData:
                 json_data = json.loads(open(os.path.join(root, json_file)).read())
                 self.data = {**self.data, **json_data}
 
-    def generate_english_csv(self, data):
+    def generate_english_csv(self, data: dict):
         with open("csv/en-US.csv", "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["token", "text"])
@@ -211,7 +213,7 @@ class TranslationData:
     def __init__(self):
         self.json_extensions_df = None
 
-    def download_data(data_type):
+    def download_data(self, data_type: str):
         if data_type == "main":
             print(f"Downloading main.i18n.json…")
             response = requests.get(f"https://raw.githubusercontent.com/microsoft/vscode-loc/main/i18n/vscode-language-pack-{LANGS[LANG]}/translations/main.i18n.json")
@@ -220,7 +222,7 @@ class TranslationData:
                 json.dump(response.json(), f)
 
             print(f"main.i18n.json downloaded successfully \
-                and extracted to json/{LANG}/main.i18n.json!")
+and extracted to json/{LANG}/main.i18n.json!")
 
         elif data_type == "extensions":
             with open("vscode_extensions_files.txt", "r", encoding="utf8") as f:
@@ -228,7 +230,7 @@ class TranslationData:
                 for file_name in file_names:
                     if not os.path.exists(f"json/{LANG}/extensions/{file_name}"):
                         print(f"Downloading {file_name}… \
-                            ({file_names.index(file_name) + 1}/{len(file_names)})")
+({file_names.index(file_name) + 1}/{len(file_names)})")
 
                         response = requests.get(f"https://raw.githubusercontent.com/microsoft/vscode-loc/main/i18n/vscode-language-pack-{LANGS[LANG]}/translations/extensions/{file_name}")
 
@@ -236,7 +238,7 @@ class TranslationData:
                             json.dump(response.json(), g)
 
                         print(f"{file_name} downloaded successfully \
-                            and extracted to json/{LANG}/extensions/{file_name}!")
+and extracted to json/{LANG}/extensions/{file_name}!")
 
                         time.sleep(args.time)
 
@@ -264,7 +266,7 @@ class TranslationData:
 
         for i, json_extension in enumerate(json_extensions):
             logging.debug(f"Reading file {json_extension}… \
-            ({i+1}/{len(json_extensions)})")
+({i+1}/{len(json_extensions)})")
             try:
                 with open(json_extension) as json_extension:
                     data = json.load(json_extension)
@@ -284,7 +286,7 @@ class TranslationData:
 
             except Exception as e:
                 raise IOError(f"Error writing file \
-                    merged_extensions_{LANG}.json: {e}")
+merged_extensions_{LANG}.json: {e}")
 
     def read_merged_json(self):
         with open(f"json/{LANG}/merged_extensions_{LANG}.json", "r", encoding="utf8") as f:
@@ -343,30 +345,19 @@ def check_missing_tokens(write_to_file=False):
             for token in missing_english_tokens:
                 f.write(token + "\n")
         print("Missing English tokens written to \
-            missing_tokens/missing_english_tokens.txt")
+missing_tokens/missing_english_tokens.txt")
 
         with open(f"missing_tokens/missing_{LANG}_tokens.txt", "w", newline="") as f:
             for token in missing_target_lang_tokens:
                 f.write(token + "\n")
         print(f"Missing {LANG} tokens written to \
-            missing_tokens/missing_{LANG}_tokens.txt")
+missing_tokens/missing_{LANG}_tokens.txt")
 
     print(f"There are {len(missing_english_tokens)} missing English tokens \
         in {LANG}.csv")
     print(f"There are {len(missing_target_lang_tokens)} missing {LANG} tokens \
         in en-US.csv")
     print(f"Total: {len(missing_total)}")
-
-def remove_duplicates():
-    for root, dirs, files in os.walk("exc"):
-        for f in files:
-            file_name = os.path.splitext(f)[0]
-            print(f"Treating file {f}")
-            os.makedirs("duplicates_removed", exist_ok=True)
-            with open(f"exc/{f}", "r") as f, open(f"exc/duplicates_removed/{file_name}_without_dup.csv", "w") as out_file:
-                out_file.writelines(unique_everseen(f))
-            print(f"File {f} treated successfully \
-                and saved to exc/duplicates_removed/{file_name}_without_dup.csv!")
 
 if __name__ == "__main__":
     main()

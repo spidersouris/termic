@@ -1,4 +1,6 @@
 import os
+import time
+
 from flask import Flask, request, jsonify, render_template, redirect, send_from_directory
 from flask_mail import Mail, Message
 import psycopg2
@@ -58,11 +60,15 @@ def define_condition(search_option: str, case_sensitive: int) -> str:
     return condition
 
 def build_sql_queries(modes: list, source_lang: str, target_lang: str,
-                    condition: str, result_count: list[int]) -> dict:
+                    condition: str, result_count: list[int],
+                    data_period: str) -> dict:
     """
     Build the SQL query to execute for each mode.
     """
     sql_queries = {}
+    # 2020+ tables have no data period suffix
+    if data_period != "2017":
+        data_period = ""
     # We consider en_us to be the "default" and filter language
     # because this is the language from which glossary/TM terms are translated.
     if "glossary" in modes:
@@ -87,24 +93,28 @@ def build_sql_queries(modes: list, source_lang: str, target_lang: str,
     if "tm" in modes:
         if source_lang == "en_us":
             sql_queries["tm_query"] = f"""SELECT source_term, translation,
-            string_cat, platform, product FROM excerpts_{target_lang}
+            string_cat, platform, product FROM excerpts_{target_lang}{data_period}
             WHERE source_term {condition} LIMIT {result_count["result_count_tm"]};"""
         elif target_lang == "en_us":
             # Select translation first so it appears in the "Source" column
             sql_queries["tm_query"] = f"""SELECT translation, source_term,
-            string_cat, platform, product FROM excerpts_{source_lang}
+            string_cat, platform, product FROM excerpts_{source_lang}{data_period}
             WHERE translation {condition} LIMIT {result_count["result_count_tm"]};"""
         else:
             # Join TM tables based on the English ("source") term.
             # Joining by ID is not possible because the number of terms
             # in each TM table is different.
-            sql_queries["tm_query"] = f"""SELECT excerpts_{source_lang}.translation,
-            excerpts_{target_lang}.translation, excerpts_{source_lang}.string_cat,
-            excerpts_{source_lang}.platform, excerpts_{source_lang}.product
-            FROM excerpts_{target_lang}
-            JOIN excerpts_{source_lang}
-            ON excerpts_{target_lang}.source_term = excerpts_{source_lang}.source_term
-            WHERE excerpts_{source_lang}.translation {condition}
+            sql_queries["tm_query"] = f"""SELECT
+            excerpts_{source_lang}{data_period}.translation,
+            excerpts_{target_lang}{data_period}.translation,
+            excerpts_{source_lang}{data_period}.string_cat,
+            excerpts_{source_lang}{data_period}.platform,
+            excerpts_{source_lang}{data_period}.product
+            FROM excerpts_{target_lang}{data_period}
+            JOIN excerpts_{source_lang}{data_period}
+            ON excerpts_{target_lang}{data_period}.source_term =
+            excerpts_{source_lang}{data_period}.source_term
+            WHERE excerpts_{source_lang}{data_period}.translation {condition}
             LIMIT {result_count["result_count_tm"]};"""
     if any(mode not in ["glossary", "tm"] for mode in modes):
         raise ValueError("Invalid mode value")
@@ -200,7 +210,6 @@ def send_message():
         email = request.json["email"]
         message = request.json["message"]
 
-        # Send email
         msg = Message(f"Termic Contact Form: Message from {name}",
                       sender="termic@edoyen.com", recipients=["termic@edoyen.com"])
         msg.body = f"Name: {name}\nEmail: {email}\n\n{message}"
@@ -229,6 +238,7 @@ def page_not_found(e):
 
 @app.route("/", methods=["POST", "GET"])
 def main():
+    start_time = time.time()
     conn = db_connect()
     cur = conn.cursor()
 
@@ -241,6 +251,7 @@ def main():
     search_option = request.json["search_option"] # str: search option (exact match, unexact match, regex)
     case_sensitive = int(request.json["case_sensitive"]) # int: case sensitivity
     modes = request.json["modes"] # list[str]: modes to search in (glossary, TM, both)
+    data_period = request.json["data_period"] # str: data period (2017, 2020+)
 
     print(f"""
     Query: {term}
@@ -249,21 +260,26 @@ def main():
     Result count: {result_count}
     Search option: {search_option}
     Case sensitivity: {case_sensitive}
-    Modes: {modes}\n""")
+    Modes: {modes}
+    Data period: {data_period}\n""")
 
     if result_count["result_count_gl"] <= 100 and result_count["result_count_tm"] <= 100:
         # Escape wildcard characters
         term = term.replace("%", "\%").replace("_", "\_")
 
         sql_queries = build_sql_queries(modes, source_lang, target_lang,
-        define_condition(search_option, case_sensitive), result_count)
+        define_condition(search_option, case_sensitive), result_count, data_period)
 
         response = search(cur, term, sql_queries)
 
-        return response
+        cur.close()
+        conn.close()
 
-    cur.close()
-    conn.close()
+        print(f"Time elapsed: {time.time() - start_time:.2f}s")
+
+        return response
+    else:
+        return jsonify({"msg": "Result count can't be above 100"}), 500
 
 if __name__ == "__main__":
     app.run()

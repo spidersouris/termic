@@ -2,15 +2,17 @@
   <img src="https://github.com/Spidersouris/termic/assets/7102007/9b186166-8fe2-475f-be4b-1bc718a56881">
 </p>
 
-# termic: a replacement for Microsoft Terminology Search
+# termic: an alternative to Microsoft Terminology Search
 
 **A deployed and ready-to-use version of termic is available on [https://termic.me](https://termic.me).**
 
 ## Data Collection
 
+Data used by termic is available for download on [Dropbox](https://www.dropbox.com/sh/5oh21rhlmrp7rip/AAB_F2Q9wboJlopMZVTMKD5Ya?dl=0).
+
 ### Translation Memory
 
-The translation memory was retrieved from [Visual Studio Dev Essentials](https://my.visualstudio.com/downloads?pid=6822) as .csv files. Those files were merged using a custom script, [merge_csv.py, that is available in the termic-data GitHub project](https://github.com/Spidersouris/termic-data/blob/main/scripts/merge_csv.py).
+The 2020+ translation memory was retrieved from [Visual Studio Dev Essentials](https://my.visualstudio.com/downloads?pid=6822) as .csv files. Those files were merged using a custom script, [merge_csv.py, that is available in the termic-data GitHub project](https://github.com/Spidersouris/termic-data/blob/main/scripts/merge_csv.py).
 
 To download Microsoft's translation memory, follow these steps:
 1. Go to [Visual Studio Dev Essentials](https://my.visualstudio.com/downloads?pid=6822).
@@ -18,26 +20,37 @@ To download Microsoft's translation memory, follow these steps:
 3. The link should appear as you start typing; click on it and search.
 4. Choose your language on the right and click on the "Download" button.
 
+In addition, this dataset was expanded with VSCode strings (which are not available in the TM provided by Microsoft). [vscode_data.py](https://github.com/Spidersouris/termic-data/blob/main/scripts/vscode_data.py) was used for extraction.
+
 ### Glossaries
 
 Glossaries were retrieved from [the Microsoft Terminology Collection](https://www.microsoft.com/en-us/language/Terminology). Those are .tbx files that were converted to .xlsx using [Xbench](https://www.xbench.net/).
 
 ## Requirements
 
+### Website
+
 - Python (>=3.10)
 - Flask (>=2.3.1)
 - psycopg2 (>=2.9.6)
 
+### Scripts
+
+- Python (>=3.10)
+- requests (>=2.29.0)
+- pandas (>=2.0.1)
+
 ## Usage
 
 1) `git clone https://github.com/spidersouris/termic.git`
-2) `pip install -r requirements.txt`
-3) `python termic.py`
-4) Go to http://localhost:5000
+2) `cd termic`
+3) `pip install -r requirements.txt`
+4) `python termic.py`
+5) Go to http://localhost:5000
 
 ### Using a database
 
-If you want to run termic locally with the data available on [the termic-data GitHub project page](https://github.com/Spidersouris/termic-data) or with your own terminology data, using a local database is recommended.
+If you want to run termic locally with the data available for download on [Dropbox](https://www.dropbox.com/sh/5oh21rhlmrp7rip/AAB_F2Q9wboJlopMZVTMKD5Ya?dl=0) or with your own terminology data, using a local database is recommended.
 
 You can change the connection string in [config/db_config.py](https://github.com/Spidersouris/termic/blob/main/config/db_config.py) to connect to your database.
 
@@ -59,3 +72,8 @@ You can use [Heroku](https://dashboard.heroku.com/new-app) for deployment.
 1) `heroku login`
 2) `heroku create --app termic`
 3) `git push heroku master`
+
+## Contributors
+
+- [benediktkr](https://github.com/benediktkr)
+- MK

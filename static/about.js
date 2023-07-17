@@ -29,7 +29,7 @@ function sendMessage(name, email, message) {
         message: message
         }),
         success: function() {
-            showBanner("info", "Message sent successfully! We'll get back to you soon.");
+            showBanner("success", "Message sent successfully! We'll get back to you soon.");
         },
         error: function() {
             showBanner("error", "An error occurred. Please try again.");

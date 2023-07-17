@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>termic :: about</title>
-    <meta name="description" content="A replacement for Microsoft Terminology Search">
+    <meta name="description" content="An alternative to Microsoft Terminology Search">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="keywords" content="termic, microsoft, terminology, terminology base, translation, localization">
     <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
@@ -31,7 +31,7 @@
         <h1>
           <a href="/" id="header-link">
             <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
-            <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
+            <span id="logo-title">termic<br><p id="logo-subtitle">An alternative to<br>Microsoft Terminology Search</p></span>
           </a>
         </h1>
         <div id="links">
@@ -45,7 +45,7 @@
     <h2 id="about-title"><i class="fa-solid fa-circle-info"></i> About termic</h2>
 
     <div id="about-content">
-        <p id="about-subtitle"><b>termic</b> is a robust, full-feature replacement for Microsoft Terminology Search, created after Microsoft's announcement to shut down the Microsoft Language Portal on June 30th, 2023.<br><br>With <b>termic</b>, we aim at letting translators and localization specialists from all around the world continue to search this data by offering them an even better search experience.</p>
+        <p id="about-subtitle"><b>termic</b> is a robust, full-feature alternative to Microsoft Terminology Search created after Microsoft's announcement to shut down the Microsoft Language Portal.<br><br>While Microsoft eventually reconsidered their decision and deployed a new version of their search service on July 1st, 2023, <b>termic</b> aims at offering exclusive data and an even better search experience to translators and localization specialists from all around the world.</p>
         <div id="core-features">
             <div class="core-features-text">
                 <h3>An improved search experience</h3>
@@ -62,17 +62,18 @@
         </div>
     </div>
 
-    <h2 id="faq-title">FAQ</h2>
+    <h2 id="faq-title" class="no-margin">FAQ</h2>
 
     <div id="faq-content">
         <h3>Why do I sometimes find fewer results for my language compared to the Microsoft Language Portal?</h3>
-        <p>termic primarily relies on Microsoft-provided files for the translation memory. Unfortunately, these files only contain a part of Microsoft's translation memory and do not include strings from products such as Windows 10/11 or Visual Studio. In addition, these files were last updated in September 2020, and Microsoft has not provided any newer version as yet.<br><br>In order to compensate for the missing data, we're actively working on expanding the database with more strings that Microsoft had not originally included on the Microsoft Language Portal. As of now, we've extracted and added 10,000+ strings from Visual Studio Code for 14 languages. We not only plan to update them regularly to have the latest original strings and translations available, but we also aim at adding more exclusive data sources.<br><br>When it comes to glossaries, though, you should find all the entries previously available on the Microsoft Language Portal for your language. If that is not the case, please report it using the <a href="#contact-form" class="normal-link">contact form</a> below.</p>
+        <p>termic primarily relies on Microsoft-provided files for the translation memory. Translation memory data is split into two periods: <b>2017</b> and <b>2020+</b>. We generally recommend that you search the 2017 dataset as it contains more strings than the 2020+ dataset, including strings from Windows and Visual Studio.</p>
+        <p>Still, there may be missing data for a couple of reasons: 1) the way Microsoft-provided files are formatted complicates the parsing process <a href="blog.edoyen.com/post/new-data-for-termic-and-plans-for-the-future/" target="_blank" class="normal-link">(more info here)</a> and 2) the 2020 files were last updated in September 2020, and Microsoft has not provided any newer version as yet; as a result, newer strings are not included even in the 2020+ dataset.<br><br>In order to compensate for the missing data, we're working on expanding the 2020+ dataset with more strings that Microsoft had not originally included on the Microsoft Language Portal. As of now, we've extracted and added 10,000+ strings from Visual Studio Code for 14 languages. We not only plan to update them regularly to have the latest original strings and translations available, but we also aim at adding more exclusive data sources.<br><br>When it comes to glossaries, though, you should find all the entries previously available on the Microsoft Language Portal for your language. If that is not the case, please report it using the <a href="#contact-form" class="normal-link">contact form</a> below.</p>
         <h3>Can you add language X?</h3>
-        <p>We're actively working on adding all the languages available on the Microsoft Language Portal. However, if you'd like a specific language to be added in priority, please <a href="#contact-form" class="normal-link">contact us</a> and we'll try to add it as part of termic's next update.</p>
+        <p>We're working on progressively adding all the languages available on the Microsoft Language Portal. However, if you'd like a specific language to be added in priority, please <a href="#contact-form" class="normal-link">contact us</a> and we'll try to add it as part of termic's next update.</p>
         <h3>How was data collected?</h3>
-        <p>For more information about data collection, please take a look at the <a href="https://github.com/Spidersouris/termic/blob/main/README.md" target="_blank" class="normal-link">README.md file in termic's GitHub repository</a>.<br><br>Currently, the <a href="https://github.com/Spidersouris/termic-data" target="_blank" class="normal-link">termic-data GitHub repository</a> is not updated as it exceeds GitHub's repository size limit. Stay tuned for information on where to download the updated data.</p>
+        <p>For more information about data collection and how to download this data, please take a look at the <a href="https://github.com/Spidersouris/termic/blob/main/README.md" target="_blank" class="normal-link">README.md file in the termic GitHub repository</a>.</p>
         <h3>Can I create my own version of termic with my own data?</h3>
-        <p>Sure! Since termic is entirely open source, you can deploy your own instance of termic using your own database or files.<br>Take a look at the <a href="https://github.com/Spidersouris/termic" target="_blank" class="normal-link">termic GitHub repository</a> for more information.</p>
+        <p>Sure! Since termic is entirely open source, you can deploy your own instance of termic using termic's data or your own database or files.<br>Take a look at the <a href="https://github.com/Spidersouris/termic" target="_blank" class="normal-link">termic GitHub repository</a> for more information.</p>
         <h3>Can I contribute to termic or help with the development?</h3>
         <p>We'd be glad to have you contribute to the future of termic. If you're interested, first please take a look at the <a href="https://github.com/Spidersouris/termic" target="_blank" class="normal-link">termic GitHub repository</a> to get a grasp of how things work under the hood. From then, you can fork the project and open a PR to suggest your improvements.</p>
         <h3>How to report a bug, suggest a feature or send general feedback?</h3>
@@ -80,16 +81,22 @@
         <h3>How can I support termic?</h3>
         <p>First, thank you so much for considering supporting termic. termic is a solo project that was originally created to help a few fellow translators, and seeing other people use it is heartwarming!<br><br>The simplest way of supporting termic is by talking about it around you.<br><br>If you'd like to go one step further, you can also buy me a coffee (figuratively) using the button below. Donations will solely be used to cover the costs of running the server and the production database, as well as the domain name (around €20 total per month). Any donations are highly appreciated and your name will be featured on the website as a thank you.</p>
         <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="edoyen" data-color="rgba(232, 83, 68, 0.8)" data-emoji="🧡" data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="rgba(255, 255, 255, 0.9)" data-coffee-color="#FFDD00" ></script>
+        <hr>
+        <b>A million thanks to the following donators:</b>
+        <ul class="no-margin donators-list">
+          <li>- <b>Birgitte Sciarretta</b> (€5)</li>
+          <li>- <b>Vesna Morić</b> (€5)</li>
+        </ul>
     </div>
 
     <h2 id="contact-title">Contact</h2>
 
-    <div id="error-banner">
+    <div id="error-banner" class="banner">
         <p id="error-msg"></p>
     </div>
 
-    <div id="info-banner">
-        <p id="info-msg"></p>
+    <div id="success-banner" class="banner">
+        <p id="success-msg"></p>
     </div>
 
     <div id="contact-form">
@@ -104,7 +111,7 @@
 
     <div id="loader"></div>
 
-    <footer><p><a href="https://edoyen.com/" target="_blank" class="edoyen-link">Enzo Doyen</a> © <script>document.write(currentYearFooter);</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog"><script>document.write(currentVersionFooter);</script></a></p></footer>
+    <footer><p><a href="https://edoyen.com/" target="_blank" class="edoyen-link">Enzo Doyen</a> © <script>document.write(currentYearFooter);</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v<script>document.write(currentVersionHTML);</script></a></p></footer>
 
   </body>
 </html>

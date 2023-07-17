@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>termic :: changelog</title>
-    <meta name="description" content="A replacement for Microsoft Terminology Search">
+    <meta name="description" content="An alternative to Microsoft Terminology Search">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="keywords" content="termic, microsoft, terminology, terminology base, translation, localization">
     <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
@@ -28,7 +28,7 @@
       <h1>
         <a href="/" id="header-link">
           <img src="../static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
-          <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
+          <span id="logo-title">termic<br><p id="logo-subtitle">An alternative to<br>Microsoft Terminology Search</p></span>
         </a>
       </h1>
       <div id="links">
@@ -51,7 +51,50 @@
 
     <div class="changelog-container">
       <div class="changelog-version">
-        <h3 id="v1.4.1" class="important">Version 1.4.1</h3>
+        <h3 id="v1.5.0" class="important">Version 1.5.0</h3>
+        <span class="date">(July 17th, 2023)</span>
+        <b class="blog-post">A blog post is associated with this update. <a href="https://blog.edoyen.com/post/new-data-for-termic-and-plans-for-the-future" target="_blank">Click here to read it</a>.</b>
+        <div class="changelog-content">
+          <ul>
+            <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">TM Data Period Option</b>
+            <ul>
+              <li>You can now select a data period when searching the translation memory.</li>
+              <li>Two data periods are available: 2017 and 2020+.</li>
+              <ul>
+                <li>The 2017 data period is currently available for a handful of languages only (VSCode-supported languages minus Turkish). Compatible languages are marked with a <img src="../static/images/svgs/polygon.svg" height="15" width="15" class="polygon">polygon icon.</li>
+                <ul>
+                  <li>It includes a new dataset much wider than that of the 2020+ data period (including Windows and Visual Studio strings). Data is much more consequent but search may take longer.</li>
+                  <li>Support for the 2017 data period will be extended to all languages in the future.</li>
+                </ul>
+                <li>The 2020+ data period is available for all languages.</li>
+                <ul>
+                  <li>It includes the classic dataset that was previously used for searching the translation memory (including exclusive VSCode strings). Data is thus less consequent but search is faster.</li>
+                </ul>
+              </ul>
+            </ul>
+            <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Side-by-side Results</b>
+            <ul>
+              <li>Added an option in the newly labeled "Results Display" section (was previously called "Filter Results") to show the results tables side-by-side rather than vertically.</li>
+              <li>This new display mode is available on large screens only.</li>
+            </ul>
+            <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Swap Languages</b>
+            <ul>
+              <li>Added a button to swap source and target language dropdown selections.</li>
+            </ul>
+            <li>Relabeled from "termic — A replacement for Microsoft Terminology Search" to "termic — An alternative to Microsoft Terminology Search"</li>
+            <li>Added extraction scripts (/scripts folder) and data download link (README.md) to <a href="https://github.com/spidersouris/termic" target="_blank" class="normal-link">termic's GitHub repo</a></li>
+            <li>Added a VSCode icon in the "Products" column of the search results when the string was extracted from VSCode</li>
+            <li>Improvements to the search UI</li>
+            <li>Fixed double tap copy not working on mobile</li>
+            <li>Fixed info message banner appearing below the "Contact" header on the "About" page if the info banner on the main page had not been dismissed</li>
+          </ul>
+        </div>
+      </div>
+
+    <hr>
+
+      <div class="changelog-version">
+        <h3 id="v1.4.1">Version 1.4.1</h3>
         <span class="date">(June 10th, 2023)</span>
         <div class="changelog-content">
           <ul>
@@ -242,7 +285,7 @@
     </div>
     </div>
 
-    <footer><p><a href="https://edoyen.com/" target="_blank" class="edoyen-link">Enzo Doyen</a> © <script>document.write(currentYearFooter);</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog"><script>document.write(currentVersionFooter);</script></a></p></footer>
+    <footer><p><a href="https://edoyen.com/" target="_blank" class="edoyen-link">Enzo Doyen</a> © <script>document.write(currentYearFooter);</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v<script>document.write(currentVersionHTML);</script></a></p></footer>
 
   </body>
 </html>

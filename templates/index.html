@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>termic</title>
-    <meta name="description" content="A replacement for Microsoft Terminology Search">
+    <meta name="description" content="An alternative to Microsoft Terminology Search">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="robots" content="notranslate">
     <meta name="keywords" content="termic, microsoft, terminology, terminology base, translation, localization">
@@ -18,16 +18,16 @@
   </head>
   <body>
 
-    <div id="error-banner">
+    <div id="error-banner" class="banner">
       <i id="close-error" class="fa fa-close"></i>
       <p>An error occurred. Please try again.<br>If the issue persists, please <a href="https://github.com/Spidersouris/termic/issues" target="_blank">open an issue on GitHub</a> and include the error message below:<br>
       <b id="error-msg"></b>
       </p>
     </div>
 
-    <div id="info-banner">
+    <div id="info-banner" class="banner">
       <i id="close-info" class="fa fa-close"></i>
-      <p><b>IMPORTANT:</b>  Microsoft is reverting their decision to completely shut down the Microsoft Language Portal.<br><a href="https://blog.edoyen.com/post/important-announcement-about-termic/" id="changelog-link" target="_blank">Click here to read more about what that means for the future of termic</a>.<br><br><i>(Click on the close button on the left to hide. This banner won't show up again on this device.)</i></p>
+      <p><b>termic <script>document.write(currentVersionHTML);</script></b> is now available! <a href="/changelog" id="changelog-link">Click here to read the changelog</a>.<br><br><i>(Click on the close button on the left to hide. This banner won't show up again on this device.)</i></p>
     </div>
 
     <div id="hamburger-container">
@@ -43,7 +43,7 @@
         <h1>
           <a href="/" id="header-link">
             <img src="static/images/logo.png" width="100px" height="100px" alt="Termic Logo">
-            <span id="logo-title">termic<br><p id="logo-subtitle">A replacement for<br>Microsoft Terminology Search</p></span>
+            <span id="logo-title">termic<br><p id="logo-subtitle">An alternative to<br>Microsoft Terminology Search</p></span>
           </a>
         </h1>
         <div id="links">
@@ -70,48 +70,48 @@
             <option value="be_by">Belarusian</option>
             <option value="bg_bg">Bulgarian</option>
             <option value="ca_es">Catalan</option>
-            <option value="zh_cn">Chinese (Simplified)</option>
-            <option value="zh_tw">Chinese (Traditional)</option>
-            <option value="cs_cz">Czech</option>
+            <option value="zh_cn" data-2017="true" vscode="true">Chinese (Simplified)</option>
+            <option value="zh_tw" data-2017="true" vscode="true">Chinese (Traditional)</option>
+            <option value="cs_cz" data-2017="true" vscode="true">Czech</option>
             <option value="hr_hr">Croatian</option>
             <option value="da_dk">Danish</option>
             <option value="nl_nl">Dutch</option>
-            <option value="en_us">English (United States)</option>
+            <option value="en_us" data-2017="true" vscode="true">English (United States)</option>
             <option value="fi_fi">Finnish</option>
             <option value="fr_ca">French (Canada)</option>
-            <option value="fr_fr">French (France)</option>
+            <option value="fr_fr" data-2017="true" vscode="true">French (France)</option>
             <option value="gl_es">Galician</option>
-            <option value="de_de">German</option>
+            <option value="de_de" data-2017="true" vscode="true">German</option>
             <option value="el_gr">Greek</option>
             <option value="he_il">Hebrew</option>
             <option value="hu_hu">Hungarian</option>
             <option value="is_is">Icelandic</option>
             <option value="id_id">Indonesian</option>
-            <option value="it_it">Italian</option>
-            <option value="ja_jp">Japanese</option>
-            <option value="ko_kr">Korean</option>
+            <option value="it_it" data-2017="true" vscode="true">Italian</option>
+            <option value="ja_jp" data-2017="true" vscode="true">Japanese</option>
+            <option value="ko_kr" data-2017="true" vscode="true">Korean</option>
             <option value="lv_lv">Latvian</option>
             <option value="lt_lt">Lithuanian</option>
             <option value="nb_no">Norwegian (Bokmål)</option>
             <option value="nn_no">Norwegian (Nynorsk)</option>
-            <option value="pl_pl">Polish</option>
-            <option value="pt_br">Portuguese (Brazil)</option>
-            <option value="pt_pt">Portuguese (Portugal)</option>
+            <option value="pl_pl" data-2017="true" vscode="true">Polish</option>
+            <option value="pt_br" data-2017="true" vscode="true">Portuguese (Brazil)</option>
+            <option value="pt_pt" data-2017="true" vscode="true">Portuguese (Portugal)</option>
             <option value="ro_ro">Romanian</option>
-            <option value="ru_ru">Russian</option>
+            <option value="ru_ru" data-2017="true" vscode="true">Russian</option>
             <option value="sk_sk">Slovak</option>
             <option value="es_mx">Spanish (Mexico)</option>
-            <option value="es_es">Spanish (Spain)</option>
+            <option value="es_es" data-2017="true" vscode="true">Spanish (Spain)</option>
             <option value="sv_se">Swedish</option>
             <option value="th_th">Thai</option>
-            <option value="tr_tr">Turkish</option>
+            <option value="tr_tr" vscode="true">Turkish</option>
             <option value="uk_ua">Ukrainian</option>
             <option value="ca_es_valencia">Valencian</option>
             <option value="vi_vn">Vietnamese</option>
           </select>
         </div>
 
-        <img id="lang-right-arrow" src="{{url_for('static', filename='images/svgs/arrow-right.svg')}}" height="35" width="35" alt="Right Arrow">
+        <button id="swap-btn" type="button"><i class="fa-solid fa-right-left"></i></button>
 
         <div id="target-lang-container">
             <label for="target-lang">Target Language</label>
@@ -121,41 +121,41 @@
               <option value="be_by">Belarusian</option>
               <option value="bg_bg">Bulgarian</option>
               <option value="ca_es">Catalan</option>
-              <option value="zh_cn">Chinese (Simplified)</option>
-              <option value="zh_tw">Chinese (Traditional)</option>
-              <option value="cs_cz">Czech</option>
+              <option value="zh_cn" data-2017="true" vscode="true">Chinese (Simplified)</option>
+              <option value="zh_tw" data-2017="true" vscode="true">Chinese (Traditional)</option>
+              <option value="cs_cz" data-2017="true" vscode="true">Czech</option>
               <option value="hr_hr">Croatian</option>
               <option value="da_dk">Danish</option>
               <option value="nl_nl">Dutch</option>
-              <option value="en_us">English (United States)</option>
+              <option value="en_us" data-2017="true" vscode="true">English (United States)</option>
               <option value="fi_fi">Finnish</option>
               <option value="fr_ca">French (Canada)</option>
-              <option value="fr_fr">French (France)</option>
+              <option value="fr_fr" data-2017="true" vscode="true">French (France)</option>
               <option value="gl_es">Galician</option>
-              <option value="de_de">German</option>
+              <option value="de_de" data-2017="true" vscode="true">German</option>
               <option value="el_gr">Greek</option>
               <option value="he_il">Hebrew</option>
               <option value="hu_hu">Hungarian</option>
               <option value="is_is">Icelandic</option>
               <option value="id_id">Indonesian</option>
-              <option value="it_it">Italian</option>
-              <option value="ja_jp">Japanese</option>
-              <option value="ko_kr">Korean</option>
+              <option value="it_it" data-2017="true" vscode="true">Italian</option>
+              <option value="ja_jp" data-2017="true" vscode="true">Japanese</option>
+              <option value="ko_kr" data-2017="true" vscode="true">Korean</option>
               <option value="lv_lv">Latvian</option>
               <option value="lt_lt">Lithuanian</option>
               <option value="nb_no">Norwegian (Bokmål)</option>
               <option value="nn_no">Norwegian (Nynorsk)</option>
-              <option value="pl_pl">Polish</option>
-              <option value="pt_br">Portuguese (Brazil)</option>
-              <option value="pt_pt">Portuguese (Portugal)</option>
+              <option value="pl_pl" data-2017="true" vscode="true">Polish</option>
+              <option value="pt_br" data-2017="true" vscode="true">Portuguese (Brazil)</option>
+              <option value="pt_pt" data-2017="true" vscode="true">Portuguese (Portugal)</option>
               <option value="ro_ro">Romanian</option>
-              <option value="ru_ru">Russian</option>
+              <option value="ru_ru" data-2017="true" vscode="true">Russian</option>
               <option value="sk_sk">Slovak</option>
               <option value="es_mx">Spanish (Mexico)</option>
-              <option value="es_es">Spanish (Spain)</option>
+              <option value="es_es" data-2017="true" vscode="true">Spanish (Spain)</option>
               <option value="sv_se">Swedish</option>
               <option value="th_th">Thai</option>
-              <option value="tr_tr">Turkish</option>
+              <option value="tr_tr" vscode="true">Turkish</option>
               <option value="uk_ua">Ukrainian</option>
               <option value="ca_es_valencia">Valencian</option>
               <option value="vi_vn">Vietnamese</option>
@@ -166,37 +166,37 @@
         <div id="result-filter">
 
           <div id="result-filter-glossary">
-            <input type="checkbox" id="toggle-glossary" class="toggle" data-target="#result-filter-glossary" checked/>
-            <label for="toggle-glossary">Toggle</label>
-            <h3>Glossary</h3>
-            <div id="result-count">
-              <label for="result-count-glossary">Results to show:</label>
+              <input type="checkbox" id="toggle-glossary" class="toggle" data-target="#result-filter-glossary" checked/>
+              <label for="toggle-glossary">Toggle</label>
+              <h3 class="full-text">Glossary</h3>
+              <h3 class="short-text">Gloss.</h3>
+              <h3 class="very-short-text">G</h3>
               <select id="result-count-glossary">
                 <option value="25">25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-            </div>
           </div>
 
           <div id="result-filter-tm">
             <input type="checkbox" id="toggle-tm" class="toggle" data-target="#result-filter-tm" checked/>
             <label for="toggle-tm">Toggle</label>
             <h3 class="full-text">Translation Memory</h3>
-            <h3 class="short-text">TM</h3>
-            <div id="result-count">
-              <label for="result-count-tm">Results to show:</label>
-              <select id="result-count-tm">
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
+            <h3 class="short-text very-short-text">TM</h3>
+            <select id="result-count-tm">
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <div id="period-container">
+              <button type="button" class="period-2017" name="period-button" value="2017"><img src="static/images/svgs/polygon.svg" height="15" width="15" class="polygon">2017</button>
+              <button type="button" class="period-2020" name="period-button" value="2020+" data-active="active">2020+</button>
             </div>
+            <p class="period-description" desc-2017="Search strings from 2017 (including Windows and Visual Studio strings). Data is much more consequent but search may take longer." desc-2020="Search strings from 2020. This dataset is restricted to a few products but includes exclusive strings from VSCode for the compatible languages.">Search strings from 2020. This dataset is restricted to a few products but includes exclusive strings from VSCode for the compatible languages.</p>
           </div>
 
 
           <div id="search-options-container">
-            <h4 id="search-options-title">Search Options</h4>
             <div id="search-buttons-container">
               <div class="search-buttons">
                 <p class="search-options-subtitle">Match Type</p>
@@ -219,9 +219,12 @@
               </div>
 
               <div class="search-buttons">
-                <p class="search-options-subtitle">Filter Results</p>
+                <p class="search-options-subtitle">Results Display</p>
+                <button type="button" id="two-col-btn" class="search-filter" value="two-col" title="Display Results Side by Side" data-active="inactive" disabled>
+                  <img src="{{url_for('static', filename='images/svgs/two-col.svg')}}" height="45" width="45" alt="Display Results Side by Side Button">
+                </button>
                 <button type="button" id="highlight-btn" class="search-filter" value="highlight" title="Highlight Results" data-active="inactive" disabled>
-                  <img src="{{url_for('static', filename='images/svgs/highlight.svg')}}" height="40" width="40" alt="Highlight Results Button">
+                  <img src="{{url_for('static', filename='images/svgs/highlight.svg')}}" height="45" width="45" alt="Highlight Results Button">
                 </button>
               </div>
             </div>
@@ -239,7 +242,7 @@
 
       <span id="tip-tap"><b>Tip</b>: double tap on a row to copy</span>
 
-      <div id="results">
+      <div id="results" class="hidden">
         <div id="glossary-results">
           <h2 id="glossary-title">Glossary <span id="glossary-nb"></span></h2>
           <div id="glossary">
@@ -283,7 +286,7 @@
         <div id="toast"></div>
       </div>
 
-	<footer><p><a href="https://edoyen.com/" target="_blank" class="edoyen-link">Enzo Doyen</a> © <script>document.write(currentYearFooter);</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog"><script>document.write(currentVersionFooter);</script></a></p></footer>
+	<footer><p><a href="https://edoyen.com/" target="_blank" class="edoyen-link">Enzo Doyen</a> © <script>document.write(currentYearFooter);</script>.&nbsp;—&nbsp;<a href="https://github.com/Spidersouris/termic" target="_blank"><i class="fa fa-github fa-xl"></i></a>&nbsp;—&nbsp;<a href="/changelog">v<script>document.write(currentVersionHTML);</script></a></p></footer>
 
   </body>
 </html>
