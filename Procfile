@@ -1,1 +1,1 @@
-web: gunicorn --preload termic:app
+web: gunicorn --preload termic:app --timeout 120
