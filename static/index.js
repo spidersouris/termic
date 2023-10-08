@@ -507,24 +507,20 @@ function activateCopyWithBtn() {
 }
 
 /**
- * Activate copy feature with double tap on touch devices
+ * Activate copy feature with two-finger tap on touch devices
  * and devices which width <= 480
  */
 function activateCopyWithTap() {
-  let lastTap = 0;
   $(".fa-copy").css("display", "none");
   $("#tip-tap").css("display", "block");
   Array.from(document.querySelectorAll("tbody")).forEach(tbody => {
     $(tbody).on("touchstart", function(e) {
-      e.preventDefault();
-      let time = new Date().getTime();
-      const tapInterval = 500; // in ms
-      if (time - lastTap < tapInterval) {
+      e.stopPropagation();
+      if (e.touches.length === 2) {
         const rowContent = getRowContent(e.target.closest("tr"));
         showToast("<p>Row copied</p>");
         copyToClipboard(rowContent);
       }
-      lastTap = time;
     });
   });
 }
@@ -534,15 +530,10 @@ function activateCopyWithTap() {
  * @param {string} text - Row content to copy
  */
 function copyToClipboard(text) {
-  if (!navigator.clipboard) { // handle deprecated execCommand()
-    execCommand("copy", false, text)
-    .then(() => console.log("Row content copied to clipboard"))
-    .catch(error => console.error("Failed to copy row content: ", error));
-  } else {
-    navigator.clipboard.writeText(text)
-    .then(() => console.log("Row content copied to clipboard"))
-    .catch(error => console.error("Failed to copy row content: ", error));
-  }
+  // Reminder: navigator.clipboard requires secure origin!
+  navigator.clipboard.writeText(text)
+  .then(() => console.log("Row content copied to clipboard"))
+  .catch(error => console.error("Failed to copy row content: ", error));
 }
 
 /**
