@@ -61,6 +61,14 @@ Using local data files with termic is far from being ideal. However, if it is yo
 - If you do use pandas, consider converting the .csv and .xlsx files to the [binary feather format](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_feather.html) to reduce disk usage and improve search time. To do so, you can use the [convert_to_feather.py script, that is available in the termic-data GitHub project](https://github.com/Spidersouris/termic-data/blob/main/scripts/convert_to_feather.py).
 - You can use [termic_pandas.py](https://gist.github.com/Spidersouris/e2509906b3a609f87947bc657bffabde) as a basis for your local deployment.
 
+### Mail server
+
+termic comes with Flask-Mail, which means that you can configure a SMTP endpoint to receive messages sent via the contact form (on the /about route by default).
+
+This requires setting up the following environment variables (see [config/mail_config.py](config/mail_config.py) for more information): `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_SENDER`, `MAIL_RECIPIENTS`.
+
+If any of these environment variables are undefined, the mail service will be disabled and users won't be able to send emails.
+
 ## Development
 
 `flask --app termic run --debug`
