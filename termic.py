@@ -266,7 +266,7 @@ def send_message():
 
     if request.method == "POST":
         if not request.json:
-            return jsonify({"msg": "No JSON data provided"}), 400
+            return jsonify({"error": "No JSON data provided"}), 400
 
         name = request.json["name"]
         email = request.json["email"]
@@ -312,7 +312,7 @@ def main():  # pylint: disable=missing-function-docstring
     cur = conn.cursor()
 
     if not request.json:
-        return jsonify({"msg": "No JSON data provided"}), 400
+        return jsonify({"error": "No JSON data provided"}), 400
 
     term = request.json["term"]  # str: source term input in the search bar
     source_lang = request.json["source_lang"]  # str: source language
