@@ -8,3 +8,6 @@ class Config:
     MAIL_PASSWORD = os.getenv("TERMIC_MAIL_PASSWORD", None)
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
+
+    MAIL_SENDER = os.getenv("TERMIC_MAIL_SENDER", None)
+    MAIL_RECIPIENTS = os.getenv("TERMIC_MAIL_RECIPIENTS", None)

@@ -35,7 +35,9 @@ function sendMessage(name, email, message) {
       );
     },
     error: function () {
-      showBanner("error", "An error occurred. Please try again.");
+      const errorMessage =
+        xhr.responseJSON?.error || "An error occurred. Please try again.";
+      showBanner("error", errorMessage);
     },
     complete: function () {
       $("#loader").css("display", "none");
