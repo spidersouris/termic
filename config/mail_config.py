@@ -1,9 +1,10 @@
 import os
 
+
 class Config:
-    MAIL_SERVER = os.environ["TERMIC_MAIL_SERVER"]
-    MAIL_PORT = os.environ["TERMIC_MAIL_PORT"]
-    MAIL_USERNAME = os.environ["TERMIC_MAIL_USERNAME"]
-    MAIL_PASSWORD = os.environ["TERMIC_MAIL_PASSWORD"]
+    MAIL_SERVER = os.getenv("TERMIC_MAIL_SERVER", None)
+    MAIL_PORT = os.getenv("TERMIC_MAIL_PORT", None)
+    MAIL_USERNAME = os.getenv("TERMIC_MAIL_USERNAME", None)
+    MAIL_PASSWORD = os.getenv("TERMIC_MAIL_PASSWORD", None)
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True

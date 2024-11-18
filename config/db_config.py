@@ -1,1 +1,1 @@
-conn_string = "postgres://{user}:{password}@{hostname}:{port}/{database-name}"
+CONN_STRING = "postgres://{user}:{password}@{hostname}:{port}/{database-name}"
