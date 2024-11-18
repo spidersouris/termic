@@ -9,11 +9,11 @@ const searchOptions = document.getElementsByClassName("search-option");
 const periodButtons = document.getElementsByName("period-button");
 var termicStoredVersion = localStorage.getItem("termicStoredVersion");
 var isLoading = false;
-var lengthGlossary = 0
-var lengthTm = 0
+var lengthGlossary = 0;
+var lengthTm = 0;
 var isTwoColumnLayout = false;
 
-$(function() {
+$(function () {
   const q = urlParams.get("q"); // Query (search term)
   const sl = urlParams.get("sl"); // Source language
   const tl = urlParams.get("tl"); // Target language
@@ -30,7 +30,8 @@ $(function() {
   var resultCountTm = rc_tm || parseInt($("#result-count-tm").val());
   var caseSensitive = cs || 0; // default value
   var modes = ["glossary", "tm"]; // default values
-  var dataPeriod = p || $("button[name='period-button'][data-active='active']").val();
+  var dataPeriod =
+    p || $("button[name='period-button'][data-active='active']").val();
 
   // Focus search input on page load
   $("#term").focus();
@@ -39,7 +40,7 @@ $(function() {
     // Do not use select2 dropdown on mobile devices
     $("#source-lang, #target-lang").select2({
       templateResult: appendIcons,
-      templateSelection: appendIcons
+      templateSelection: appendIcons,
     });
   }
 
@@ -48,31 +49,35 @@ $(function() {
   // Show update banner if termic version is different from stored version
   if (termicStoredVersion != termicDeployedVersion) {
     $("#info-banner").css("display", "flex");
- }
-
-  if ((localStorage.getItem("source-lang")) && (!sl)) {
-    $("#source-lang").val(localStorage.getItem("source-lang"))
-    .trigger("change.select2");
   }
 
-  if ((localStorage.getItem("target-lang")) && (!tl)) {
-    $("#target-lang").val(localStorage.getItem("target-lang"))
-    .trigger("change.select2");
+  if (localStorage.getItem("source-lang") && !sl) {
+    $("#source-lang")
+      .val(localStorage.getItem("source-lang"))
+      .trigger("change.select2");
   }
 
-  if ((localStorage.getItem("result-count-glossary")) && (!rc_gl)) {
-    $("#result-count-glossary").val(localStorage.getItem("result-count-glossary"))
-    .trigger("change.select2");
+  if (localStorage.getItem("target-lang") && !tl) {
+    $("#target-lang")
+      .val(localStorage.getItem("target-lang"))
+      .trigger("change.select2");
   }
 
-  if ((localStorage.getItem("result-count-tm")) && (!rc_tm)) {
-    $("#result-count-tm").val(localStorage.getItem("result-count-tm"))
-    .trigger("change.select2");
+  if (localStorage.getItem("result-count-glossary") && !rc_gl) {
+    $("#result-count-glossary")
+      .val(localStorage.getItem("result-count-glossary"))
+      .trigger("change.select2");
+  }
+
+  if (localStorage.getItem("result-count-tm") && !rc_tm) {
+    $("#result-count-tm")
+      .val(localStorage.getItem("result-count-tm"))
+      .trigger("change.select2");
   }
   // --- End of Local Storage ---
 
   // --- Beginning of Event Listeners ---
-  $("#hamburger-btn").on("click", function() {
+  $("#hamburger-btn").on("click", function () {
     if ($("#hamburger").hasClass("inactive")) {
       $("#hamburger").addClass("active").removeClass("inactive");
     } else {
@@ -84,12 +89,12 @@ $(function() {
     document.querySelector(".select2-search__field").focus();
   });
 
-  $(".toggle").on("click", function() {
+  $(".toggle").on("click", function () {
     // Get the name of the associated dropdown to toggle
     // and item to add/remove from modes list (glossary or TM)
     let mode = this.id.split("-")[1];
     let resultCountDropdown = "#result-count-" + mode;
-    let periodButton = "button[name='period-button']"
+    let periodButton = "button[name='period-button']";
 
     if (this.checked) {
       $($(this).data("target")).css("opacity", "1");
@@ -103,7 +108,10 @@ $(function() {
       modes.splice(modes.indexOf(mode), 1);
     }
 
-    if (!$("#toggle-glossary").is(":checked") && !$("#toggle-tm").is(":checked")) {
+    if (
+      !$("#toggle-glossary").is(":checked") &&
+      !$("#toggle-tm").is(":checked")
+    ) {
       $("#search-btn").prop("disabled", true);
     } else {
       $("#search-btn").prop("disabled", false);
@@ -111,54 +119,58 @@ $(function() {
   });
 
   // Search options handling
-  handleButtonsState(searchOptions, option => {
+  handleButtonsState(searchOptions, (option) => {
     searchOption = option.value;
   });
 
   // Period buttons handling
-  handleButtonsState(periodButtons, button => {
+  handleButtonsState(periodButtons, (button) => {
     dataPeriod = button.value;
     periodDesc = $(".period-description");
-    dataPeriod == "2020+" ? periodDesc.text(periodDesc.attr("desc-2020")) :
-    periodDesc.text(periodDesc.attr("desc-2017"))
+    dataPeriod == "2020+"
+      ? periodDesc.text(periodDesc.attr("desc-2020"))
+      : periodDesc.text(periodDesc.attr("desc-2017"));
   });
 
-  $("#target-lang, #source-lang").on("change", function() {
+  $("#target-lang, #source-lang").on("change", function () {
     checkDataPeriodCompatibility();
   });
 
   // Result count select handling
-  $("select#result-count-glossary, select#result-count-tm").on("change", function() {
-    if ($(this).is("#result-count-glossary")) {
-      resultCountGl = parseInt($("#result-count-glossary").val());
-    } else if ($(this).is("#result-count-tm")) {
-      resultCountTm = parseInt($("#result-count-tm").val());
+  $("select#result-count-glossary, select#result-count-tm").on(
+    "change",
+    function () {
+      if ($(this).is("#result-count-glossary")) {
+        resultCountGl = parseInt($("#result-count-glossary").val());
+      } else if ($(this).is("#result-count-tm")) {
+        resultCountTm = parseInt($("#result-count-tm").val());
+      }
     }
-  });
+  );
 
-  $("#highlight-btn").on("click", function() {
+  $("#highlight-btn").on("click", function () {
     highlightResults(this);
   });
 
-  $("#two-col-btn").on("click", function() {
-    if (!(isTouchDevice())) {
+  $("#two-col-btn").on("click", function () {
+    if (!isTouchDevice()) {
       switchResultsLayout();
     } else {
       showToast("Two-column layout not available on mobile devices");
     }
   });
 
-  $("#close-error").on("click", function() {
+  $("#close-error").on("click", function () {
     $("#error-banner").css("display", "none");
   });
 
-  $("#close-info, #changelog-link").on("click", function() {
+  $("#close-info, #changelog-link").on("click", function () {
     localStorage.setItem("termicStoredVersion", termicDeployedVersion);
     $("#info-banner").css("display", "none");
   });
 
-  $(".additional-match-option").on("click", function() {
-    if ((this.dataset.active == "inactive") && (this.value == "case_sensitivity")) {
+  $(".additional-match-option").on("click", function () {
+    if (this.dataset.active == "inactive" && this.value == "case_sensitivity") {
       this.dataset.active = "active";
       caseSensitive = 1;
     } else {
@@ -167,17 +179,29 @@ $(function() {
     }
   });
 
-  $(".search-option[value='regex']").on("click", function() {
-    $(".additional-match-option[value='case_sensitivity']").prop("disabled", true);
-    $(".additional-match-option[value='case_sensitivity']").prop("title", "Case Sensitivity is not available for RegExp searches");
+  $(".search-option[value='regex']").on("click", function () {
+    $(".additional-match-option[value='case_sensitivity']").prop(
+      "disabled",
+      true
+    );
+    $(".additional-match-option[value='case_sensitivity']").prop(
+      "title",
+      "Case Sensitivity is not available for RegExp searches"
+    );
   });
 
-  $(".search-option:not([value='regex'])").on("click", function() {
-    $(".additional-match-option[value='case_sensitivity']").prop("disabled", false);
-    $(".additional-match-option[value='case_sensitivity']").prop("title", "Case Sensitivity");
+  $(".search-option:not([value='regex'])").on("click", function () {
+    $(".additional-match-option[value='case_sensitivity']").prop(
+      "disabled",
+      false
+    );
+    $(".additional-match-option[value='case_sensitivity']").prop(
+      "title",
+      "Case Sensitivity"
+    );
   });
 
-  $("#swap-btn").on("click", function() {
+  $("#swap-btn").on("click", function () {
     swapLanguages();
   });
   // --- End of Event Listeners ---
@@ -192,10 +216,18 @@ $(function() {
       showBanner("error", "Please select a source and target language.");
     } else if (sourceLang == targetLang) {
       showBanner("error", "Source and target languages cannot be identical.");
-    }
-    else {
-      request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
-              searchOption, caseSensitive, modes, dataPeriod);
+    } else {
+      request(
+        term,
+        sourceLang,
+        targetLang,
+        resultCountGl,
+        resultCountTm,
+        searchOption,
+        caseSensitive,
+        modes,
+        dataPeriod
+      );
     }
   }
 
@@ -219,7 +251,7 @@ $(function() {
     $("#result-count-tm").val(rc_tm).trigger("change.select2");
   }
 
-  if ((o) && (o != "unexact_match")) {
+  if (o && o != "unexact_match") {
     // Update match type buttons to active
     $("button[value='unexact_match']").attr("data-active", "inactive");
     $(`button[value='${o}']`).attr("data-active", "active");
@@ -232,11 +264,11 @@ $(function() {
 
   if (p) {
     // Update period buttons to active
-    periodButtons.forEach(b => $(b).attr("data-active", "inactive"));
+    periodButtons.forEach((b) => $(b).attr("data-active", "inactive"));
     $(`button[value='${p}']`).attr("data-active", "active");
   }
 
-  $("#search-form").on("submit", function(e) {
+  $("#search-form").on("submit", function (e) {
     e.preventDefault();
     var term = $("#term").val();
     var sourceLang = $("#source-lang").val();
@@ -247,16 +279,25 @@ $(function() {
       showBanner("error", "Please select a source and target language.");
     } else if (sourceLang == targetLang) {
       showBanner("error", "Source and target languages cannot be identical.");
+    } else {
+      if (!isLoading) {
+        isLoading = true;
+        $("#warning-banner").css("display", "none");
+        $("#error-banner").css("display", "none");
+        request(
+          term,
+          sourceLang,
+          targetLang,
+          resultCountGl,
+          resultCountTm,
+          searchOption,
+          caseSensitive,
+          modes,
+          dataPeriod
+        );
+      }
     }
-    else {
-    if (!isLoading) {
-      isLoading = true;
-      $("#warning-banner").css("display", "none");
-      $("#error-banner").css("display", "none");
-      request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
-              searchOption, caseSensitive, modes, dataPeriod);
-    }
-  }});
+  });
 });
 
 /**
@@ -271,16 +312,25 @@ $(function() {
  * @param {Array} modes - Array of modes to search (glossary, tm)
  * @param {string} dataPeriod - Data period (2017, 2020+)
  */
-function request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
-                searchOption, caseSensitive, modes, dataPeriod) {
+function request(
+  term,
+  sourceLang,
+  targetLang,
+  resultCountGl,
+  resultCountTm,
+  searchOption,
+  caseSensitive,
+  modes,
+  dataPeriod
+) {
   $("#target-lang").prop("disabled", true);
   $("#search-btn").prop("disabled", true);
   $("#no-results").css("display", "none");
   $("#loader").css("display", "flex");
   $.ajax({
     headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json"
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     url: "/",
     type: "POST",
@@ -294,30 +344,39 @@ function request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
       search_option: searchOption,
       case_sensitive: caseSensitive,
       modes: modes,
-      data_period: dataPeriod
+      data_period: dataPeriod,
     }),
-    success: function(response) {
+    success: function (response) {
       lengthGlossary = Object.values(response)[0].length;
       // select last array for length of TM results
       lengthTm = Object.values(response).slice(-1)[0].length;
 
       // Update URL
-      let params = {q: term, sl: sourceLang, tl: targetLang, o: searchOption,
-                    rc_gl: resultCountGl, rc_tm: resultCountTm,
-                    cs: caseSensitive, p: dataPeriod};
+      let params = {
+        q: term,
+        sl: sourceLang,
+        tl: targetLang,
+        o: searchOption,
+        rc_gl: resultCountGl,
+        rc_tm: resultCountTm,
+        cs: caseSensitive,
+        p: dataPeriod,
+      };
       let newParams = new URLSearchParams(params);
       const newUrl = window.location.pathname + "?" + newParams.toString();
       window.history.pushState({ path: newUrl }, "", newUrl);
 
       // Get results
-      console.log(Object.values(response))
+      console.log(Object.values(response));
 
       switch (true) {
-        case $("#toggle-glossary").is(":checked") && !$("#toggle-tm").is(":checked"):
+        case $("#toggle-glossary").is(":checked") &&
+          !$("#toggle-tm").is(":checked"):
           $("#tm-results").css("display", "none");
           getGlossary(response, lengthGlossary);
           break;
-        case !$("#toggle-glossary").is(":checked") && $("#toggle-tm").is(":checked"):
+        case !$("#toggle-glossary").is(":checked") &&
+          $("#toggle-tm").is(":checked"):
           $("#glossary-results").css("display", "none");
           getExcerpts(response, lengthTm, dataPeriod);
           break;
@@ -326,8 +385,8 @@ function request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
           getExcerpts(response, lengthTm, dataPeriod);
       }
 
-      let sourceLangText = $("#source-lang option:selected").text()
-      let targetLangText = $("#target-lang option:selected").text()
+      let sourceLangText = $("#source-lang option:selected").text();
+      let targetLangText = $("#target-lang option:selected").text();
 
       // Update table headers with source and target languages
       $(".source-lang-label").html("[" + sourceLangText + "]");
@@ -339,8 +398,7 @@ function request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
       $("#error-banner").css("display", "none");
       $("#loader").css("display", "none");
 
-      document.title =
-      `termic :: ${term} (${sourceLangText} → ${targetLangText})`;
+      document.title = `termic :: ${term} (${sourceLangText} → ${targetLangText})`;
 
       // Local storage set
       localStorage.setItem("source-lang", sourceLang);
@@ -348,19 +406,22 @@ function request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
       localStorage.setItem("result-count-glossary", resultCountGl);
       localStorage.setItem("result-count-tm", resultCountTm);
     },
-    error: function(jqXHR, textStatus, errorThrown) {
+    error: function (jqXHR, textStatus, errorThrown) {
       let errMsg = JSON.parse(jqXHR.responseText).msg;
 
       $("#error-banner").css("display", "flex");
-      $("#error-banner #error-msg").html(textStatus+": "+errorThrown+" — "+errMsg);
+      $("#error-banner #error-msg").html(
+        textStatus + ": " + errorThrown + " — " + errMsg
+      );
       $("#loader").css("display", "none");
     },
-    complete: function() { // fix bug that prevents new search
+    complete: function () {
+      // fix bug that prevents new search
       isLoading = false;
       $("#target-lang").prop("disabled", false);
       $("#search-btn").prop("disabled", false);
       $("#highlight-btn").prop("disabled", false);
-      $("#two-col-btn").prop("disabled", false)
+      $("#two-col-btn").prop("disabled", false);
       if (lengthGlossary > 0 || lengthTm > 0) {
         activateSortRows();
 
@@ -370,16 +431,15 @@ function request(term, sourceLang, targetLang, resultCountGl, resultCountTm,
         // We're fake-disabling the button by adding some "disabled" style
         // instead of using prop because we still want the button to be clickable
         // for the toast to appear
-        return isTouchDevice() ?
-        (activateCopyWithTap(), $("#two-col-btn").addClass("disabled")) :
-        (activateCopyWithBtn())
-
+        return isTouchDevice()
+          ? (activateCopyWithTap(), $("#two-col-btn").addClass("disabled"))
+          : activateCopyWithBtn();
       } else if (lengthGlossary == 0 && lengthTm == 0) {
         $("#no-results").css("display", "flex");
         $("#glossary-results").css("display", "none");
         $("#tm-results").css("display", "none");
       }
-    }
+    },
   });
 }
 
@@ -398,24 +458,27 @@ function getGlossary(response, length) {
         <tr>
           <td data-attribute="source">${response.gl_source[i]}<br>
             <i>(${response.gl_source_pos[i]
-                .substring(response.gl_source_pos[i].indexOf(":") + 1)
-                .trim().toLowerCase()})</i>
+              .substring(response.gl_source_pos[i].indexOf(":") + 1)
+              .trim()
+              .toLowerCase()})</i>
           </td>
 
           <td>${response.gl_translation[i]}<br>
             <i>(${response.gl_target_pos[i]
-                .substring(response.gl_target_pos[i].indexOf(":") + 1)
-                .trim().toLowerCase()})</i>
+              .substring(response.gl_target_pos[i].indexOf(":") + 1)
+              .trim()
+              .toLowerCase()})</i>
           </td>
 
           <td>${response.gl_source_def[i]
-              .substring(response.gl_source_def[i].indexOf(":") + 1).trim()}
+            .substring(response.gl_source_def[i].indexOf(":") + 1)
+            .trim()}
           </td>
 
           <td><i class="fa-solid fa-copy"></i></td>
         </tr>
       `;
-  }
+    }
     $("#glossary-results-table").html(resultsGl);
     $("#glossary-nb").html(` (${length} results)`);
     $("#search-filters-container").css("display", "flex");
@@ -445,7 +508,7 @@ function getExcerpts(response, length, dataPeriod) {
           <td><i class="fa-solid fa-copy"></i></td>
         </tr>
       `;
-  }
+    }
     $("#tm-results-table").html(resultsTm);
     $("#tm-nb").html(` (${dataPeriod} | ${length} results)`);
     $("#search-filters-container").css("display", "flex");
@@ -465,9 +528,9 @@ function highlightResults(e) {
     let keyword = $("#term").val();
 
     $("td[data-attribute='source']").unmark({
-      done: function() {
+      done: function () {
         $("td[data-attribute='source']").mark(keyword);
-      }
+      },
     });
   } else {
     $("td[data-attribute='source']").unmark();
@@ -482,10 +545,11 @@ function highlightResults(e) {
  */
 function getRowContent(row) {
   const cells = Array.from(row.cells);
-  const rowContent = cells.map(cell => cell.textContent.trim())
-                         .join(" | ")
-                         .replace(/\s*\n\s*/g, " ")
-                         .slice(0, -3);
+  const rowContent = cells
+    .map((cell) => cell.textContent.trim())
+    .join(" | ")
+    .replace(/\s*\n\s*/g, " ")
+    .slice(0, -3);
   return rowContent;
 }
 
@@ -494,16 +558,18 @@ function getRowContent(row) {
  * and devices which width > 480
  */
 function activateCopyWithBtn() {
-  Array.from(document.getElementsByClassName("fa-copy")).forEach(copyButton => {
-    $(copyButton).on("click", function() {
-      const rowContent = getRowContent(copyButton.closest("tr"));
-      copyToClipboard(rowContent);
-      $(copyButton).addClass("copied");
-      setTimeout(() => {
-        $(copyButton).removeClass("copied");
-      }, 2000);
-    });
-  });
+  Array.from(document.getElementsByClassName("fa-copy")).forEach(
+    (copyButton) => {
+      $(copyButton).on("click", function () {
+        const rowContent = getRowContent(copyButton.closest("tr"));
+        copyToClipboard(rowContent);
+        $(copyButton).addClass("copied");
+        setTimeout(() => {
+          $(copyButton).removeClass("copied");
+        }, 2000);
+      });
+    }
+  );
 }
 
 /**
@@ -513,8 +579,8 @@ function activateCopyWithBtn() {
 function activateCopyWithTap() {
   $(".fa-copy").css("display", "none");
   $("#tip-tap").css("display", "block");
-  Array.from(document.querySelectorAll("tbody")).forEach(tbody => {
-    $(tbody).on("touchstart", function(e) {
+  Array.from(document.querySelectorAll("tbody")).forEach((tbody) => {
+    $(tbody).on("touchstart", function (e) {
       e.stopPropagation();
       if (e.touches.length === 2) {
         const rowContent = getRowContent(e.target.closest("tr"));
@@ -531,9 +597,10 @@ function activateCopyWithTap() {
  */
 function copyToClipboard(text) {
   // Reminder: navigator.clipboard requires secure origin!
-  navigator.clipboard.writeText(text)
-  .then(() => console.log("Row content copied to clipboard"))
-  .catch(error => console.error("Failed to copy row content: ", error));
+  navigator.clipboard
+    .writeText(text)
+    .then(() => console.log("Row content copied to clipboard"))
+    .catch((error) => console.error("Failed to copy row content: ", error));
 }
 
 /**
@@ -558,27 +625,33 @@ function showToast(text) {
  * Modified from https://stackoverflow.com/questions/3160277/jquery-table-sort
  */
 function activateSortRows() {
-    $("th").click(function() {
-      var table = $(this).parents("table").eq(0);
-      var ths = table.find("th");
-      var rows = table.find("tr:gt(0)").toArray().sort(comparer($(this).index()));
-      this.asc = !this.asc;
+  $("th").click(function () {
+    var table = $(this).parents("table").eq(0);
+    var ths = table.find("th");
+    var rows = table
+      .find("tr:gt(0)")
+      .toArray()
+      .sort(comparer($(this).index()));
+    this.asc = !this.asc;
 
-      // Clear existing carets
-      Array.from(ths).forEach(th => {
-        $(th).find(".fa-caret-down").removeClass("caret-force-visible");
-        $(th).find(".fa-caret-up").removeClass("caret-force-visible");
-      });
+    // Clear existing carets
+    Array.from(ths).forEach((th) => {
+      $(th).find(".fa-caret-down").removeClass("caret-force-visible");
+      $(th).find(".fa-caret-up").removeClass("caret-force-visible");
+    });
 
-      if (!this.asc) {
-        rows = rows.reverse();
-        $(this).find(".fa-caret-down").addClass("caret-force-visible");
-      } else {
-        $(this).find(".fa-caret-up").addClass("caret-force-visible");
+    if (!this.asc) {
+      rows = rows.reverse();
+      $(this).find(".fa-caret-down").addClass("caret-force-visible");
+    } else {
+      $(this).find(".fa-caret-up").addClass("caret-force-visible");
+    }
+    for (var i = 0; i < rows.length; i++) {
+      {
+        table.append(rows[i]);
       }
-      for (var i = 0; i < rows.length; i++) {
-        {table.append(rows[i])}
-  }});
+    }
+  });
 
   /**
    * Compare rows
@@ -586,10 +659,12 @@ function activateSortRows() {
    * @returns {function} - Comparator function to sort rows by index column
    */
   function comparer(index) {
-    return function(a, b) {
-        var valA = getCellValue(a, index);
-        var valB = getCellValue(b, index);
-        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB);
+    return function (a, b) {
+      var valA = getCellValue(a, index);
+      var valB = getCellValue(b, index);
+      return $.isNumeric(valA) && $.isNumeric(valB)
+        ? valA - valB
+        : valA.toString().localeCompare(valB);
     };
   }
 
@@ -610,11 +685,14 @@ function activateSortRows() {
  * @returns {boolean} - true if the device is touch, false otherwise
  */
 function isTouchDevice() {
-  return ((("ontouchstart" in window) ||
-    // temp fix for https://stackoverflow.com/questions/69125308/navigator-maxtouchpoints-256-on-desktop
-    (navigator.maxTouchPoints > 0) && (navigator.maxTouchPoints != 256) ||
-    // if the screen is >480, there's enough space for the copy button; no need to activate touch mode
-    (navigator.msMaxTouchPoints > 0)) && window.screen.width <= 480);
+  return (
+    ("ontouchstart" in window ||
+      // temp fix for https://stackoverflow.com/questions/69125308/navigator-maxtouchpoints-256-on-desktop
+      (navigator.maxTouchPoints > 0 && navigator.maxTouchPoints != 256) ||
+      // if the screen is >480, there's enough space for the copy button; no need to activate touch mode
+      navigator.msMaxTouchPoints > 0) &&
+    window.screen.width <= 480
+  );
 }
 
 /**
@@ -641,16 +719,18 @@ function hideBanner(type) {
  * @param {function} callback - Callback function to execute on button click
  */
 function handleButtonsState(buttonsCollection, callback) {
-  Array.from(buttonsCollection).forEach(button => {
-    $(button).on("click", function() {
-      Array.from(buttonsCollection).forEach(otherButton => {
-          otherButton.dataset.active = "inactive";
+  Array.from(buttonsCollection).forEach((button) => {
+    $(button).on("click", function () {
+      Array.from(buttonsCollection).forEach((otherButton) => {
+        otherButton.dataset.active = "inactive";
       });
-      this.dataset.active = this.dataset.active == "inactive" ? "active" : "inactive";
+      this.dataset.active =
+        this.dataset.active == "inactive" ? "active" : "inactive";
 
       callback(this);
     });
-  })};
+  });
+}
 
 /**
  * Swap source and target language dropdown selections.
@@ -668,22 +748,28 @@ function switchResultsLayout() {
   if (!isTwoColumnLayout) {
     isTwoColumnLayout = true;
     $("#results").removeClass("block");
-    $("#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead").addClass("two-col");
+    $(
+      "#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead"
+    ).addClass("two-col");
     $("button[value='two-col']").attr("data-active", "active");
   } else {
     isTwoColumnLayout = false;
     $("#results").addClass("block");
-    $("#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead").removeClass("two-col");
+    $(
+      "#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead"
+    ).removeClass("two-col");
     $("button[value='two-col']").attr("data-active", "inactive");
-}};
+  }
+}
 
 /**
  * Append VSCode icon to VSCode strings in search results
  */
 function highlightVSCodeStrings() {
   if ($("#tm-results-table").find("td:contains('VSCode')")) {
-    $("td:contains('VSCode')")
-    .html("<img src='static/images/svgs/vscode-icon.svg' class='vscode-icon'><td>VSCode</td>");
+    $("td:contains('VSCode')").html(
+      "<img src='static/images/svgs/vscode-icon.svg' class='vscode-icon'><td>VSCode</td>"
+    );
   }
 }
 
@@ -691,16 +777,26 @@ function highlightVSCodeStrings() {
  * Check if the selected languages support the selected data period
  */
 function checkDataPeriodCompatibility() {
-  let compatibleLangs = $("#source-lang option[data-2017='true'], #target-lang option[data-2017='true']").map(function() {
-    return $(this).val();
-  }).get();
+  let compatibleLangs = $(
+    "#source-lang option[data-2017='true'], #target-lang option[data-2017='true']"
+  )
+    .map(function () {
+      return $(this).val();
+    })
+    .get();
 
-  if (!compatibleLangs.includes($("#source-lang").val()) || !compatibleLangs.includes($("#target-lang").val())) {
+  if (
+    !compatibleLangs.includes($("#source-lang").val()) ||
+    !compatibleLangs.includes($("#target-lang").val())
+  ) {
     $("button.period-2017").prop("disabled", true);
-    $("button.period-2017").prop("title", "One of the languages does not support this data period")
+    $("button.period-2017").prop(
+      "title",
+      "One of the languages does not support this data period"
+    );
     $("button.period-2017").attr("data-active", "inactive");
     $("button.period-2020").attr("data-active", "active");
-    $(".period-description").text($(".period-description").attr("desc-2020"))
+    $(".period-description").text($(".period-description").attr("desc-2020"));
   } else {
     $("button.period-2017").prop("disabled", false);
   }
@@ -712,22 +808,16 @@ function checkDataPeriodCompatibility() {
  * @returns {string}
  */
 function appendIcons(e) {
-  let polygonAndVSCodeIcons = `<img src="static/images/svgs/vscode-icon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><img src="static/images/svgs/polygon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><span>${e.text}</span>`
-  let polygonIcon = `<img src="static/images/svgs/polygon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><span>${e.text}</span>`
-  let VSCodeIcon = `<img src="static/images/svgs/vscode-icon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><span>${e.text}</span>`
+  let polygonAndVSCodeIcons = `<img src="static/images/svgs/vscode-icon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><img src="static/images/svgs/polygon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><span>${e.text}</span>`;
+  let polygonIcon = `<img src="static/images/svgs/polygon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><span>${e.text}</span>`;
+  let VSCodeIcon = `<img src="static/images/svgs/vscode-icon.svg" height="15" width="15" class="polygon" style="position: relative; bottom: 2px;"><span>${e.text}</span>`;
 
   if ($(e.element).attr("data-2017") && $(e.element).attr("vscode")) {
-    return $(
-      polygonAndVSCodeIcons
-    );
+    return $(polygonAndVSCodeIcons);
   } else if ($(e.element).attr("data-2017")) {
-    return $(
-      polygonIcon
-    );
+    return $(polygonIcon);
   } else if ($(e.element).attr("vscode")) {
-    return $(
-      VSCodeIcon
-    );
+    return $(VSCodeIcon);
   }
 
   return e.text;
