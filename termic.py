@@ -23,7 +23,7 @@ if not all(mail_config_kv.values()):
     missing_keys = [k for k, v in mail_config_kv.items() if v is None]
     print(
         "Mail configuration is incomplete. "
-        f"The following keys are missing: {", ".join(missing_keys)}"
+        f"The following keys are missing: {', '.join(missing_keys)}"
         "\nEmail functionality will be disabled."
     )
     mail = None
