@@ -7,10 +7,19 @@
     <meta name="keywords" content="termic, microsoft, terminology, terminology base, translation, localization">
     <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script>
+      (function () {
+        const theme = localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="{{ url_for('static', filename='theme-toggle.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
@@ -33,6 +42,11 @@
       </h1>
       <div id="links">
         <ul>
+          <li>
+            <button id="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+              <i class="fa-solid fa-moon"></i>
+            </button>
+          </li>
           <li><a href="/changelog"><img class="clock" src="../static/images/svgs/clock.svg" alt="Changelog Icon" width="40" height="40"><br>Changelog</a></li>
           <li><a href="/about"><i class="fa-solid fa-circle-info"></i><br>About</a></li>
         </ul>
@@ -51,7 +65,26 @@
 
     <div class="changelog-container">
       <div class="changelog-version">
-        <h3 id="v1.5.0" class="important">Version 1.5.0</h3>
+        <h3 id="v1.5.1" class="important">Version 1.5.1</h3>
+        <span class="date">(February 16th, 2026)</span>
+        <div class="changelog-content">
+          <ul>
+              <span class="changelog-label feature">New feature</span><span class="fire"></span><b class="new-title">Light Theme</b>
+              <ul>
+                <li>Added an option to switch between light and dark theme in the top-right menu.</li>
+                <li>Theme matching user's OS preferences will be selected by default.</li>
+              </ul>
+              <li>Fixed a bug that made it possible to use the "Swap languages" button even if both or one of the languages were not selected.</li>
+              <li>Fixed an issue with the contact form.</li>
+              <li>Other miscellaneous fixes.</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="changelog-version">
+        <h3 id="v1.5.0">Version 1.5.0</h3>
         <span class="date">(July 17th, 2023)</span>
         <b class="blog-post">A blog post is associated with this update. <a href="https://blog.edoyen.com/post/new-data-for-termic-and-plans-for-the-future" target="_blank">Click here to read it</a>.</b>
         <div class="changelog-content">

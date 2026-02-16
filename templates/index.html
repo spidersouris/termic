@@ -7,13 +7,23 @@
     <meta name="robots" content="notranslate">
     <meta name="keywords" content="termic, microsoft, terminology, terminology base, translation, localization">
     <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32x32.png">
+    <script>
+      (function () {
+        const theme = localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link type="text/css" href="{{ url_for('static', filename='dropdown.css') }}" rel="stylesheet" />
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{url_for('static', filename='index.js')}}"></script>
+    <script src="{{ url_for('static', filename='theme-toggle.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
@@ -48,6 +58,11 @@
         </h1>
         <div id="links">
           <ul>
+            <li>
+              <button id="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+                <i class="fa-solid fa-moon"></i>
+              </button>
+            </li>
             <li><a href="/changelog"><img class="clock" src="/static/images/svgs/clock.svg" alt="Changelog Icon" width="40" height="40"><br>Changelog</a></li>
             <li><a href="/about"><i class="fa-solid fa-circle-info"></i><br>About</a></li>
           </ul>
@@ -112,7 +127,7 @@
           </select>
         </div>
 
-        <button id="swap-btn" type="button"><i class="fa-solid fa-right-left"></i></button>
+        <button id="swap-btn" type="button" disabled><i class="fa-solid fa-right-left"></i></button>
 
         <div id="target-lang-container">
             <label for="target-lang">Target Language</label>

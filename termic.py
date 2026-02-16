@@ -1,25 +1,25 @@
 import os
 import time
 
+import psycopg2
+from config.db_config import CONN_STRING
+from config.mail_config import Config
 from flask import (
     Flask,
-    request,
     jsonify,
-    render_template,
     redirect,
+    render_template,
+    request,
     send_from_directory,
 )
 from flask_mail import Mail, Message
-import psycopg2
-from config.mail_config import Config
-from config.db_config import CONN_STRING
 
 app = Flask(__name__, static_folder="static")
 app.config.from_object(Config)
 
 mail_config_kv = {k: v for k, v in app.config.items() if "MAIL" in k}
 
-if not all(mail_config_kv.values()):
+if None in mail_config_kv.values():
     missing_keys = [k for k, v in mail_config_kv.items() if v is None]
     print(
         "Mail configuration is incomplete. "
@@ -346,7 +346,7 @@ def main():  # pylint: disable=missing-function-docstring
         and result_count["result_count_tm"] <= 100
     ):
         # Escape wildcard characters
-        term = term.replace("%", "\%").replace("_", "\_")
+        term = term.replace("%", r"\%").replace("_", r"\_")
 
         sql_queries = build_sql_queries(
             modes,

@@ -2,9 +2,9 @@ $(function () {
   $("#send-btn").on("click", function () {
     hideBanner("error");
     hideBanner("info");
-    var form_name = $("#name").val();
-    var form_email = $("#email").val();
-    var form_message = $("#message").val();
+    const form_name = $("#name").val();
+    const form_email = $("#email").val();
+    const form_message = $("#message").val();
     if (form_name == "" || form_email == "" || form_message == "") {
       showBanner("error", "Please fill in all fields.");
     } else {
@@ -15,7 +15,7 @@ $(function () {
 
 function sendMessage(name, email, message) {
   $("#loader").css("display", "flex");
-  $.ajax({
+  const xhr = $.ajax({
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ function sendMessage(name, email, message) {
     success: function () {
       showBanner(
         "success",
-        "Message sent successfully! We'll get back to you soon."
+        "Message sent successfully! We'll get back to you soon.",
       );
     },
     error: function () {

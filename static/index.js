@@ -3,7 +3,7 @@
 const termicDeployedVersion = 1.5;
 const currentYearFooter = new Date().getFullYear();
 // Version shown in the footer and the update banner
-const currentVersionHTML = "1.5.0";
+const currentVersionHTML = "1.5.1";
 const urlParams = new URLSearchParams(window.location.search);
 const searchOptions = document.getElementsByClassName("search-option");
 const periodButtons = document.getElementsByName("period-button");
@@ -92,9 +92,9 @@ $(function () {
   $(".toggle").on("click", function () {
     // Get the name of the associated dropdown to toggle
     // and item to add/remove from modes list (glossary or TM)
-    let mode = this.id.split("-")[1];
-    let resultCountDropdown = "#result-count-" + mode;
-    let periodButton = "button[name='period-button']";
+    const mode = this.id.split("-")[1];
+    const resultCountDropdown = "#result-count-" + mode;
+    const periodButton = "button[name='period-button']";
 
     if (this.checked) {
       $($(this).data("target")).css("opacity", "1");
@@ -134,6 +134,7 @@ $(function () {
 
   $("#target-lang, #source-lang").on("change", function () {
     checkDataPeriodCompatibility();
+    enableSwapBtn();
   });
 
   // Result count select handling
@@ -145,7 +146,7 @@ $(function () {
       } else if ($(this).is("#result-count-tm")) {
         resultCountTm = parseInt($("#result-count-tm").val());
       }
-    }
+    },
   );
 
   $("#highlight-btn").on("click", function () {
@@ -182,22 +183,22 @@ $(function () {
   $(".search-option[value='regex']").on("click", function () {
     $(".additional-match-option[value='case_sensitivity']").prop(
       "disabled",
-      true
+      true,
     );
     $(".additional-match-option[value='case_sensitivity']").prop(
       "title",
-      "Case Sensitivity is not available for RegExp searches"
+      "Case Sensitivity is not available for RegExp searches",
     );
   });
 
   $(".search-option:not([value='regex'])").on("click", function () {
     $(".additional-match-option[value='case_sensitivity']").prop(
       "disabled",
-      false
+      false,
     );
     $(".additional-match-option[value='case_sensitivity']").prop(
       "title",
-      "Case Sensitivity"
+      "Case Sensitivity",
     );
   });
 
@@ -226,7 +227,7 @@ $(function () {
         searchOption,
         caseSensitive,
         modes,
-        dataPeriod
+        dataPeriod,
       );
     }
   }
@@ -293,7 +294,7 @@ $(function () {
           searchOption,
           caseSensitive,
           modes,
-          dataPeriod
+          dataPeriod,
         );
       }
     }
@@ -321,7 +322,7 @@ function request(
   searchOption,
   caseSensitive,
   modes,
-  dataPeriod
+  dataPeriod,
 ) {
   $("#target-lang").prop("disabled", true);
   $("#search-btn").prop("disabled", true);
@@ -411,7 +412,7 @@ function request(
 
       $("#error-banner").css("display", "flex");
       $("#error-banner #error-msg").html(
-        textStatus + ": " + errorThrown + " — " + errMsg
+        textStatus + ": " + errorThrown + " — " + errMsg,
       );
       $("#loader").css("display", "none");
     },
@@ -525,8 +526,9 @@ function getExcerpts(response, length, dataPeriod) {
 function highlightResults(e) {
   if (e.dataset.active == "inactive") {
     e.dataset.active = "active";
-    let keyword = $("#term").val();
+    const keyword = $("#term").val();
 
+    // unmark previous highlighted term
     $("td[data-attribute='source']").unmark({
       done: function () {
         $("td[data-attribute='source']").mark(keyword);
@@ -555,7 +557,7 @@ function getRowContent(row) {
 
 /**
  * Activate copy fezture with button on non-touch devices
- * and devices which width > 480
+ * and devices whose width > 480
  */
 function activateCopyWithBtn() {
   Array.from(document.getElementsByClassName("fa-copy")).forEach(
@@ -568,13 +570,13 @@ function activateCopyWithBtn() {
           $(copyButton).removeClass("copied");
         }, 2000);
       });
-    }
+    },
   );
 }
 
 /**
  * Activate copy feature with two-finger tap on touch devices
- * and devices which width <= 480
+ * and devices whose width <= 480
  */
 function activateCopyWithTap() {
   $(".fa-copy").css("display", "none");
@@ -749,14 +751,14 @@ function switchResultsLayout() {
     isTwoColumnLayout = true;
     $("#results").removeClass("block");
     $(
-      "#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead"
+      "#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead",
     ).addClass("two-col");
     $("button[value='two-col']").attr("data-active", "active");
   } else {
     isTwoColumnLayout = false;
     $("#results").addClass("block");
     $(
-      "#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead"
+      "#results, #glossary-results, #tm-results, #tm-title, #glossary-title, #tm, #glossary, #glossary thead, #tm thead",
     ).removeClass("two-col");
     $("button[value='two-col']").attr("data-active", "inactive");
   }
@@ -768,7 +770,7 @@ function switchResultsLayout() {
 function highlightVSCodeStrings() {
   if ($("#tm-results-table").find("td:contains('VSCode')")) {
     $("td:contains('VSCode')").html(
-      "<img src='static/images/svgs/vscode-icon.svg' class='vscode-icon'><td>VSCode</td>"
+      "<img src='static/images/svgs/vscode-icon.svg' class='vscode-icon'><td>VSCode</td>",
     );
   }
 }
@@ -778,7 +780,7 @@ function highlightVSCodeStrings() {
  */
 function checkDataPeriodCompatibility() {
   let compatibleLangs = $(
-    "#source-lang option[data-2017='true'], #target-lang option[data-2017='true']"
+    "#source-lang option[data-2017='true'], #target-lang option[data-2017='true']",
   )
     .map(function () {
       return $(this).val();
@@ -792,7 +794,7 @@ function checkDataPeriodCompatibility() {
     $("button.period-2017").prop("disabled", true);
     $("button.period-2017").prop(
       "title",
-      "One of the languages does not support this data period"
+      "One of the languages does not support this data period",
     );
     $("button.period-2017").attr("data-active", "inactive");
     $("button.period-2020").attr("data-active", "active");
@@ -800,6 +802,18 @@ function checkDataPeriodCompatibility() {
   } else {
     $("button.period-2017").prop("disabled", false);
   }
+}
+
+/**
+ * Enable swap language button only when both languages have been selected
+ */
+function enableSwapBtn() {
+  const [sourceLang, targetLang] = [
+    $("#source-lang").val(),
+    $("#target-lang").val(),
+  ];
+  if (sourceLang == undefined || targetLang == undefined) return;
+  $("#swap-btn").prop("disabled", false);
 }
 
 /**

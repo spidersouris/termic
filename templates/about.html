@@ -8,12 +8,22 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
     <link rel="preconnect" href="https://rsms.me/">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+
+    <script>
+      (function () {
+        const theme = localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='about.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://kit.fontawesome.com/c35e034406.js" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='theme-toggle.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
@@ -36,6 +46,11 @@
         </h1>
         <div id="links">
           <ul>
+            <li>
+              <button id="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+                <i class="fa-solid fa-moon"></i>
+              </button>
+            </li>
             <li><a href="/changelog"><img class="clock" src="../static/images/svgs/clock.svg" alt="Changelog Icon" width="40" height="40"><br>Changelog</a></li>
             <li><a href="/"><i class="fa-solid fa-circle-info"></i><br>About</a></li>
           </ul>
@@ -80,7 +95,7 @@
         <p>Please use the <a href="#contact-form" class="normal-link">contact form</a> below or <a href="https://github.com/Spidersouris/termic/issues" target="_blank" class="normal-link">open an issue on GitHub</a>.<br>The second option is preferred because it makes tracking easier. In addition, your feedback will be public and everyone will be able to discuss it.</p>
         <h3>How can I support termic?</h3>
         <p>First, thank you so much for considering supporting termic. termic is a solo project that was originally created to help a few fellow translators, and seeing other people use it is heartwarming!<br><br>The simplest way of supporting termic is by talking about it around you.<br><br>If you'd like to go one step further, you can also buy me a coffee (figuratively) using the button below. Donations will solely be used to cover the costs of running the server and the production database, as well as the domain name (around €20 total per month). Any donations are highly appreciated and your name will be featured on the website as a thank you.</p>
-        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="edoyen" data-color="rgba(232, 83, 68, 0.8)" data-emoji="🧡" data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="rgba(255, 255, 255, 0.9)" data-coffee-color="#FFDD00" ></script>
+        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="edoyen" data-color="rgba(199, 130, 124, 0.8)" data-emoji="🧡" data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="rgba(255, 255, 255, 0.9)" data-coffee-color="#FFDD00" ></script>
         <hr>
         <b>A million thanks to the following donators:</b>
         <ul class="no-margin donators-list">
